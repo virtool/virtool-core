@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'virtool-core'
-copyright = '2020, Ian Boyes, Blake Smith'
+copyright = '2020, Government of Candada'
 author = 'Ian Boyes, Blake Smith'
 
 # The full version, including alpha/beta/rc tags
