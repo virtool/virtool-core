@@ -14,6 +14,19 @@ Core utilities for Virtool and associated packages.
 
 ## Contributing 
 
+### Running Tests
+
+The testing framework used is [pytest](https://docs.pytest.org/en/stable/) 
+
+Install it using
+
+```
+pip install pytest
+```
+
+And run the tests using `pytest .`
+from the root directory
+
 ### Documentation
 
 For docstrings use the **Sphinx** docstring format as described [here](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html)
