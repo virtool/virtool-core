@@ -1,8 +1,0 @@
-README.md
-setup.py
-virtool-core/__init__.py
-virtool-core/conf.py
-virtool_core.egg-info/PKG-INFO
-virtool_core.egg-info/SOURCES.txt
-virtool_core.egg-info/dependency_links.txt
-virtool_core.egg-info/top_level.txt
