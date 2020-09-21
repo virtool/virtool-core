@@ -61,7 +61,7 @@ def should_use_pigz(processes: int) -> bool:
     :return: a boolean indicating if pigz should be used
 
     """
-    return processes > 1 and shutil.which("pigz")
+    return bool(processes > 1 and shutil.which("pigz"))
 
 
 def compress_file(path: str, target: str, processes: int = 1) -> None:

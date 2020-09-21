@@ -18,10 +18,19 @@ def alphanumeric():
     return "abcdefghijklmnopqrstuvwxyz1234567890"
 
 
+@pytest.mark.parametrize("document,result", [
+    (None, None),
+    ({"_id": "foo"}, {"id": "foo"}),
+    ({"id": "foo"}, {"id": "foo"}),
+])
+def test_base_processor(document, result):
+    assert virtool_core.utils.base_processor(document) == result
+
+
 def test_decompress_tgz(tmpdir):
     path = str(tmpdir)
 
-    src_path = Path(__file__).parent/"test_files/virtool.tar.gz"
+    src_path = os.path.join(sys.path[0], "test_files", "virtool.tar.gz")
 
     shutil.copy(src_path, path)
 
@@ -61,7 +70,10 @@ class TestRandomAlphanumeric:
     (False, {"foo.txt", "baz"})
 ])
 def test_rm(recursive, expected, tmpdir):
-    """Test that a file can be removed and that a folder can be removed when `recursive` is set to `True`."""
+    """
+    Test that a file can be removed and that a folder can be removed when `recursive` is set to `True`.
+
+    """
     tmpdir.join("foo.txt").write("hello world")
     tmpdir.join("bar.txt").write("hello world")
     tmpdir.mkdir("baz")
