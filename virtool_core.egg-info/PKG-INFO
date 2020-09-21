@@ -1,0 +1,30 @@
+Metadata-Version: 2.1
+Name: virtool-core
+Version: 0.0.1
+Summary: core utilities for Virtool backend
+Home-page: https://github.com/virtool/virtool-core
+License: UNKNOWN
+Description: Core utilities for Virtool and associated packages.
+        
+        # Install
+        
+        ```
+            git clone https://github.com/virtool/virtool-core
+            python setup.py install
+        ```
+        
+        
+        ## ToDos
+        
+        [ ] choose a lisence 
+        
+        
+        ## Contributing 
+        
+        ### Documentation
+        
+        For docstrings use the **Sphinx** docstring format as described [here](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html)
+        
+Platform: UNKNOWN
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
