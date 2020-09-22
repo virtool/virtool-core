@@ -43,10 +43,7 @@ def test_changes(test_change):
 
 @pytest.fixture
 def test_otu_edit():
-    """
-    An :class:`tuple` containing old and new otu documents for testing history diffing.
-
-    """
+    """An :class:`tuple` containing old and new otu documents for testing history diffing."""
     return (
         {
             "_id": "6116cba1",
