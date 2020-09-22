@@ -5,6 +5,14 @@ from aiohttp.test_utils import make_mocked_coro
 from virtool_core import db
 
 
+@pytest.mark.parametrize("document,result", [
+    (None, None),
+    ({"_id": "foo"}, {"id": "foo"}),
+    ({"id": "foo"}, {"id": "foo"}),
+])
+def test_base_processor(document, result):
+    assert db.utils.base_processor(document) == result
+
 @pytest.fixture
 def create_test_collection(mocker, test_motor):
     def func(name="samples", projection=None) -> db.Collection:
