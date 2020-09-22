@@ -18,12 +18,10 @@ def alphanumeric():
     return "abcdefghijklmnopqrstuvwxyz1234567890"
 
 
-
-
 def test_decompress_tgz(tmpdir):
     path = str(tmpdir)
 
-    src_path = os.path.join(sys.path[0], "test_files", "virtool.tar.gz")
+    src_path = Path(__file__).parent/"test_files/virtool.tar.gz"
 
     shutil.copy(src_path, path)
 

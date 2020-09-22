@@ -1,6 +1,7 @@
 import motor.motor_asyncio
 import pymongo.results
 import pymongo.errors
+from functools import partial
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
 import virtool_core.utils
 from . import utils
@@ -10,7 +11,7 @@ async def empty_processor(db, document):
     return document
 
 
-async def no_op(*args, **kwargs):
+async def no_op(*ids, **kwargs):
     return None
 
 
@@ -24,9 +25,9 @@ class Collection:
             self,
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
-            projection: Union[None, List, MutableMapping],
-            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = empty_processor,
             enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = no_op,
+            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = empty_processor,
+            projection: Union[None, List, MutableMapping] = None,
     ):
         """
 
@@ -70,6 +71,21 @@ class Collection:
 
         return document
 
+    async def enqueue_change(self, operation: str, *id_list):
+        """
+        Dispatch updates if the collection is not `silent` and the `silent` parameter is `False`. Applies the collection
+        projection and processor.
+
+        :param operation: the operation to label the dispatch with (insert, update, delete)
+        :param *id_list: the id's of those records affected by the operation
+
+        """
+        await self._enqueue_change(
+            self.name,
+            operation,
+            *id_list
+        )
+
     async def apply_processor(self, document):
         if self.processor:
             return await self.processor(self._collection.database, document)
@@ -90,7 +106,7 @@ class Collection:
         delete_result = await self._collection.delete_many(query)
 
         if not silent and len(id_list):
-            await self._enqueue_change("delete", *id_list)
+            await self.enqueue_change("delete", *id_list)
 
         return delete_result
 
@@ -106,7 +122,7 @@ class Collection:
         delete_result = await self._collection.delete_one(query)
 
         if delete_result.deleted_count:
-            await self._enqueue_change(
+            await self.enqueue_change(
                 "delete",
                 document_id
             )
@@ -140,7 +156,7 @@ class Collection:
         if document is None:
             return None
 
-        await self._enqueue_change("update", document["_id"])
+        await self.enqueue_change("update", document["_id"])
 
         if projection:
             return utils.apply_projection(document, projection)
@@ -158,7 +174,7 @@ class Collection:
 
         try:
             await self._collection.insert_one(document)
-            await self._enqueue_change("insert", document["_id"])
+            await self.enqueue_change("insert", document["_id"])
 
             return document
         except pymongo.errors.DuplicateKeyError:
@@ -174,7 +190,7 @@ class Collection:
             upsert=upsert
         )
 
-        await self._enqueue_change(
+        await self.enqueue_change(
             "update",
             replacement["_id"]
         )
@@ -185,7 +201,7 @@ class Collection:
         updated_ids = await self.distinct("_id", query)
         update_result = await self._collection.update_many(query, update)
 
-        await self._enqueue_change("update", *updated_ids)
+        await self.enqueue_change("update", *updated_ids)
 
         return update_result
 
@@ -194,7 +210,7 @@ class Collection:
         update_result = await self._collection.update_one(query, update, upsert=upsert)
 
         if document:
-            await self._enqueue_change(
+            await self.enqueue_change(
                 "update",
                 document["_id"]
             )
