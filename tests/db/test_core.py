@@ -13,6 +13,7 @@ from virtool_core import db
 def test_base_processor(document, result):
     assert db.utils.base_processor(document) == result
 
+
 @pytest.fixture
 def create_test_collection(mocker, test_motor):
     def func(name="samples", projection=None) -> db.Collection:
@@ -60,17 +61,6 @@ class TestCollection:
 
         assert projected == document
 
-    async def test_enqueue_change(self, mocker, create_test_collection):
-        """
-        Test that `dispatch_conditionally` dispatches a message when not suppressed by the `silent` parameter.
-
-        """
-        collection = create_test_collection()
-
-        await collection._enqueue_change("update", "foo", ["bar"])
-
-        collection._enqueue_change.assert_called_with("samples", "update", ("foo", "bar"))
-
     async def test_delete_many(self, test_motor, create_test_collection):
         collection = create_test_collection()
 
@@ -85,7 +75,7 @@ class TestCollection:
         assert isinstance(delete_result, pymongo.results.DeleteResult)
         assert delete_result.deleted_count == 2
 
-        collection._enqueue_change.assert_called_with("samples", "delete", ("foo", "baz"))
+        collection._enqueue_change.assert_called_with("samples", "delete", *("baz", "foo"))
 
         assert await test_motor.samples.find().to_list(None) == [
             {"_id": "bar", "tag": 2}
@@ -105,7 +95,7 @@ class TestCollection:
         assert isinstance(delete_result, pymongo.results.DeleteResult)
         assert delete_result.deleted_count == 1
 
-        collection._enqueue_change.assert_called_with("samples", "delete", ("foo",))
+        collection._enqueue_change.assert_called_with("samples", "delete", "foo")
 
         assert await test_motor.samples.find().to_list(None) == [
             {"_id": "bar", "tag": 2},
