@@ -15,8 +15,8 @@ def ensure_data_dir(data_path):
     """
     Ensure the application data structure is correct. Fix it if it is broken.
     :param data_path: the path to create the data folder structure in
-    """
 
+    """
     subdirectories = [
         "caches",
         "files",
