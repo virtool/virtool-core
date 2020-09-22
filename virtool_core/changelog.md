@@ -1,5 +1,4 @@
-# Change Log
-## virtool/utils.py
+# virtool/utils.py
 
 - function `get_static_hash` is only used by `virtool.http.errors.py`
     - leaving it out of virtool.utils with the intention of moving it to the 
@@ -17,16 +16,11 @@
    did not port over in favor of using `tempfile.TemporaryDirectory`
    directly. 
    
-## virtool/db/core.py
+# virtool/db/core.py
 
-  - added type hints to Collection arguments
-  - removed `silent` option in favor of `enqueue_change` defaulting to 
-    no-op
-  - removed `_enqueue_change` in favor of list `_on_change`
-  - added `on_change` decorator method
-  - move `virtool.utils.base_processor` to `virtool-core.db.utils`
-  - add `connect` function for connecting to specific collections
-  - did not migrate `DB` class to core library, as the specific database collections 
-    to be accesses is application specific, and an application (such as a Workflow container) would 
-    not need access to every collection.
-  - removed `db` parameter expected from processor functions for the reason above
+- added type hints to Collection arguments
+- removed `silent` option in favor of `enqueue_change` defaulting to 
+  no-op
+    - removed `enqueue_change` method of class in favor of using 
+      the function passed as an argument directly 
+- move `virtool.utils.base_processor` to `virtool-core.db.utils`

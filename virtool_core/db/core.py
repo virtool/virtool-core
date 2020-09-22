@@ -6,8 +6,15 @@ import virtool_core.utils
 from . import utils
 
 
-class Collection:
+async def empty_processor(db, document):
+    return document
 
+
+async def no_op(*args, **kwargs):
+    return None
+
+
+class Collection:
     """
     A wrapper for AsyncIOMotorCollection which dispatches updates via a provided
     callback function :func:`enqueue_change`
@@ -17,23 +24,21 @@ class Collection:
             self,
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
-            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = None,
-            processor: Callable[[MutableMapping], Awaitable[MutableMapping]] = None,
-            projection: Union[None, List, MutableMapping] = None,
+            projection: Union[None, List, MutableMapping],
+            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = empty_processor,
+            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = no_op,
     ):
         """
 
         :param name: name of the collection
         :param collection: the :class:`motor.motor_asyncio.AsyncIOMotorCollection to wrap
-        :param enqueue_change: callback function for database changes, defaults to None
+        :param enqueue_change: function which is called when the database changes, defaults to a NOP
         :param processor: function applied to the mongodb document before it is returned.
         :param projection: the mongodb projection
         """
         self.name = name
         self._collection = collection
-        self._on_change = []
-        if enqueue_change:
-            self._on_change.append(enqueue_change)
+        self._enqueue_change = enqueue_change
         self.processor = processor
         self.projection = projection
 
@@ -65,41 +70,9 @@ class Collection:
 
         return document
 
-    def on_change(self, on_change: Callable[[str, str, Iterable[str]], Awaitable[None]]):
-        """
-        Add a callback function for database updates
-        :param on_change: The callback function to add, it's signature should be as follows.
-
-        .. code-block:: python
-
-            async def on_change(collection_name: str, operation: str, *id_list):
-                ...
-
-        :return: The :func:`on_change` function passed in, such that this function can be used as
-            a decorator.
-        """
-        self._on_change.append(on_change)
-        return on_change
-
-    async def enqueue_change(self, operation: str, *id_list):
-        """
-        Dispatch updates. Applies the collection
-        projection and processor.
-
-        :param operation: the operation to label the dispatch with (insert, update, delete)
-        :param *id_list: the id's of those records affected by the operation
-
-        """
-        for on_change in self._on_change:
-            await on_change(
-                self.name,
-                operation,
-                *id_list
-            )
-
     async def apply_processor(self, document):
         if self.processor:
-            return await self.processor(document)
+            return await self.processor(self._collection.database, document)
 
         return utils.base_processor(document)
 
@@ -117,7 +90,7 @@ class Collection:
         delete_result = await self._collection.delete_many(query)
 
         if not silent and len(id_list):
-            await self.enqueue_change("delete", *id_list)
+            await self._enqueue_change("delete", *id_list)
 
         return delete_result
 
@@ -133,7 +106,7 @@ class Collection:
         delete_result = await self._collection.delete_one(query)
 
         if delete_result.deleted_count:
-            await self.enqueue_change(
+            await self._enqueue_change(
                 "delete",
                 document_id
             )
@@ -167,17 +140,16 @@ class Collection:
         if document is None:
             return None
 
-        await self.enqueue_change("update", document["_id"])
+        await self._enqueue_change("update", document["_id"])
 
         if projection:
             return utils.apply_projection(document, projection)
 
         return document
 
-    async def insert_one(self, document: dict, silent: bool = False) -> dict:
+    async def insert_one(self, document: dict) -> dict:
         """
         Insert a document into the database collection
-        :param silent: If True, updates will not be dispatched
         :param document: the document to insert
         """
 
@@ -186,8 +158,7 @@ class Collection:
 
         try:
             await self._collection.insert_one(document)
-            if not silent:
-                await self.enqueue_change("insert", document["_id"])
+            await self._enqueue_change("insert", document["_id"])
 
             return document
         except pymongo.errors.DuplicateKeyError:
@@ -195,15 +166,7 @@ class Collection:
             document.pop("_id")
             return await self._collection.insert_one(document)
 
-    async def replace_one(self, query: dict, replacement: dict, upsert=False, silent=False):
-        """
-        replace a document in the database collection
-        :param query: the MongoDB query document
-        :param replacement: the new document
-        :param upsert: if True, a new document will be created if none are found.
-        :param silent: if True, updates will not be dispatched
-        :return: the newly added document
-        """
+    async def replace_one(self, query, replacement, upsert=False):
         document = await self._collection.find_one_and_replace(
             query,
             replacement,
@@ -211,29 +174,27 @@ class Collection:
             upsert=upsert
         )
 
-        if not silent:
-            await self.enqueue_change(
-                "update",
-                replacement["_id"]
-            )
+        await self._enqueue_change(
+            "update",
+            replacement["_id"]
+        )
 
         return document
 
-    async def update_many(self, query, update, silent=False):
+    async def update_many(self, query, update):
         updated_ids = await self.distinct("_id", query)
         update_result = await self._collection.update_many(query, update)
 
-        if not silent:
-            await self.enqueue_change("update", *updated_ids)
+        await self._enqueue_change("update", *updated_ids)
 
         return update_result
 
-    async def update_one(self, query, update, upsert=False, silent=False):
+    async def update_one(self, query, update, upsert=False):
         document = await self.find_one(query, ["_id"])
         update_result = await self._collection.update_one(query, update, upsert=upsert)
 
-        if document and not silent:
-            await self.enqueue_change(
+        if document:
+            await self._enqueue_change(
                 "update",
                 document["_id"]
             )
@@ -241,57 +202,5 @@ class Collection:
         return update_result
 
 
-async def connect_by_client(db_name: str, client: motor.motor_asyncio.AsyncIOMotorClient, *collection_names: str):
-    """
-    Connect to one or more MongoDB collections using the given :class:`AsyncIOMotorClient`
-    :param db_name: name of the database containing the collections
-    :param client: the :class:`motor.motor_asyncio.AsyncIOMotorClient` connection to MongoDB
-    :param collection_names: the names of any desired connections
-    :return:
-        A :class:`Collection` instance if only one `collection_name` is provided
-
-        A dict containing all requested collections indexed by the
-        collection name, if multiple `collection_names` are provided
-    """
-
-    db = client[db_name]
-    print(dir(db))
-
-    if len(collection_names) == 0:
-        raise ValueError("must provide at-least one collection name")
-    elif len(collection_names) == 1:
-        return Collection(collection_names[0], db.get_collection(collection_names[0]))
-    else:
-        return {name: Collection(name, db.get_collection(name)) for name in collection_names}
-
-
-async def connect(
-        connection_string: str,
-        db_name: str,
-        *collection_names: str,
-        timeout: int = 6000,
-) -> Union[MutableMapping[str, Collection], Collection]:
-    """
-    Connect to one or more MongoDB database collections
-
-    :param connection_string: the MongoDB connection string
-    :param db_name: the name of the MongoDB database
-    :param collection_names: the names of all collections to connect to
-    :param timeout: the timeout for connecting to MongoDB
-    :raises pymongo.errors.ServerSelectionTimeoutError
-    :return:
-        A :class:`Collection` instance if only one `collection_name` is provided
-
-        A dict containing all requested collections indexed by the
-        collection name, if multiple `collection_names` are provided
-    """
-    mongo = motor.motor_asyncio.AsyncIOMotorClient(
-        connection_string,
-        serverSelectionTimeoutMS=timeout
-    )
-
-    return await connect_by_client(db_name, mongo, *collection_names)
-
-
-
-
+class DB:
+    pass

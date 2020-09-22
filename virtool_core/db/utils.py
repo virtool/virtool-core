@@ -2,7 +2,8 @@ from typing import Union
 
 
 def apply_projection(document: dict, projection: Union[list, dict]):
-    """ Apply a Mongo-style projection to a document and return it.
+    """
+    Apply a Mongo-style projection to a document and return it.
 
     :param document: the document to project
     :type document: dict
