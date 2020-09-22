@@ -38,7 +38,7 @@ def dbs(test_db_connection_string, test_db_name, request):
 
 @pytest.fixture
 def dbi(test_motor):
-    return db.core.DB(test_motor, make_mocked_coro())
+    return virtool.db.core.DB(test_motor, make_mocked_coro())
 
 
 @pytest.fixture(params=[True, False])
