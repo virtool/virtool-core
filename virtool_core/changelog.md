@@ -15,3 +15,12 @@
 - `get_temp_dir` is equivalent to `tempfile.TemporaryDirectory`.
    did not port over in favor of using `tempfile.TemporaryDirectory`
    directly. 
+   
+# virtool/db/core.py
+
+- added type hints to Collection arguments
+- removed `silent` option in favor of `enqueue_change` defaulting to 
+  no-op
+    - removed `enqueue_change` method of class in favor of using 
+      the function passed as an argument directly 
+- move `virtool.utils.base_processor` to `virtool-core.db.utils`

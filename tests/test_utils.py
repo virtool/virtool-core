@@ -18,19 +18,10 @@ def alphanumeric():
     return "abcdefghijklmnopqrstuvwxyz1234567890"
 
 
-@pytest.mark.parametrize("document,result", [
-    (None, None),
-    ({"_id": "foo"}, {"id": "foo"}),
-    ({"id": "foo"}, {"id": "foo"}),
-])
-def test_base_processor(document, result):
-    assert virtool_core.utils.base_processor(document) == result
-
-
 def test_decompress_tgz(tmpdir):
     path = str(tmpdir)
 
-    src_path = os.path.join(sys.path[0], "test_files", "virtool.tar.gz")
+    src_path = Path(__file__).parent/"test_files/virtool.tar.gz"
 
     shutil.copy(src_path, path)
 
