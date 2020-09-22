@@ -52,27 +52,6 @@ def random_alphanumeric(length: int = 6, mixed_case: bool = False, excluded: Uni
     return random_alphanumeric(length=length, excluded=excluded)
 
 
-# TODO: consider moving this function to virtool-core.db.mongo.py
-def base_processor(document: Union[dict, None]) -> Union[dict, None]:
-    """
-    Converts a document `dict` returned from MongoDB into a `dict` that can be passed into a JSON response. Removes the
-    '_id' key and reassigns it to `id`.
-
-    :param document: the document to process
-    :return: processed document
-
-    """
-    if document is None:
-        return None
-
-    document = dict(document)
-
-    if "id" in document:
-        document["id"] = document.pop("_id")
-
-    return document
-
-
 def should_use_pigz(processes: int) -> bool:
     """
     Decides whether pigz should be used for gzip decompression. If multiple processes are used and pigz is installed,
