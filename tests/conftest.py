@@ -1,4 +1,4 @@
-from .fixtures import  *
+from .fixtures import *
 
 
 def pytest_addoption(parser):

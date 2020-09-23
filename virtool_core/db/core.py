@@ -1,8 +1,8 @@
 import motor.motor_asyncio
 import pymongo.results
 import pymongo.errors
-from functools import partial
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
+from dataclasses import dataclass
 import virtool_core.utils
 from . import utils
 
@@ -11,11 +11,8 @@ async def empty_processor(db, document):
     return document
 
 
-async def no_op(*ids, **kwargs):
-    return None
-
-
 class Collection:
+
     """
     A wrapper for AsyncIOMotorCollection which dispatches updates via a provided
     callback function :func:`enqueue_change`
@@ -25,8 +22,8 @@ class Collection:
             self,
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
-            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = no_op,
-            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = empty_processor,
+            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = None,
+            processor: Callable[[MutableMapping], Awaitable[MutableMapping]] = empty_processor,
             projection: Union[None, List, MutableMapping] = None,
     ):
         """
@@ -39,7 +36,9 @@ class Collection:
         """
         self.name = name
         self._collection = collection
-        self._enqueue_change = enqueue_change
+        self._on_change = []
+        if enqueue_change:
+            self._on_change.append(enqueue_change)
         self.processor = processor
         self.projection = projection
 
@@ -71,6 +70,10 @@ class Collection:
 
         return document
 
+    def on_change(self, on_change: Callable[[str, str, Iterable[str]], Awaitable[None]]):
+        self._on_change.append(on_change)
+        return on_change
+
     async def enqueue_change(self, operation: str, *id_list):
         """
         Dispatch updates if the collection is not `silent` and the `silent` parameter is `False`. Applies the collection
@@ -80,15 +83,16 @@ class Collection:
         :param *id_list: the id's of those records affected by the operation
 
         """
-        await self._enqueue_change(
-            self.name,
-            operation,
-            *id_list
-        )
+        for on_change in self._on_change:
+            await on_change(
+                self.name,
+                operation,
+                *id_list
+            )
 
     async def apply_processor(self, document):
         if self.processor:
-            return await self.processor(self._collection.database, document)
+            return await self.processor(document)
 
         return utils.base_processor(document)
 
@@ -163,9 +167,10 @@ class Collection:
 
         return document
 
-    async def insert_one(self, document: dict) -> dict:
+    async def insert_one(self, document: dict, silent: bool = False) -> dict:
         """
         Insert a document into the database collection
+        :param silent: If True, updates will not be dispatched
         :param document: the document to insert
         """
 
@@ -174,7 +179,8 @@ class Collection:
 
         try:
             await self._collection.insert_one(document)
-            await self.enqueue_change("insert", document["_id"])
+            if not silent:
+                await self.enqueue_change("insert", document["_id"])
 
             return document
         except pymongo.errors.DuplicateKeyError:
@@ -182,7 +188,7 @@ class Collection:
             document.pop("_id")
             return await self._collection.insert_one(document)
 
-    async def replace_one(self, query, replacement, upsert=False):
+    async def replace_one(self, query, replacement, upsert=False, silent=False):
         document = await self._collection.find_one_and_replace(
             query,
             replacement,
@@ -190,26 +196,28 @@ class Collection:
             upsert=upsert
         )
 
-        await self.enqueue_change(
-            "update",
-            replacement["_id"]
-        )
+        if not silent:
+            await self.enqueue_change(
+                "update",
+                replacement["_id"]
+            )
 
         return document
 
-    async def update_many(self, query, update):
+    async def update_many(self, query, update, silent=False):
         updated_ids = await self.distinct("_id", query)
         update_result = await self._collection.update_many(query, update)
 
-        await self.enqueue_change("update", *updated_ids)
+        if not silent:
+            await self.enqueue_change("update", *updated_ids)
 
         return update_result
 
-    async def update_one(self, query, update, upsert=False):
+    async def update_one(self, query, update, upsert=False, silent=False):
         document = await self.find_one(query, ["_id"])
         update_result = await self._collection.update_one(query, update, upsert=upsert)
 
-        if document:
+        if document and not silent:
             await self.enqueue_change(
                 "update",
                 document["_id"]
@@ -218,5 +226,45 @@ class Collection:
         return update_result
 
 
-class DB:
-    pass
+async def connect_by_client(db_name: str, client: motor.motor_asyncio.AsyncIOMotorClient, *collection_names: str):
+    db = client[db_name]
+    print(dir(db))
+
+    if len(collection_names) == 0:
+        raise ValueError("must provide at-least one collection name")
+    elif len(collection_names) == 1:
+        return Collection(collection_names[0], db.get_collection(collection_names[0]))
+    else:
+        return {name: Collection(name, db.get_collection(name)) for name in collection_names}
+
+
+async def connect(
+        connection_string: str,
+        db_name: str,
+        *collection_names: str,
+        timeout: int = 6000,
+) -> Union[MutableMapping[str, Collection], Collection]:
+    """
+    Connect to MongoDB database collections
+
+    :param connection_string: the MongoDB connection string
+    :param db_name: the name of the MongoDB database
+    :param collection_names: the names of all collections to connect to
+    :param timeout: the timeout for connecting to MongoDB
+    :raises pymongo.errors.ServerSelectionTimeoutError
+    :return:
+        A :class:`Collection` instance if only one `collection_name` is provided
+
+        A dict containing all requested collections indexed by the
+        collection name, if multiple `collection_names` are provided
+    """
+    mongo = motor.motor_asyncio.AsyncIOMotorClient(
+        connection_string,
+        serverSelectionTimeoutMS=timeout
+    )
+
+    return await connect_by_client(db_name, mongo, *collection_names)
+
+
+
+
