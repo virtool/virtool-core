@@ -104,8 +104,8 @@ class TestCollection:
             {"_id": "baz", "tag": 1}
         ]
 
-    async def test_connect(self):
-        testdb = await db.connect("mongodb://localhost:27017", "test", "test")
+   async def test_connect(self, test_db_connection_string, test_db_name):
+        testdb = await db.connect(test_db_connection_string, test_db_name, "test")
 
         on_change = make_mocked_coro()
         testdb.on_change(on_change)
@@ -113,8 +113,8 @@ class TestCollection:
         await testdb.insert_one({"_id":"test"})
         on_change.assert_called_with("test", "insert", "test")
 
-    async def test_connect_multiple_collections(self):
-        collections = await db.connect("mongodb://localhost:27017", "test", "collection1", "collection2", "collection3")
+    async def test_connect_multiple_collections(self, test_db_connection_string, test_db_name):
+        collections = await db.connect(test_db_connection_string, test_db_name, "collection1", "collection2", "collection3")
         assert len(collections.values()) == 3
 
         for name, collection in collections.items():
