@@ -1,6 +1,4 @@
-pytest_plugins = [
-    "tests.fixtures.__init__"
-]
+from .fixtures import *
 
 
 def pytest_addoption(parser):

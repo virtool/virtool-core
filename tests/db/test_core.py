@@ -61,7 +61,8 @@ class TestCollection:
 
         assert projected == document
 
-    async def test_delete_many(self, test_motor, create_test_collection):
+    @pytest.mark.parametrize("param_silent", [True, False])
+    async def test_delete_many(self, param_silent, test_motor, create_test_collection):
         collection = create_test_collection()
 
         await test_motor.samples.insert_many([
@@ -70,12 +71,13 @@ class TestCollection:
             {"_id": "baz", "tag": 1}
         ])
 
-        delete_result = await collection.delete_many({"tag": 1})
+        delete_result = await collection.delete_many({"tag": 1}, silent=param_silent)
 
         assert isinstance(delete_result, pymongo.results.DeleteResult)
         assert delete_result.deleted_count == 2
 
-        collection._enqueue_change.assert_called_with("samples", "delete", *("baz", "foo"))
+        if not param_silent:
+            collection._on_change[0].assert_called_with("samples", "delete", "baz", "foo")
 
         assert await test_motor.samples.find().to_list(None) == [
             {"_id": "bar", "tag": 2}
@@ -95,13 +97,31 @@ class TestCollection:
         assert isinstance(delete_result, pymongo.results.DeleteResult)
         assert delete_result.deleted_count == 1
 
-        collection._enqueue_change.assert_called_with("samples", "delete", "foo")
+        collection._on_change[0].assert_called_with("samples", "delete", "foo")
 
         assert await test_motor.samples.find().to_list(None) == [
             {"_id": "bar", "tag": 2},
             {"_id": "baz", "tag": 1}
         ]
 
+    async def test_connect(self):
+        testdb = await db.connect("mongodb://localhost:27017", "test", "test")
+
+        on_change = make_mocked_coro()
+        testdb.on_change(on_change)
+
+        await testdb.insert_one({"_id":"test"})
+        on_change.assert_called_with("test", "insert", "test")
+
+    async def test_connect_multiple_collections(self):
+        collections = await db.connect("mongodb://localhost:27017", "test", "collection1", "collection2", "collection3")
+        assert len(collections.values()) == 3
+
+        for name, collection in collections.items():
+            coro = make_mocked_coro()
+            collection.on_change(coro)
+            await collection.insert_one({"_id": "test"})
+            coro.assert_called_with(name, "insert", "test")
 
 
 
