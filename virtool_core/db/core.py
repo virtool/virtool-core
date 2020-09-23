@@ -1,9 +1,13 @@
 import motor.motor_asyncio
 import pymongo.results
 import pymongo.errors
+import semver
+import logging
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
 import virtool_core.utils
 from . import utils
+
+logger = logging.getLogger("mongo")
 
 
 class Collection:
@@ -247,6 +251,7 @@ async def connect_by_client(db_name: str, client: motor.motor_asyncio.AsyncIOMot
     :param db_name: name of the database containing the collections
     :param client: the :class:`motor.motor_asyncio.AsyncIOMotorClient` connection to MongoDB
     :param collection_names: the names of any desired connections
+    :raises EnvironmentError: If the MongoDB version does not meet the minimum requirement
     :return:
         A :class:`Collection` instance if only one `collection_name` is provided
 
@@ -255,6 +260,12 @@ async def connect_by_client(db_name: str, client: motor.motor_asyncio.AsyncIOMot
     """
 
     db = client[db_name]
+
+    mongo_version = "4.4.0"
+    current_version = (await client.server_info())["version"]
+
+    if semver.compare(current_version, mongo_version) == -1:
+        raise EnvironmentError(f"Virtool requires MongoDB {mongo_version}. Found {current_version}.")
 
     if len(collection_names) == 0:
         raise ValueError("must provide at-least one collection name")
