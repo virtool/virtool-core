@@ -2,7 +2,6 @@ import motor.motor_asyncio
 import pymongo.results
 import pymongo.errors
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
-from dataclasses import dataclass
 import virtool_core.utils
 from . import utils
 
@@ -30,7 +29,7 @@ class Collection:
 
         :param name: name of the collection
         :param collection: the :class:`motor.motor_asyncio.AsyncIOMotorCollection to wrap
-        :param enqueue_change: function which is called when the database changes, defaults to a NOP
+        :param enqueue_change: callback function for database changes, defaults to None
         :param processor: function applied to the mongodb document before it is returned.
         :param projection: the mongodb projection
         """
@@ -71,12 +70,24 @@ class Collection:
         return document
 
     def on_change(self, on_change: Callable[[str, str, Iterable[str]], Awaitable[None]]):
+        """
+        Add a callback function for database updates
+        :param on_change: The callback function to add, it's signature should be as follows.
+
+        .. code-block:: python
+
+            async def on_change(collection_name: str, operation: str, *id_list):
+                ...
+
+        :return: The :func:`on_change` function passed in, such that this function can be used as
+            a decorator.
+        """
         self._on_change.append(on_change)
         return on_change
 
     async def enqueue_change(self, operation: str, *id_list):
         """
-        Dispatch updates if the collection is not `silent` and the `silent` parameter is `False`. Applies the collection
+        Dispatch updates. Applies the collection
         projection and processor.
 
         :param operation: the operation to label the dispatch with (insert, update, delete)
@@ -188,7 +199,15 @@ class Collection:
             document.pop("_id")
             return await self._collection.insert_one(document)
 
-    async def replace_one(self, query, replacement, upsert=False, silent=False):
+    async def replace_one(self, query: dict, replacement: dict, upsert=False, silent=False):
+        """
+        replace a document in the database collection
+        :param query: the MongoDB query document
+        :param replacement: the new document
+        :param upsert: if True, a new document will be created if none are found.
+        :param silent: if True, updates will not be dispatched
+        :return: the newly added document
+        """
         document = await self._collection.find_one_and_replace(
             query,
             replacement,
@@ -227,6 +246,18 @@ class Collection:
 
 
 async def connect_by_client(db_name: str, client: motor.motor_asyncio.AsyncIOMotorClient, *collection_names: str):
+    """
+    Connect to one or more MongoDB collections using the given :class:`AsyncIOMotorClient`
+    :param db_name: name of the database containing the collections
+    :param client: the :class:`motor.motor_asyncio.AsyncIOMotorClient` connection to MongoDB
+    :param collection_names: the names of any desired connections
+    :return:
+        A :class:`Collection` instance if only one `collection_name` is provided
+
+        A dict containing all requested collections indexed by the
+        collection name, if multiple `collection_names` are provided
+    """
+
     db = client[db_name]
     print(dir(db))
 
@@ -245,7 +276,7 @@ async def connect(
         timeout: int = 6000,
 ) -> Union[MutableMapping[str, Collection], Collection]:
     """
-    Connect to MongoDB database collections
+    Connect to one or more MongoDB database collections
 
     :param connection_string: the MongoDB connection string
     :param db_name: the name of the MongoDB database
