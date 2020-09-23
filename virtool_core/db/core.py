@@ -255,7 +255,6 @@ async def connect_by_client(db_name: str, client: motor.motor_asyncio.AsyncIOMot
     """
 
     db = client[db_name]
-    print(dir(db))
 
     if len(collection_names) == 0:
         raise ValueError("must provide at-least one collection name")
