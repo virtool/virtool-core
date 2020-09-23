@@ -6,10 +6,6 @@ import virtool_core.utils
 from . import utils
 
 
-async def empty_processor(db, document):
-    return document
-
-
 class Collection:
 
     """
@@ -22,7 +18,7 @@ class Collection:
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
             enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = None,
-            processor: Callable[[MutableMapping], Awaitable[MutableMapping]] = empty_processor,
+            processor: Callable[[MutableMapping], Awaitable[MutableMapping]] = None,
             projection: Union[None, List, MutableMapping] = None,
     ):
         """
