@@ -1,5 +1,29 @@
 from copy import deepcopy
-from typing import Mapping, Any, Sequence
+from typing import Mapping, Any, Sequence, List, Generator
+
+
+def extract_default_sequences(joined: Mapping[str, Mapping]) -> List[Mapping]:
+    """
+    Return a list of sequences from the default isolate of the passed joined otu document.
+
+    :param joined: the joined otu document.
+    :return: a list of sequences associated with the default isolate.
+
+    """
+    for isolate in joined["isolates"]:
+        if isolate["default"]:
+            return isolate["sequences"]
+
+
+def extract_sequences(otu: Mapping[str, Mapping]) -> Generator[str]:
+    """
+    Extract sequences from an OTU document
+    :param otu: The OTU document
+    :return: a generator containing sequences from the isolates of the OTU
+    """
+    for isolate in otu["isolates"]:
+        for sequence in isolate["sequences"]:
+            yield sequence
 
 
 def merge_otu(otu: Mapping[str, Any], sequences: Sequence[Mapping[str, Any]]) -> Mapping[str, Any]:
