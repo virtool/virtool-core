@@ -4,9 +4,10 @@ import pymongo.errors
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
 import virtool_core.utils
 from . import utils
+from .bindings import CollectionBinding, BINDINGS
 
 Processor = Callable[["DB", MutableMapping], Awaitable[MutableMapping]]
-EnqueueChangeListener = Callable[[str, str, Iterable[str]], Awaitable[None]]
+DatabaseUpdateListener = Callable[[str, str, Iterable[str]], Awaitable[None]]
 
 
 class Collection:
@@ -19,7 +20,7 @@ class Collection:
             self,
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
-            enqueue_change: EnqueueChangeListener = None,
+            enqueue_change: DatabaseUpdateListener = None,
             processor: Processor = None,
             projection: Union[None, List, MutableMapping] = None,
     ):
@@ -246,4 +247,28 @@ class Collection:
 
 
 class DB:
-    pass
+    """
+    Main interface to the Virtool database
+    """
+    def __init__(
+            self,
+            motor_client: motor.motor_asyncio.AsyncIOMotorClient,
+            enqueue_change: DatabaseUpdateListener,
+    ):
+        """
+        :param motor_client: The :class:`motor.motor_asyncio.AsyncIOMotorClient` instance
+        :param enqueue_change: A callback function for receiving database update events
+        """
+
+        self.motor_client = motor_client
+        self.enqueue_change = enqueue_change
+        for binding in BINDINGS:
+            collection = Collection(
+                binding.collection_name,
+                motor_client[binding.collection_name],
+                enqueue_change,
+                binding.processor,
+                binding.projection,
+            )
+            setattr(self, binding.collection_name, collection)
+
