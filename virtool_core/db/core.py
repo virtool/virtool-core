@@ -1,18 +1,14 @@
 import motor.motor_asyncio
 import pymongo.results
 import pymongo.errors
+from typing import Union, List, MutableMapping
+import virtool_core.utils
+from . import utils
+from .bindings import BINDINGS, DatabaseUpdateListener, Processor
 from functools import partial
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
 import virtool_core.utils
 from . import utils
-
-
-async def empty_processor(db, document):
-    return document
-
-
-async def no_op(*ids, **kwargs):
-    return None
 
 
 class Collection:
@@ -25,8 +21,8 @@ class Collection:
             self,
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
-            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = no_op,
-            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = empty_processor,
+            enqueue_change: DatabaseUpdateListener = None,
+            processor: Processor = None,
             projection: Union[None, List, MutableMapping] = None,
     ):
         """
@@ -73,18 +69,19 @@ class Collection:
 
     async def enqueue_change(self, operation: str, *id_list):
         """
-        Dispatch updates if the collection is not `silent` and the `silent` parameter is `False`. Applies the collection
-        projection and processor.
+        Dispatch an update about this collection
+
 
         :param operation: the operation to label the dispatch with (insert, update, delete)
         :param *id_list: the id's of those records affected by the operation
 
         """
-        await self._enqueue_change(
-            self.name,
-            operation,
-            *id_list
-        )
+        if self._enqueue_change:
+            await self._enqueue_change(
+                self.name,
+                operation,
+                *id_list
+            )
 
     async def apply_processor(self, document):
         if self.processor:
@@ -97,7 +94,7 @@ class Collection:
         Delete many documents based on the passed `query`.
 
         :param query: a MongoDB query
-        :param silent: don't dispatch websocket messages for this operation
+        :param silent: if True, don't dispatch updates for this operation
         :return: the delete result
 
         """
@@ -110,18 +107,21 @@ class Collection:
 
         return delete_result
 
-    async def delete_one(self, query: dict):
+
+    async def delete_one(self, query: dict, silent: bool = False):
         """
         Delete a single document based on the passed `query`.
 
         :param query: a MongoDB query
+        :param silent: if True, don't dispatch updates for this operation
         :return: the delete result
 
         """
         document_id = await utils.get_one_field(self, "_id", query)
         delete_result = await self._collection.delete_one(query)
 
-        if delete_result.deleted_count:
+
+        if delete_result.deleted_count and not silent:
             await self.enqueue_change(
                 "delete",
                 document_id
@@ -134,7 +134,8 @@ class Collection:
             query: dict,
             update: dict,
             projection: Union[None, dict, list] = None,
-            upsert: bool = False
+            upsert: bool = False,
+            silent: bool = False,
     ):
         """
         Update a document and return the updated result.
@@ -143,6 +144,7 @@ class Collection:
         :param update: a MongoDB update
         :param projection: a projection to apply to the returned document instead of the default
         :param upsert: insert a new document if the query doesn't match an existing document
+        :param silent: if True, don't dispatch updates for this operation
         :return: the updated document
 
         """
@@ -156,6 +158,8 @@ class Collection:
         if document is None:
             return None
 
+        if not silent:
+            await self.enqueue_change("update", document["_id"])
         await self.enqueue_change("update", document["_id"])
 
         if projection:
@@ -163,10 +167,12 @@ class Collection:
 
         return document
 
-    async def insert_one(self, document: dict) -> dict:
+    async def insert_one(self, document: dict, silent: bool = False) -> dict:
         """
         Insert a document into the database collection
+        
         :param document: the document to insert
+        :param silent: if True, don't dispatch updates for this operation
         """
 
         if "_id" not in document:
@@ -174,7 +180,8 @@ class Collection:
 
         try:
             await self._collection.insert_one(document)
-            await self.enqueue_change("insert", document["_id"])
+            if not silent:
+                await self.enqueue_change("insert", document["_id"])
 
             return document
         except pymongo.errors.DuplicateKeyError:
@@ -182,7 +189,16 @@ class Collection:
             document.pop("_id")
             return await self._collection.insert_one(document)
 
-    async def replace_one(self, query, replacement, upsert=False):
+    async def replace_one(self, query: dict, replacement: dict, upsert: bool = False, silent: bool = False):
+        """
+        Replace a document in the database collection
+        :param query: the MongoDB query document
+        :param replacement: the new document
+        :param upsert: if True, a new document will be created if none are found.
+        :param silent: if True, updates will not be dispatched
+        :return: the newly added document
+        """
+
         document = await self._collection.find_one_and_replace(
             query,
             replacement,
@@ -190,26 +206,45 @@ class Collection:
             upsert=upsert
         )
 
-        await self.enqueue_change(
-            "update",
-            replacement["_id"]
-        )
+
+        if not silent:
+            await self.enqueue_change(
+                "update",
+                replacement["_id"]
+            )
 
         return document
 
-    async def update_many(self, query, update):
+    async def update_many(self, query: dict, update: dict, silent: bool = False):
+        """
+        Apply an update to multiple documents in the collection
+        :param query: The MongoDB query document
+        :param update: The MongoDB update document or replacement document
+        :param silent: if True, updates will not be dispatched
+        :return: The result of the update
+        """
+
         updated_ids = await self.distinct("_id", query)
         update_result = await self._collection.update_many(query, update)
 
-        await self.enqueue_change("update", *updated_ids)
+        if not silent:
+            await self.enqueue_change("update", *updated_ids)
 
         return update_result
 
-    async def update_one(self, query, update, upsert=False):
+    async def update_one(self, query: dict, update: dict, upsert: bool = False, silent: bool = False):
+        """
+        :param query: The MongoDB query document
+        :param update: The MongoDB update document or replacement document
+        :param upsert: If True, the update document will be inserted if there is no document matching the query
+        :param silent: if True, updates will not be dispatched
+        :return: The result of the update
+        """
+
         document = await self.find_one(query, ["_id"])
         update_result = await self._collection.update_one(query, update, upsert=upsert)
 
-        if document:
+        if document and not silent:
             await self.enqueue_change(
                 "update",
                 document["_id"]
@@ -219,4 +254,27 @@ class Collection:
 
 
 class DB:
-    pass
+    """
+    Main interface to the Virtool database
+    """
+    def __init__(
+            self,
+            motor_client: motor.motor_asyncio.AsyncIOMotorClient,
+            enqueue_change: DatabaseUpdateListener,
+    ):
+        """
+        :param motor_client: The :class:`motor.motor_asyncio.AsyncIOMotorClient` instance
+        :param enqueue_change: A callback function for receiving database update events
+        """
+
+        self.motor_client = motor_client
+        self.enqueue_change = enqueue_change
+        for binding in BINDINGS:
+            collection = Collection(
+                binding.collection_name,
+                motor_client[binding.collection_name],
+                None if binding.silent else enqueue_change,
+                binding.processor,
+                binding.projection,
+            )
+            setattr(self, binding.collection_name, collection)

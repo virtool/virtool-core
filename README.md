@@ -37,6 +37,14 @@ the [run_mongo_with_tests.sh](tests/run_mongo_with_tests.sh) script
 to run mongo using docker. The docker container used to run mongo
 will be stopped and removed once the tests have completed. 
 
+#### MongoDB
+
+some tests require an instance of MongoDB to be running on the 
+local machine. If you do not have MongoDB installed you can use
+the [run_mongo_with_tests.sh](tests/run_mongo_with_tests.sh) script
+to run mongo using docker. The docker container used to run mongo
+will be stopped and removed once the tests have completed. 
+
 ### Documentation
 
 For docstrings, use the [**Sphinx** docstring format](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html).

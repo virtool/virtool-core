@@ -12,3 +12,5 @@ coverage.xml
 
 build
 build/*
+*.egg
+*.egg-info
