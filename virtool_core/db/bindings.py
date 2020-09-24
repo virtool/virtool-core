@@ -1,13 +1,15 @@
-from .core import Processor
 from dataclasses import dataclass
-from typing import Optional, MutableMapping
+from typing import Optional, MutableMapping, Awaitable, Callable, Iterable
+
+Processor = Callable[["DB", MutableMapping], Awaitable[MutableMapping]]
+DatabaseUpdateListener = Callable[[str, str, Iterable[str]], Awaitable[None]]
 
 
 @dataclass
 class CollectionBinding:
     collection_name: str
     projection: Optional[MutableMapping] = None
-    processor: Optional[Processor] = None
+    processor: Optional[Callable[["DB", MutableMapping], Awaitable[MutableMapping]]] = None
     silent: bool = False
 
 
@@ -34,3 +36,4 @@ BINDINGS = [
     CollectionBinding("subtraction"),
     CollectionBinding("users"),
 ]
+
