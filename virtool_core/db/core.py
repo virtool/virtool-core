@@ -263,7 +263,7 @@ class DB:
             collection = Collection(
                 binding.collection_name,
                 motor_client[binding.collection_name],
-                enqueue_change,
+                None if binding.silent else enqueue_change,
                 binding.processor,
                 binding.projection,
             )
