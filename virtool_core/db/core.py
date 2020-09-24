@@ -1,18 +1,9 @@
 import motor.motor_asyncio
 import pymongo.results
 import pymongo.errors
-from functools import partial
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
 import virtool_core.utils
 from . import utils
-
-
-async def empty_processor(db, document):
-    return document
-
-
-async def no_op(*ids, **kwargs):
-    return None
 
 
 class Collection:
@@ -25,8 +16,8 @@ class Collection:
             self,
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
-            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = no_op,
-            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = empty_processor,
+            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = None,
+            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = None,
             projection: Union[None, List, MutableMapping] = None,
     ):
         """
