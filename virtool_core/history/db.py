@@ -2,7 +2,7 @@ import dictdiffer
 from typing import Union, Tuple, Dict, List
 from copy import deepcopy
 from . import utils
-from virtool_core import otus
+import virtool_core.otus.db
 
 
 async def patch_to_version(app, otu_id: str, version: Union[str, int]) -> Tuple[Dict, Dict, List]:
@@ -21,7 +21,7 @@ async def patch_to_version(app, otu_id: str, version: Union[str, int]) -> Tuple[
     # A list of history_ids reverted to produce the patched entry.
     reverted_history_ids = list()
 
-    current = await otus.db.join(db, otu_id) or dict()
+    current = await virtool_core.otus.db.join(db, otu_id) or dict()
 
     if "version" in current and current["version"] == version:
         return current, deepcopy(current), reverted_history_ids
