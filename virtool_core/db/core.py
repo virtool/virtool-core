@@ -1,10 +1,10 @@
 import motor.motor_asyncio
 import pymongo.results
 import pymongo.errors
-from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
+from typing import Union, List, MutableMapping
 import virtool_core.utils
 from . import utils
-from .bindings import CollectionBinding, BINDINGS, DatabaseUpdateListener, Processor
+from .bindings import BINDINGS, DatabaseUpdateListener, Processor
 
 
 class Collection:
@@ -65,18 +65,18 @@ class Collection:
 
     async def enqueue_change(self, operation: str, *id_list):
         """
-        Dispatch updates if the collection is not `silent` and the `silent` parameter is `False`. Applies the collection
-        projection and processor.
+        Dispatch an update about this collection
 
         :param operation: the operation to label the dispatch with (insert, update, delete)
         :param *id_list: the id's of those records affected by the operation
 
         """
-        await self._enqueue_change(
-            self.name,
-            operation,
-            *id_list
-        )
+        if self._enqueue_change:
+            await self._enqueue_change(
+                self.name,
+                operation,
+                *id_list
+            )
 
     async def apply_processor(self, document):
         if self.processor:
