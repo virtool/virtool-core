@@ -4,10 +4,7 @@ import pymongo.errors
 from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
 import virtool_core.utils
 from . import utils
-from .bindings import CollectionBinding, BINDINGS
-
-Processor = Callable[["DB", MutableMapping], Awaitable[MutableMapping]]
-DatabaseUpdateListener = Callable[[str, str, Iterable[str]], Awaitable[None]]
+from .bindings import CollectionBinding, BINDINGS, DatabaseUpdateListener, Processor
 
 
 class Collection:
