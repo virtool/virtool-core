@@ -5,6 +5,9 @@ from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
 import virtool_core.utils
 from . import utils
 
+Processor = Callable[["DB", MutableMapping], Awaitable[MutableMapping]]
+EnqueueChangeListener = Callable[[str, str, Iterable[str]], Awaitable[None]]
+
 
 class Collection:
     """
@@ -16,8 +19,8 @@ class Collection:
             self,
             name: str,
             collection: motor.motor_asyncio.AsyncIOMotorCollection,
-            enqueue_change: Callable[[str, str, Iterable[str]], Awaitable[None]] = None,
-            processor: Callable[["DB", MutableMapping], Awaitable[MutableMapping]] = None,
+            enqueue_change: EnqueueChangeListener = None,
+            processor: Processor = None,
             projection: Union[None, List, MutableMapping] = None,
     ):
         """
