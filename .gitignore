@@ -1,9 +1,15 @@
 __pycache__
 *.pyc
-.idea
-.coverage
+*.egg
+*.egg-info
+
 .cache
+.coverage
+.idea
 .pytest_cache
+
+coverage.xml
+
 build
 build/*
 *.egg

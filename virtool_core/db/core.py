@@ -5,6 +5,10 @@ from typing import Union, List, MutableMapping
 import virtool_core.utils
 from . import utils
 from .bindings import BINDINGS, DatabaseUpdateListener, Processor
+from functools import partial
+from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
+import virtool_core.utils
+from . import utils
 
 
 class Collection:
@@ -67,6 +71,7 @@ class Collection:
         """
         Dispatch an update about this collection
 
+
         :param operation: the operation to label the dispatch with (insert, update, delete)
         :param *id_list: the id's of those records affected by the operation
 
@@ -102,6 +107,7 @@ class Collection:
 
         return delete_result
 
+
     async def delete_one(self, query: dict, silent: bool = False):
         """
         Delete a single document based on the passed `query`.
@@ -113,6 +119,7 @@ class Collection:
         """
         document_id = await utils.get_one_field(self, "_id", query)
         delete_result = await self._collection.delete_one(query)
+
 
         if delete_result.deleted_count and not silent:
             await self.enqueue_change(
@@ -128,7 +135,7 @@ class Collection:
             update: dict,
             projection: Union[None, dict, list] = None,
             upsert: bool = False,
-            silent: bool = False
+            silent: bool = False,
     ):
         """
         Update a document and return the updated result.
@@ -138,7 +145,6 @@ class Collection:
         :param projection: a projection to apply to the returned document instead of the default
         :param upsert: insert a new document if the query doesn't match an existing document
         :param silent: if True, don't dispatch updates for this operation
-
         :return: the updated document
 
         """
@@ -154,6 +160,7 @@ class Collection:
 
         if not silent:
             await self.enqueue_change("update", document["_id"])
+        await self.enqueue_change("update", document["_id"])
 
         if projection:
             return utils.apply_projection(document, projection)
@@ -163,6 +170,7 @@ class Collection:
     async def insert_one(self, document: dict, silent: bool = False) -> dict:
         """
         Insert a document into the database collection
+        
         :param document: the document to insert
         :param silent: if True, don't dispatch updates for this operation
         """
@@ -190,12 +198,14 @@ class Collection:
         :param silent: if True, updates will not be dispatched
         :return: the newly added document
         """
+
         document = await self._collection.find_one_and_replace(
             query,
             replacement,
             projection=self.projection,
             upsert=upsert
         )
+
 
         if not silent:
             await self.enqueue_change(
@@ -268,4 +278,3 @@ class DB:
                 binding.projection,
             )
             setattr(self, binding.collection_name, collection)
-
