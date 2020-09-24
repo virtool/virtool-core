@@ -1,10 +1,10 @@
 import os
-from typing import Union
+from typing import Optional, List, Mapping
 
 import virtool_core.samples.utils
 
 
-def join_cache_path(settings: dict, cache_id: str):
+def join_cache_path(settings: Mapping[str, str], cache_id: str) -> str:
     """
     Create a cache path string given the application settings and cache id.
 
@@ -16,7 +16,7 @@ def join_cache_path(settings: dict, cache_id: str):
     return os.path.join(settings["data_path"], "caches", cache_id)
 
 
-def join_cache_read_paths(settings: dict, cache: dict) -> Union[list, None]:
+def join_cache_read_paths(settings: Mapping[str, str], cache: Mapping) -> Optional[List[str]]:
     """
     Return a list of read paths for a cache given the application settings and the cache document.
 

@@ -20,7 +20,12 @@
 
 - added type hints to Collection arguments
 - removed `silent` option in favor of `enqueue_change` defaulting to 
-  no-op
-    - removed `enqueue_change` method of class in favor of using 
-      the function passed as an argument directly 
+  None
 - move `virtool.utils.base_processor` to `virtool-core.db.utils`
+
+# virtool/caches/utils.py
+
+- functions `join_cache_path` and `join_cache_read_path` require the application settings
+  as a parameter but only use the string `settings["data_path"]`. Suggest changing the parameter
+  to a string. 
+    - same for `samples.join_sample_path` and `samples.join_legacy_read_path`

@@ -1,4 +1,5 @@
 import os
+from typing import Sequence, Mapping, Dict, Any, List
 
 PATHOSCOPE_TASK_NAMES = [
     "pathoscope_bowtie",
@@ -24,7 +25,7 @@ TRIM_PARAMETERS = {
 }
 
 
-def calculate_workflow_tags(analyses: list) -> dict:
+def calculate_workflow_tags(analyses: Sequence[Mapping[str, Any]]) -> Dict:
     """
     Calculate the workflow tags (eg. "ip", True) that should be applied to a sample document based on a list of its
     associated analyses.
@@ -52,7 +53,7 @@ def calculate_workflow_tags(analyses: list) -> dict:
     }
 
 
-def get_sample_rights(sample: dict, client):
+def get_sample_rights(sample: Mapping[str, Any], client): # TODO: add type hint to client
     if client.administrator or sample["user"]["id"] == client.user_id:
         return True, True
 
@@ -80,14 +81,14 @@ def join_legacy_read_path(sample_path: str, suffix: int) -> str:
     return os.path.join(sample_path, f"reads_{suffix}.fastq")
 
 
-def join_legacy_read_paths(settings: dict, sample):
+def join_legacy_read_paths(settings: Mapping[str, str], sample: Mapping[str, Any]):
     """
     Create a list of paths for the read files associated with the `sample`.
 
     :param settings: the application settings
     :param sample: the sample document
     :return: a list of sample read paths
-
+g
     """
     sample_path = join_sample_path(settings, sample["_id"])
 
@@ -101,7 +102,7 @@ def join_legacy_read_paths(settings: dict, sample):
         return [join_legacy_read_path(sample_path, 1)]
 
 
-def join_read_paths(base_path: str, paired: bool) -> list:
+def join_read_paths(base_path: str, paired: bool) -> List[str]:
     """
     Return a list of standard read paths given a base path and flag indicating whether the reads are `paired`.
 
@@ -130,5 +131,5 @@ def join_read_path(base_path: str, suffix: int) -> str:
     return os.path.join(base_path, f"reads_{suffix}.fq.gz")
 
 
-def join_sample_path(settings, sample_id):
+def join_sample_path(settings: Mapping[str, str], sample_id: str):
     return os.path.join(settings["data_path"], "samples", sample_id)
