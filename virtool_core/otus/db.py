@@ -1,7 +1,9 @@
 from . import utils
+from typing import Dict, Optional, Union
+from virtool_core.db.core import DB
 
 
-async def join(db, query, document=None):
+async def join(db, query: Union[Dict, str], document: Optional[Dict] = None):
     """
     Join the otu associated with the supplied ``otu_id`` with its sequences. If a otu entry is also passed,
     the database will not be queried for the otu based on its id.

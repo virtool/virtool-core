@@ -5,6 +5,7 @@ from typing import Union, List, MutableMapping
 import virtool_core.utils
 from . import utils
 from .bindings import BINDINGS, DatabaseUpdateListener, Processor
+from types import SimpleNamespace
 
 
 class Collection:
@@ -68,7 +69,7 @@ class Collection:
         Dispatch an update about this collection
 
         :param operation: the operation to label the dispatch with (insert, update, delete)
-        :param *id_list: the id's of those records affected by the operation
+        :param id_list: the id's of those records affected by the operation
 
         """
         if self._enqueue_change:
@@ -247,25 +248,26 @@ class DB:
     """
     Main interface to the Virtool database
     """
-    def __init__(
-            self,
-            motor_client: motor.motor_asyncio.AsyncIOMotorClient,
-            enqueue_change: DatabaseUpdateListener,
-    ):
-        """
-        :param motor_client: The :class:`motor.motor_asyncio.AsyncIOMotorClient` instance
-        :param enqueue_change: A callback function for receiving database update events
-        """
 
-        self.motor_client = motor_client
-        self.enqueue_change = enqueue_change
-        for binding in BINDINGS:
-            collection = Collection(
-                binding.collection_name,
-                motor_client[binding.collection_name],
-                None if binding.silent else enqueue_change,
-                binding.processor,
-                binding.projection,
-            )
-            setattr(self, binding.collection_name, collection)
 
+def __init__(
+        self,
+        motor_client: motor.motor_asyncio.AsyncIOMotorClient,
+        enqueue_change: DatabaseUpdateListener,
+):
+    """
+    :param motor_client: The :class:`motor.motor_asyncio.AsyncIOMotorClient` instance
+    :param enqueue_change: A callback function for receiving database update events
+    """
+
+    self.motor_client = motor_client
+    self.enqueue_change = enqueue_change
+    for binding in BINDINGS:
+        collection = Collection(
+            binding.collection_name,
+            motor_client[binding.collection_name],
+            None if binding.silent else enqueue_change,
+            binding.processor,
+            binding.projection,
+        )
+        setattr(self, binding.collection_name, collection)
