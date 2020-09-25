@@ -3,8 +3,7 @@ from typing import Mapping, Any, Sequence, List, Generator
 
 
 def extract_default_sequences(joined: Mapping[str, Mapping]) -> List[Mapping]:
-    """
-    Return a list of sequences from the default isolate of the passed joined otu document.
+    """Return a list of sequences from the default isolate of the passed joined otu document.
 
     :param joined: the joined otu document.
     :return: a list of sequences associated with the default isolate.
