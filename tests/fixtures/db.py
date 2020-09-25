@@ -2,6 +2,7 @@ import pymongo
 import motor.motor_asyncio
 import pytest
 from aiohttp.test_utils import make_mocked_coro
+import virtool_core.db.core
 
 
 class MockDeleteResult:
@@ -38,8 +39,7 @@ def dbs(test_db_connection_string, test_db_name, request):
 
 @pytest.fixture
 def dbi(test_motor):
-    return db.core.DB(test_motor, make_mocked_coro())
-
+    return virtool_core.db.core.DB(test_motor, make_mocked_coro())
 
 @pytest.fixture(params=[True, False])
 def id_exists(mocker, request):

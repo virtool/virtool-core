@@ -3,6 +3,7 @@ from aiohttp.test_utils import make_mocked_coro
 
 import virtool_core.caches.db
 import virtool_core.utils
+import virtool_core.db
 
 
 @pytest.fixture
@@ -109,7 +110,6 @@ async def test_create_duplicate(snapshot, dbi, static_time, test_random_alphanum
 
     cache = await virtool_core.caches.db.create(dbi, "foo", trim_parameters, False)
 
-    snapshot.assert_match(cache, "return")
     snapshot.assert_match(await dbi.caches.find_one({"_id": test_random_alphanumeric.last_choice}), "db")
 
 
