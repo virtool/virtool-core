@@ -5,7 +5,7 @@ import logging
 import re
 import typing
 import zipfile
-from typing import Generator, List, Callable, Awaitable, Dict, Tuple
+from typing import Generator, List, Callable, Awaitable, Dict, Tuple, Any
 
 import aiofiles
 import virtool.analyses.db
@@ -398,7 +398,7 @@ async def check_rid(rid: str, http_get: Callable[[str, Dict[str, str]], Awaitabl
     return "Status=WAITING" not in await http_get(BLAST_URL, params)
 
 
-def extract_ncbi_blast_zip(data, rid: str) -> dict:
+def extract_ncbi_blast_zip(data: bytes, rid: str) -> Dict[str, Any]:
     """
     Extract the BLAST result JSON data given zipped binary data. Fails if the data is not valid zip.
 
@@ -412,7 +412,7 @@ def extract_ncbi_blast_zip(data, rid: str) -> dict:
     return json.loads(string)
 
 
-def format_blast_hit(hit: dict) -> dict:
+def format_blast_hit(hit: Dict) -> Dict:
     """
     Format a BLAST hit from NCBI into a format more usable by Virtool.
 
@@ -439,13 +439,24 @@ def format_blast_hit(hit: dict) -> dict:
     }
 
 
-async def get_ncbi_blast_result(settings: dict, run_in_process: callable, rid: str) -> dict:
+async def get_ncbi_blast_result(
+        run_in_process: callable,
+        rid: str,
+        http_get: Callable[[str, Dict[str, str]], Awaitable[str]]
+) -> dict:
     """
     Retrieve the BLAST result with the given `rid` from NCBI.
 
     :param settings: the application settings
     :param run_in_process: the application processing running function
     :param rid: the rid to retrieve a result for
+    :param http_get: a function for making HTTP GET requests. It's signature should be as follows:
+
+    .. code-block::
+
+        async def http_get(url: str, url_params: Dict[str, str]) -> str:
+            ...
+
     :return: the BLAST result
 
     """
@@ -456,10 +467,8 @@ async def get_ncbi_blast_result(settings: dict, run_in_process: callable, rid: s
         "FORMAT_OBJECT": "Alignment"
     }
 
-    async with aiohttp.ClientSession() as session:
-        async with virtool.http.proxy.ProxyRequest(settings, session.get, BLAST_URL, params=params) as resp:
-            data = await resp.read()
-            return await run_in_process(extract_ncbi_blast_zip, data, rid)
+    data = bytes(http_get(BLAST_URL, params))
+    return await run_in_process(extract_ncbi_blast_zip, data, rid)
 
 
 def format_blast_content(result: dict) -> dict:
