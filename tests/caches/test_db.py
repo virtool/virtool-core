@@ -68,21 +68,14 @@ async def test_find(exists, missing, returned_hash, mocker, dbi):
 
 @pytest.mark.parametrize("paired", [True, False], ids=["paired", "unpaired"])
 async def test_create(paired, snapshot, dbi, static_time, test_random_alphanumeric, trim_parameters):
-    """
-    Test that the function works with default keyword arguments and when `paired` is either `True` or `False`.
-
-    """
+    """Test that the function works with default keyword arguments and when `paired` is either `True` or `False`."""
     cache = await virtool_core.caches.db.create(dbi, "foo", trim_parameters, paired)
-
     snapshot.assert_match(cache, "return")
     snapshot.assert_match(await dbi.caches.find_one(), "db")
 
 
 async def test_create_legacy(snapshot, dbi, static_time, test_random_alphanumeric, trim_parameters):
-    """
-    Test that the function works when the `legacy` keyword argument is `True` instead of the default `False`.
-
-    """
+    """Test that the function works when the `legacy` keyword argument is `True` instead of the default `False`."""
     cache = await virtool_core.caches.db.create(dbi, "foo", trim_parameters, False, legacy=True)
 
     snapshot.assert_match(cache, "return")
@@ -90,11 +83,7 @@ async def test_create_legacy(snapshot, dbi, static_time, test_random_alphanumeri
 
 
 async def test_create_program(snapshot, dbi, static_time, test_random_alphanumeric, trim_parameters):
-    """
-    Test that the function works with a non-default trimming program keyword argument
-    (trimmomatic-0.2.3 instead of skewer-0.2.2).
-
-    """
+    """Test that the function works with a non-default trimming program keyword argument(trimmomatic-0.2.3 instead of skewer-0.2.2)."""
     cache = await virtool_core.caches.db.create(dbi, "foo", trim_parameters, False, program="trimmomatic-0.2.3")
 
     snapshot.assert_match(cache, "return")
@@ -102,23 +91,17 @@ async def test_create_program(snapshot, dbi, static_time, test_random_alphanumer
 
 
 async def test_create_duplicate(snapshot, dbi, static_time, test_random_alphanumeric, trim_parameters):
-    """
-    Test that the function handles duplicate document ids smoothly. The function should retry with a new id.
-
-    """
+    """Test that the function handles duplicate document ids smoothly. The function should retry with a new id."""
     await dbi.caches.insert_one({"_id": test_random_alphanumeric.next_choice[:8].lower()})
 
-    cache = await virtool_core.caches.db.create(dbi, "foo", trim_parameters, False)
+    await virtool_core.caches.db.create(dbi, "foo", trim_parameters, False)
 
     snapshot.assert_match(await dbi.caches.find_one({"_id": test_random_alphanumeric.last_choice}), "db")
 
 
 @pytest.mark.parametrize("exists", [True, False])
 async def test_get(exists, dbi):
-    """
-    Test that the function returns a cache document when it exists and returns `None` when it does not.
-
-    """
+    """Test that the function returns a cache document when it exists and returns `None` when it does not."""
     if exists:
         await dbi.caches.insert_one({"_id": "foo"})
 

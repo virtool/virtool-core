@@ -3,9 +3,9 @@ from typing import Dict, Optional, Union
 
 
 async def join(db, query: Union[Dict, str], document: Optional[Dict] = None):
-    """
-    Join the otu associated with the supplied ``otu_id`` with its sequences. If a otu entry is also passed,
-    the database will not be queried for the otu based on its id.
+    """Join the otu associated with the supplied ``otu_id`` with its sequences.
+
+    If a otu entry is also passed,the database will not be queried for the otu based on its id.
 
     :param db: the application database client
     :type db: :class:`~motor.motor_asyncio.AsyncIOMotorClient`

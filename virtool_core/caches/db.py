@@ -1,12 +1,13 @@
 import hashlib
 import json
 import os
+from typing import Dict, Optional, Any
+
 import pymongo.errors
 
-from typing import Dict, Optional, Any, Callable, Awaitable
-import virtool_core.utils
-import virtool_core.db.utils
 import virtool_core.db
+import virtool_core.db.utils
+import virtool_core.utils
 
 PROJECTION = [
     "_id",
@@ -21,7 +22,9 @@ PROJECTION = [
 
 def calculate_cache_hash(parameters: Dict[str, str]) -> str:
     """
-    Calculate a hash from the parameters `dict` for a cache. The parameters are arguments passed to a trimming program.
+    Calculate a hash from the parameters `dict` for a cache.
+
+    The parameters are arguments passed to a trimming program.
     Caches can be reused when the hash of the trim parameters for a a new analysis matches an existing cache.
 
     :param parameters: the trimming parameters

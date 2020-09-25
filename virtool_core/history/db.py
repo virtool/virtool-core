@@ -6,9 +6,9 @@ import virtool_core.otus.db
 
 
 async def patch_to_version(db, data_path: str, otu_id: str, version: Union[str, int]) -> Tuple[Dict, Dict, List]:
-    """
-    Take a joined otu back in time to the passed ``version``. Uses the diffs in the change documents associated with
-    the otu.
+    """Take a joined otu back in time to the passed ``version``.
+
+    Uses the diffs in the change documents associated withthe otu.
 
     :param db: the Virtool database
     :param data_path: the Virtool data path
