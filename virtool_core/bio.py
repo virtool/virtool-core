@@ -1,20 +1,15 @@
 import asyncio
-import typing
-
-import aiofiles
-import gzip
 import io
 import json
 import logging
 import re
+import typing
 import zipfile
-from typing import Generator, List
+from typing import Generator, List, Callable, Awaitable, Dict, Tuple
 
-import aiohttp
-
+import aiofiles
 import virtool.analyses.db
 import virtool.errors
-import virtool.http.proxy
 import virtool.utils
 
 logger = logging.getLogger(__name__)
@@ -321,12 +316,24 @@ def find_orfs(sequence: str) -> List[dict]:
     return orfs
 
 
-async def initialize_ncbi_blast(settings: dict, sequence: dict) -> tuple:
+async def initialize_ncbi_blast(
+        settings: Dict[str, str],
+        sequence: Dict[str, str],
+        http_post: Callable[[str, Dict[str, str], Dict[str, str]], Awaitable[str]]
+) -> Tuple[str, int]:
     """
     Send a request to NCBI to BLAST the passed sequence. Return the RID and RTOE from the response.
 
     :param settings: the application settings object
     :param sequence: the nucleotide sequence to BLAST
+    :param http_post: an async function for making HTTP get requests. It's signature should be as follows:
+
+    .. code-block::
+
+        async def http_post(url: str, url_params: Dict[str, str], post_data: Dict[str, str]):
+            ...
+            return response.text() # a string
+
     :return: the RID and RTOE for the request
 
     """
@@ -341,25 +348,16 @@ async def initialize_ncbi_blast(settings: dict, sequence: dict) -> tuple:
         "FORMAT_TYPE": "JSON2"
     }
 
-    # Data passed as POST content.
     data = {
         "QUERY": sequence
     }
 
-    async with aiohttp.ClientSession() as session:
-        async with virtool.http.proxy.ProxyRequest(settings, session.post, BLAST_URL, params=params, data=data) as resp:
-            if resp.status != 200:
-                raise virtool.errors.NCBIError(f"BLAST request returned status: {resp.status}")
+    html = http_post(BLAST_URL, params, data)
 
-            # Extract and return the RID and RTOE from the QBlastInfo tag.
-            html = await resp.text()
-
-            logging.debug("Started BLAST on NCBI")
-
-            return extract_blast_info(html)
+    return extract_blast_info(html)
 
 
-def extract_blast_info(html: str) -> tuple:
+def extract_blast_info(html: str) -> Tuple[str, int]:
     """
     Extract the RID and RTOE from BLAST HTML data containing a <QBlastInfo /> tag.
 
