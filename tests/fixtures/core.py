@@ -89,12 +89,12 @@ def test_random_alphanumeric(mocker):
         def next_choice(self):
             return self.choices[-1]
 
-    return mocker.patch("virtool.utils.random_alphanumeric", new=RandomAlphanumericTester())
+    return mocker.patch("virtool_core.utils.random_alphanumeric", new=RandomAlphanumericTester())
 
 
-@pytest.fixture
-def static_nonce(mocker):
-    mocker.patch("virtool.http.csp.generate_nonce", return_value="foo1bar2baz3")
+#@pytest.fixture
+#def static_nonce(mocker):
+    #mocker.patch("virtool_.http.csp.generate_nonce", return_value="foo1bar2baz3")
 
 
 @pytest.fixture(scope="session")
@@ -104,7 +104,7 @@ def static_time_obj():
 
 @pytest.fixture
 def static_time(mocker, static_time_obj):
-    mocker.patch("virtool.utils.timestamp", return_value=static_time_obj.datetime)
+    mocker.patch("virtool_core.utils.timestamp", return_value=static_time_obj.datetime)
     return static_time_obj
 
 

@@ -1,6 +1,5 @@
 from . import utils
 from typing import Dict, Optional, Union
-from virtool_core.db.core import DB
 
 
 async def join(db, query: Union[Dict, str], document: Optional[Dict] = None):

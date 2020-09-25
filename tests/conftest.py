@@ -1,5 +1,10 @@
 from .fixtures import *
 
+pytest_plugins = [
+    "tests.fixtures.__init__"
+]
+
+
 
 def pytest_addoption(parser):
     parser.addoption(

@@ -77,7 +77,7 @@ class TestCollection:
         assert delete_result.deleted_count == 2
 
         if not param_silent:
-            collection._on_change[0].assert_called_with("samples", "delete", "baz", "foo")
+            collection._enqueue_change.assert_called_with("samples", "delete", "baz", "foo")
 
         assert await test_motor.samples.find().to_list(None) == [
             {"_id": "bar", "tag": 2}
@@ -97,31 +97,10 @@ class TestCollection:
         assert isinstance(delete_result, pymongo.results.DeleteResult)
         assert delete_result.deleted_count == 1
 
-        collection._on_change[0].assert_called_with("samples", "delete", "foo")
+        collection._enqueue_change.assert_called_with("samples", "delete", "foo")
 
         assert await test_motor.samples.find().to_list(None) == [
             {"_id": "bar", "tag": 2},
             {"_id": "baz", "tag": 1}
         ]
-
-   async def test_connect(self, test_db_connection_string, test_db_name):
-        testdb = await db.connect(test_db_connection_string, test_db_name, "test")
-
-        on_change = make_mocked_coro()
-        testdb.on_change(on_change)
-
-        await testdb.insert_one({"_id":"test"})
-        on_change.assert_called_with("test", "insert", "test")
-
-    async def test_connect_multiple_collections(self, test_db_connection_string, test_db_name):
-        collections = await db.connect(test_db_connection_string, test_db_name, "collection1", "collection2", "collection3")
-        assert len(collections.values()) == 3
-
-        for name, collection in collections.items():
-            coro = make_mocked_coro()
-            collection.on_change(coro)
-            await collection.insert_one({"_id": "test"})
-            coro.assert_called_with(name, "insert", "test")
-
-
 

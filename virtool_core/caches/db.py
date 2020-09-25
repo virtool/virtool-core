@@ -1,11 +1,9 @@
-import asyncio
 import hashlib
 import json
 import os
 import pymongo.errors
 
-from typing import Dict, Optional, Any
-from concurrent.futures import ThreadPoolExecutor
+from typing import Dict, Optional, Any, Callable, Awaitable
 import virtool_core.utils
 import virtool_core.db.utils
 import virtool_core.db
@@ -115,8 +113,7 @@ async def remove(
         db,
         data_path: str,
         cache_id: str,
-        executor: ThreadPoolExecutor,
-        event_loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
+        run_in_thread
 ):
     """
     Remove the cache database document and files with the given `cache_id`.
@@ -124,8 +121,15 @@ async def remove(
     :param db: The Virtool caches database
     :param data_path: The Virtool data path
     :param cache_id: The id of the cache to remove
-    :param executor: A :class:`concurrent.futures.ThreadPoolExecutor`
-    :param event_loop: The asyncio event loop. Defaults to `asyncio.get_event_loop()`
+    :param run_in_thread: A function for executing Async functions in a Thread
+            It's signature should be as follows:
+
+            .. code-block:: python
+
+                async def run_in_thread(async_func, *args, **kwargs):
+                    ...
+
+            *args and **kwargs must be passed along to the coroutine :func:`async_func`
     """
 
     await db.caches.delete_one({
@@ -135,6 +139,6 @@ async def remove(
     path = os.path.join(data_path, "caches", cache_id)
 
     try:
-        await event_loop.run_in_executor(executor, virtool_core.utils.rm, path, True)
+        await run_in_thread(virtool_core.utils.rm, path, True)
     except FileNotFoundError:
         pass
