@@ -27,6 +27,7 @@ BINDINGS = [
     CollectionBinding("jobs"),
     CollectionBinding("keys"),
     CollectionBinding("kinds"),
+    CollectionBinding("otus"),
     CollectionBinding("processes"),
     CollectionBinding("references"),
     CollectionBinding("samples"),
