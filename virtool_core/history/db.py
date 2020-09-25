@@ -5,18 +5,18 @@ from . import utils
 import virtool_core.otus.db
 
 
-async def patch_to_version(app, otu_id: str, version: Union[str, int]) -> Tuple[Dict, Dict, List]:
+async def patch_to_version(db, data_path: str, otu_id: str, version: Union[str, int]) -> Tuple[Dict, Dict, List]:
     """
     Take a joined otu back in time to the passed ``version``. Uses the diffs in the change documents associated with
     the otu.
 
-    :param app: the application object
+    :param db: the Virtool database
+    :param data_path: the Virtool data path
     :param otu_id: the id of the otu to patch
     :param version: the version to patch to
     :return: the current joined otu, patched otu, and the ids of changes reverted in the process
 
     """
-    db = app["db"]
 
     # A list of history_ids reverted to produce the patched entry.
     reverted_history_ids = list()
@@ -35,7 +35,7 @@ async def patch_to_version(app, otu_id: str, version: Union[str, int]) -> Tuple[
 
             if change["diff"] == "file":
                 change["diff"] = await utils.read_diff_file(
-                    app["settings"]["data_path"],
+                    data_path,
                     otu_id,
                     change["otu"]["version"]
                 )

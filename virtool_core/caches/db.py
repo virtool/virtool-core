@@ -111,7 +111,6 @@ async def create(db, sample_id: str, parameters: Dict[str, str], paired: bool, l
         return await create(db, sample_id, parameters, paired, legacy=legacy, program=program)
 
 
-# TODO:
 async def remove(
         db,
         data_path: str,
