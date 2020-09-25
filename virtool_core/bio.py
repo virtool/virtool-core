@@ -328,9 +328,8 @@ async def initialize_ncbi_blast(
 
     .. code-block::
 
-        async def http_post(url: str, url_params: Dict[str, str], post_data: Dict[str, str]):
+        async def http_post(url: str, url_params: Dict[str, str], post_data: Dict[str, str]) -> str:
             ...
-            return response.text() # a string
 
     :return: the RID and RTOE for the request
 
@@ -374,12 +373,19 @@ def extract_blast_info(html: str) -> Tuple[str, int]:
     return rid, int(rtoe)
 
 
-async def check_rid(settings: dict, rid: str) -> bool:
+async def check_rid(settings: dict, rid: str, http_get: Callable[[str, Dict[str, str]], Awaitable[str]]) -> bool:
     """
     Check if the BLAST process identified by the passed RID is ready.
 
     :param rid: the RID to check
     :param settings: the application settings object
+    :param http_get: a function for making HTTP GET requests. It's signature should be as follows:
+
+    .. code-block::
+
+        async def http_get(url: str, url_params: Dict[str, str]) -> str:
+            ...
+
     :return: ``True`` if ready, ``False`` otherwise
 
     """
@@ -389,12 +395,7 @@ async def check_rid(settings: dict, rid: str) -> bool:
         "FORMAT_OBJECT": "SearchInfo"
     }
 
-    async with aiohttp.ClientSession() as session:
-        async with virtool.http.proxy.ProxyRequest(settings, session.get, BLAST_URL, params=params) as resp:
-            if resp.status != 200:
-                raise virtool.errors.NCBIError(f"RID check request returned status {resp.status}")
-
-            return "Status=WAITING" not in await resp.text()
+    return "Status=WAITING" not in await http_get(BLAST_URL, params)
 
 
 def extract_ncbi_blast_zip(data, rid: str) -> dict:
