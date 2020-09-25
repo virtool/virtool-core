@@ -3,9 +3,6 @@ import motor.motor_asyncio
 import pytest
 from aiohttp.test_utils import make_mocked_coro
 
-from virtool_core import db
-
-
 
 class MockDeleteResult:
 
@@ -41,8 +38,7 @@ def dbs(test_db_connection_string, test_db_name, request):
 
 @pytest.fixture
 def dbi(test_motor):
-    pass
-    #return db.DB(test_motor, make_mocked_coro())
+    return db.core.DB(test_motor, make_mocked_coro())
 
 
 @pytest.fixture(params=[True, False])
