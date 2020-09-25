@@ -1,12 +1,14 @@
-import aiohttp.web
+import asyncio
 import hashlib
 import json
 import os
 import pymongo.errors
 
 from typing import Dict, Optional, Any
+from concurrent.futures import ThreadPoolExecutor
 import virtool_core.utils
 import virtool_core.db.utils
+import virtool_core.db
 
 PROJECTION = [
     "_id",
@@ -109,24 +111,31 @@ async def create(db, sample_id: str, parameters: Dict[str, str], paired: bool, l
         return await create(db, sample_id, parameters, paired, legacy=legacy, program=program)
 
 
-async def remove(app: aiohttp.web.Application, cache_id: str):
+# TODO:
+async def remove(
+        db,
+        data_path: str,
+        cache_id: str,
+        executor: ThreadPoolExecutor,
+        event_loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
+):
     """
     Remove the cache database document and files with the given `cache_id`.
 
-    :param app: the application object
-    :param cache_id: the id of the cache to remove
-
+    :param db: The Virtool caches database
+    :param data_path: The Virtool data path
+    :param cache_id: The id of the cache to remove
+    :param executor: A :class:`concurrent.futures.ThreadPoolExecutor`
+    :param event_loop: The asyncio event loop. Defaults to `asyncio.get_event_loop()`
     """
-    db = app["db"]
-    settings = app["settings"]
 
     await db.caches.delete_one({
         "_id": cache_id
     })
 
-    path = os.path.join(settings["data_path"], "caches", cache_id)
+    path = os.path.join(data_path, "caches", cache_id)
 
     try:
-        await app["run_in_thread"](virtool_core.utils.rm, path, True)
+        await event_loop.run_in_executor(executor, virtool_core.utils.rm, path, True)
     except FileNotFoundError:
         pass
