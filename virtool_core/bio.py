@@ -373,7 +373,7 @@ def extract_blast_info(html: str) -> Tuple[str, int]:
     return rid, int(rtoe)
 
 
-async def check_rid(settings: dict, rid: str, http_get: Callable[[str, Dict[str, str]], Awaitable[str]]) -> bool:
+async def check_rid(rid: str, http_get: Callable[[str, Dict[str, str]], Awaitable[str]]) -> bool:
     """
     Check if the BLAST process identified by the passed RID is ready.
 
