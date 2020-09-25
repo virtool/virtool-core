@@ -480,12 +480,12 @@ def format_blast_content(result: dict) -> dict:
 
     """
     if len(result) != 1:
-        raise virtool.errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
+        raise virtool_core.errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
 
     result = result["BlastOutput2"]
 
     if len(result) != 1:
-        raise virtool.errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
+        raise virtool_core.errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
 
     result = result["report"]
 
@@ -506,15 +506,11 @@ def format_blast_content(result: dict) -> dict:
     return output
 
 
-async def wait_for_blast_result(app, analysis_id, sequence_index, rid):
+async def wait_for_blast_result(db, analysis_id, sequence_index, rid):
     """
     Retrieve the Genbank data associated with the given accession and transform it into a Virtool-format sequence
     document.
-
     """
-    db = app["db"]
-    settings = app["settings"]
-
     blast = virtool.analyses.db.BLAST(
         db,
         settings,
