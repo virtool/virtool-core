@@ -17,8 +17,7 @@ def join_cache_path(settings: Mapping[str, str], cache_id: str) -> str:
 
 
 def join_cache_read_paths(settings: Mapping[str, str], cache: Mapping) -> Optional[List[str]]:
-    """
-    Return a list of read paths for a cache given the application settings and the cache document.
+    """Return a list of read paths for a cache given the application settings and the cache document.
 
     The path list will contain two paths if paired, and one if not.
 

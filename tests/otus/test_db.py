@@ -7,10 +7,7 @@ import virtool_core.otus.db
 @pytest.mark.parametrize("in_db", [True, False])
 @pytest.mark.parametrize("pass_document", [True, False])
 async def test_join(in_db, pass_document, mocker, dbi, test_otu, test_sequence, test_merged_otu):
-    """
-    Test that a otu is properly joined when only a ``otu_id`` is provided.
-
-    """
+    """Test that a otu is properly joined when only a ``otu_id`` is provided."""
     await dbi.otus.insert_one(test_otu)
     await dbi.sequences.insert_one(test_sequence)
 
