@@ -317,14 +317,12 @@ def find_orfs(sequence: str) -> List[dict]:
 
 
 async def initialize_ncbi_blast(
-        settings: Dict[str, str],
         sequence: Dict[str, str],
         http_post: Callable[[str, Dict[str, str], Dict[str, str]], Awaitable[str]]
 ) -> Tuple[str, int]:
     """
     Send a request to NCBI to BLAST the passed sequence. Return the RID and RTOE from the response.
 
-    :param settings: the application settings object
     :param sequence: the nucleotide sequence to BLAST
     :param http_post: an async function for making HTTP get requests. It's signature should be as follows:
 
@@ -352,7 +350,7 @@ async def initialize_ncbi_blast(
         "QUERY": sequence
     }
 
-    html = http_post(BLAST_URL, params, data)
+    html = await http_post(BLAST_URL, params, data)
 
     return extract_blast_info(html)
 
