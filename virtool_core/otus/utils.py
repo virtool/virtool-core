@@ -15,7 +15,7 @@ def extract_default_sequences(joined: Mapping[str, Mapping]) -> List[Mapping]:
             return isolate["sequences"]
 
 
-def extract_sequences(otu: Mapping[str, Mapping]) -> Generator[str]:
+def extract_sequences(otu: Mapping[str, Mapping]) -> Generator[str, None, None]:
     """
     Extract sequences from an OTU document
     :param otu: The OTU document
