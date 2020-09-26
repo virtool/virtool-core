@@ -1,7 +1,17 @@
+from typing import Optional, Tuple, Dict
+from virtool_core import utils, bio
 
 class BLAST:
 
-    def __init__(self, db, settings: dict, analysis_id: str, sequence_index: int, rid: str):
+    def __init__(
+            self,
+            db,
+            settings: dict,
+            analysis_id: str,
+            sequence_index: int,
+            rid: str,
+            http_get, # TODO: add type hint and docstring
+    ):
         self.db = db
         self.settings = settings
         self.analysis_id = analysis_id
@@ -20,14 +30,11 @@ class BLAST:
         await remove_nuvs_blast(self.db, self.analysis_id, self.sequence_index)
 
     async def sleep(self):
-        """
-        Sleep for the current interval and increase the interval by 5 seconds after sleeping.
-
-        """
+        """Sleep for the current interval and increase the interval by 5 seconds after sleeping."""
         await asyncio.sleep(self.interval)
         self.interval += 5
 
-    async def update(self, ready: bool, result: Union[None, dict], error: Union[None, str]) -> Tuple[dict, dict]:
+    async def update(self, ready: bool, result: Optional[Dict], error: Optional[Dict]) -> Tuple[Dict, Dict]:
         """
         Update the BLAST data. Returns the BLAST data and the complete analysis document.
 
@@ -40,14 +47,14 @@ class BLAST:
         self.result = result
 
         if ready is None:
-            self.ready = await virtool.bio.check_rid(self.settings, self.rid)
+            self.ready = await bio.check_rid(self.rid, self.http_get)
         else:
             self.ready = ready
 
         data = {
             "error": error,
             "interval": self.interval,
-            "last_checked_at": virtool.utils.timestamp(),
+            "last_checked_at": utils.timestamp(),
             "rid": self.rid,
             "ready": ready,
             "result": self.result
@@ -59,7 +66,7 @@ class BLAST:
         }, {
             "$set": {
                 "results.$.blast": data,
-                "updated_at": virtool.utils.timestamp()
+                "updated_at": utils.timestamp()
             }
         })
 
