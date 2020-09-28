@@ -5,8 +5,7 @@ import virtool_core.samples.utils
 
 
 def join_cache_path(settings: Mapping[str, str], cache_id: str) -> str:
-    """
-    Create a cache path string given the application settings and cache id.
+    """Create a cache path string given the application settings and cache id.
 
     :param settings: the application settings
     :param cache_id: the id of the cache

@@ -17,7 +17,6 @@ async def patch_to_version(db, data_path: str, otu_id: str, version: Union[str, 
     :return: the current joined otu, patched otu, and the ids of changes reverted in the process
 
     """
-
     # A list of history_ids reverted to produce the patched entry.
     reverted_history_ids = list()
 
