@@ -9,7 +9,8 @@ from typing import Generator, List, Callable, Awaitable, Dict, Tuple, Any
 
 import aiofiles
 
-from virtool_core import errors, analyses, utils
+from virtool_core import errors, analyses
+from .blast import BLAST
 
 logger = logging.getLogger(__name__)
 
@@ -473,7 +474,6 @@ async def get_ncbi_blast_result(
     }
 
     data = await http_get(blast_server_url, params)
-    print(data)
     return await run_in_process(extract_ncbi_blast_zip, data, rid)
 
 
@@ -511,14 +511,13 @@ def format_blast_content(result: dict) -> dict:
     return output
 
 
-async def wait_for_blast_result(db, analysis_id, sequence_index, rid):
+async def wait_for_blast_result(db, analysis_id, sequence_index, rid, run_in_process, http_get_bytes):
     """
     Retrieve the Genbank data associated with the given accession and transform it into a Virtool-format sequence
     document.
     """
-    blast = analyses.db.BLAST(
+    blast = BLAST(
         db,
-        settings,
         analysis_id,
         sequence_index,
         rid
@@ -535,9 +534,9 @@ async def wait_for_blast_result(db, analysis_id, sequence_index, rid):
             if blast.ready:
                 try:
                     result_json = await get_ncbi_blast_result(
-                        settings,
-                        app["run_in_process"],
-                        rid
+                        run_in_process,
+                        rid,
+                        http_get_byes,
                     )
                 except zipfile.BadZipFile:
                     await blast.update(False, None, error="Unable to interpret NCBI result")

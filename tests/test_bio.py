@@ -196,10 +196,7 @@ def test_reverse_complement():
     ("ATNGGGATTAGAGACACAGATAAGGAGAGATATAGAACATGTGACGTACGTACGATCTGAGCTA", "XGIRDTDKERYRTCDVRTI*A"),
 ], ids=["no_ambiguous", "ambiguous", "ambigous_x"])
 def test_translate(sequence, expected):
-    """
-    Test that translation works properly. Cases are standard, resolvable ambiguity, and non-resolvable ambiguity (X).
-
-    """
+    """Test that translation works properly. Cases are standard, resolvable ambiguity, and non-resolvable ambiguity (X)."""
     assert virtool_core.bio.translate(sequence) == expected
 
 

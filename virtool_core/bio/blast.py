@@ -1,19 +1,20 @@
-from typing import Optional, Tuple, Dict
-from virtool_core import utils, bio
+import asyncio
+from typing import Optional, Tuple, Dict, Callable
+
+from virtool_core import utils, bio, analyses
+
 
 class BLAST:
 
     def __init__(
             self,
             db,
-            settings: dict,
             analysis_id: str,
             sequence_index: int,
             rid: str,
-            http_get, # TODO: add type hint and docstring
+            http_get: Callable[[str, Dict[str, str]], str],
     ):
         self.db = db
-        self.settings = settings
         self.analysis_id = analysis_id
         self.sequence_index = sequence_index
         self.rid = rid
@@ -23,11 +24,8 @@ class BLAST:
         self.result = None
 
     async def remove(self):
-        """
-        Remove the BLAST result from the analysis document.
-
-        """
-        await remove_nuvs_blast(self.db, self.analysis_id, self.sequence_index)
+        """Remove the BLAST result from the analysis document."""
+        await analyses.remove_nuvs_blast(self.db, self.analysis_id, self.sequence_index)
 
     async def sleep(self):
         """Sleep for the current interval and increase the interval by 5 seconds after sleeping."""
