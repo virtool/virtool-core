@@ -8,9 +8,8 @@ import zipfile
 from typing import Generator, List, Callable, Awaitable, Dict, Tuple, Any
 
 import aiofiles
-import virtool.analyses.db
-import virtool.errors
-import virtool.utils
+
+from virtool_core import errors, analyses, utils
 
 logger = logging.getLogger(__name__)
 
@@ -317,8 +316,9 @@ def find_orfs(sequence: str) -> List[dict]:
 
 
 async def initialize_ncbi_blast(
-        sequence: Dict[str, str],
-        http_post: Callable[[str, Dict[str, str], Dict[str, str]], Awaitable[str]]
+        sequence: str,
+        http_post: Callable[[str, Dict[str, str], Dict[str, str]], Awaitable[str]],
+        blast_server_url: str = BLAST_URL
 ) -> Tuple[str, int]:
     """
     Send a request to NCBI to BLAST the passed sequence. Return the RID and RTOE from the response.
@@ -349,7 +349,7 @@ async def initialize_ncbi_blast(
         "QUERY": sequence
     }
 
-    html = await http_post(BLAST_URL, params, data)
+    html = await http_post(blast_server_url, params, data)
 
     return extract_blast_info(html)
 
@@ -373,7 +373,11 @@ def extract_blast_info(html: str) -> Tuple[str, int]:
     return rid, int(rtoe)
 
 
-async def check_rid(rid: str, http_get: Callable[[str, Dict[str, str]], Awaitable[str]]) -> bool:
+async def check_rid(
+        rid: str,
+        http_get: Callable[[str, Dict[str, str]], Awaitable[str]],
+        blast_server_url: str = BLAST_URL,
+) -> bool:
     """
     Check if the BLAST process identified by the passed RID is ready.
 
@@ -395,7 +399,7 @@ async def check_rid(rid: str, http_get: Callable[[str, Dict[str, str]], Awaitabl
         "FORMAT_OBJECT": "SearchInfo"
     }
 
-    return "Status=WAITING" not in await http_get(BLAST_URL, params)
+    return "Status=WAITING" not in await http_get(blast_server_url, params)
 
 
 def extract_ncbi_blast_zip(data: bytes, rid: str) -> Dict[str, Any]:
@@ -442,7 +446,8 @@ def format_blast_hit(hit: Dict) -> Dict:
 async def get_ncbi_blast_result(
         run_in_process: callable,
         rid: str,
-        http_get: Callable[[str, Dict[str, str]], Awaitable[str]]
+        http_get: Callable[[str, Dict[str, str]], Awaitable[bytes]],
+        blast_server_url=BLAST_URL
 ) -> dict:
     """
     Retrieve the BLAST result with the given `rid` from NCBI.
@@ -467,7 +472,8 @@ async def get_ncbi_blast_result(
         "FORMAT_OBJECT": "Alignment"
     }
 
-    data = bytes(http_get(BLAST_URL, params))
+    data = await http_get(blast_server_url, params)
+    print(data)
     return await run_in_process(extract_ncbi_blast_zip, data, rid)
 
 
@@ -477,15 +483,14 @@ def format_blast_content(result: dict) -> dict:
 
     :param result: the raw BLAST result
     :return: the formatted BLAST result
-
     """
     if len(result) != 1:
-        raise virtool_core.errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
+        raise errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
 
     result = result["BlastOutput2"]
 
     if len(result) != 1:
-        raise virtool_core.errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
+        raise errors.NCBIError(f"Unexpected BLAST result count {len(result)} returned")
 
     result = result["report"]
 
@@ -511,7 +516,7 @@ async def wait_for_blast_result(db, analysis_id, sequence_index, rid):
     Retrieve the Genbank data associated with the given accession and transform it into a Virtool-format sequence
     document.
     """
-    blast = virtool.analyses.db.BLAST(
+    blast = analyses.db.BLAST(
         db,
         settings,
         analysis_id,

@@ -6,15 +6,18 @@ import sys
 from aiohttp import web
 import aiohttp
 
-from virtool_core import bio
+import virtool_core.bio
 
 TEST_FILES_PATH = os.path.join(sys.path[0], "tests", "test_files")
 TEST_BIO_PATH = os.path.join(TEST_FILES_PATH, "bio")
 
-async def http_get(url, params):
+async def http_get(url, params, bytes=False):
     async with aiohttp.ClientSession() as http:
         async with http.get(url, params=params) as response:
-            return await response.text()
+            return await response.text() if not bytes else await response.read()
+
+async def http_get_bytes(url, params):
+    return await http_get(url, params, bytes=True)
 
 async def http_post(url, params, data):
     async with aiohttp.ClientSession() as http:
@@ -23,7 +26,7 @@ async def http_post(url, params, data):
 
 @pytest.fixture
 def orf_containing():
-    data = bio.read_fasta(os.path.join(TEST_BIO_PATH, "has_orfs.fa"))
+    data = virtool_core.bio.read_fasta(os.path.join(TEST_BIO_PATH, "has_orfs.fa"))
     return data[0][1]
 
 
@@ -85,10 +88,7 @@ def mock_blast_server(monkeypatch, loop, aiohttp_server):
     app.router.add_post("/blast", post_handler)
 
     server = loop.run_until_complete(aiohttp_server(app))
-
-    monkeypatch.setattr("virtool_core.bio.BLAST_URL", "http://{}:{}/blast".format(server.host, server.port))
-
-    return server
+    return server, f"http://{server.host}:{server.port}/blast"
 
 
 @pytest.mark.parametrize("illegal", [False, True])
@@ -109,12 +109,12 @@ def test_read_fasta(illegal, tmpdir):
 
     if illegal:
         with pytest.raises(IOError) as excinfo:
-            bio.read_fasta(str(tmpfile))
+            virtool_core.bio.read_fasta(str(tmpfile))
 
         assert "Illegal FASTA line: ATTAGATAC" in str(excinfo.value)
 
     else:
-        assert bio.read_fasta(str(tmpfile)) == [
+        assert virtool_core.bio.read_fasta(str(tmpfile)) == [
             ("test_1", "ATAGAGTACATATCTACTTCTATCATTTATATATTATAAAAACCTC"),
             ("test_2", "CCTCTGACTGACTATGGGCTCTCGACTATTTACGATCAGCATCGTT")
         ]
@@ -133,7 +133,7 @@ async def test_read_fastq_from_path(tmpdir):
 
     result = list()
 
-    async for record in bio.read_fastq_from_path(str(tmpfile)):
+    async for record in virtool_core.bio.read_fastq_from_path(str(tmpfile)):
         result.append(record)
 
     assert result == [
@@ -173,7 +173,7 @@ async def test_read_fastq_headers(tmpdir):
 
     results = list()
 
-    results = await bio.read_fastq_headers(str(tmpfile))
+    results = await virtool_core.bio.read_fastq_headers(str(tmpfile))
 
     assert results == [
         "@HWI-ST1410:82:C2VAGACXX:7:1101:1531:1859 1:N:0:AGTCAA",
@@ -187,7 +187,7 @@ def test_reverse_complement():
     sequence = "ATAGGGATTAGAGACACAGATA"
     expected = "TATCTGTGTCTCTAATCCCTAT"
 
-    assert bio.reverse_complement(sequence) == expected
+    assert virtool_core.bio.reverse_complement(sequence) == expected
 
 
 @pytest.mark.parametrize("sequence,expected", [
@@ -200,11 +200,11 @@ def test_translate(sequence, expected):
     Test that translation works properly. Cases are standard, resolvable ambiguity, and non-resolvable ambiguity (X).
 
     """
-    assert bio.translate(sequence) == expected
+    assert virtool_core.bio.translate(sequence) == expected
 
 
 def test_find_orfs(orf_containing):
-    result = bio.find_orfs(orf_containing)
+    result = virtool_core.bio.find_orfs(orf_containing)
 
     with open(os.path.join(TEST_BIO_PATH, "orfs"), "rb") as f:
         assert pickle.load(f) == result
@@ -240,7 +240,7 @@ def test_format_blast_hit(missing, sciname):
     if sciname:
         hit["description"][0]["sciname"] = sciname
 
-    formatted = bio.format_blast_hit(hit)
+    formatted = virtool_core.bio.format_blast_hit(hit)
 
     assert formatted == {
         "accession": "" if missing == "accession" else "ABC123",
@@ -260,11 +260,15 @@ def test_format_blast_hit(missing, sciname):
 async def test_initialize_ncbi_blast(mock_blast_server):
     """
     Using a mock BLAST server, test that a BLAST initialization request works properly.
-
     """
-    seq = "ATGTACAGGATCAGCATCGAGCTACGAT"
 
-    assert await bio.initialize_ncbi_blast(seq, http_post) == ("YA40WNN5014", 19)
+    _, test_url = mock_blast_server
+
+    assert await virtool_core.bio.initialize_ncbi_blast(
+        sequence="ATGTACAGGATCAGCATCGAGCTACGAT",
+        http_post=http_post,
+        blast_server_url=test_url,
+    ) == ("YA40WNN5014", 19)
 
 
 def test_extract_blast_info():
@@ -273,7 +277,7 @@ def test_extract_blast_info():
 
     """
     with open(os.path.join(TEST_BIO_PATH, "initialize_blast.html"), "r") as f: \
-            assert bio.extract_blast_info(f.read()) == ("YA40WNN5014", 19)
+            assert virtool_core.bio.extract_blast_info(f.read()) == ("YA40WNN5014", 19)
 
 
 @pytest.mark.parametrize("rid,expected", [
@@ -285,13 +289,21 @@ async def test_check_rid(rid, expected, mock_blast_server):
     Test that check_rid() returns the correct result given HTML for a ready BLAST request and a waiting BLAST request.
 
     """
-    assert await bio.check_rid(rid, http_get) == expected
+    _, test_url = mock_blast_server
+    assert await virtool_core.bio.check_rid(rid, http_get, blast_server_url=test_url) == expected
 
 
 async def test_get_ncbi_blast_result(mock_blast_server):
     async def run_in_process(func, *args):
         return func(*args)
 
+    _, test_url = mock_blast_server
+
     with open(os.path.join(TEST_BIO_PATH, "unformatted_blast.json"), "r") as f:
-        result = await bio.get_ncbi_blast_result(run_in_process, "YA6M9135015", http_get)
+        result = await virtool_core.bio.get_ncbi_blast_result(
+            run_in_process,
+            "YA6M9135015",
+            http_get_bytes,
+            blast_server_url=test_url
+        )
         assert result == json.load(f)
