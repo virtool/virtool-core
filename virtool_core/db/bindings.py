@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, MutableMapping, Awaitable, Callable, Iterable
+import virtool_core.caches.db
 
 Processor = Callable[["DB", MutableMapping], Awaitable[MutableMapping]]
 DatabaseUpdateListener = Callable[[str, str, Iterable[str]], Awaitable[None]]
@@ -16,7 +17,7 @@ class CollectionBinding:
 # TODO: set projections for modules
 BINDINGS = [
     CollectionBinding("analyses"),
-    CollectionBinding("caches"),
+    CollectionBinding("caches", projection=virtool_core.caches.db.PROJECTION),
     CollectionBinding("coverage"),
     CollectionBinding("files"),
     CollectionBinding("groups"),
@@ -26,6 +27,7 @@ BINDINGS = [
     CollectionBinding("jobs"),
     CollectionBinding("keys"),
     CollectionBinding("kinds"),
+    CollectionBinding("otus"),
     CollectionBinding("processes"),
     CollectionBinding("references"),
     CollectionBinding("samples"),

@@ -3,7 +3,7 @@
 docker pull mongo
 ID=`docker run -d --network=host mongo`
 
-pytest .
+pytest . $@
 
 docker stop $ID
 docker rm $ID
