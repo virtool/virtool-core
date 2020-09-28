@@ -21,8 +21,7 @@ PROJECTION = [
 
 
 def calculate_cache_hash(parameters: Dict[str, str]) -> str:
-    """
-    Calculate a hash from the parameters `dict` for a cache.
+    """Calculate a hash from the parameters `dict` for a cache.
 
     The parameters are arguments passed to a trimming program.
     Caches can be reused when the hash of the trim parameters for a a new analysis matches an existing cache.

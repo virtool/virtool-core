@@ -10,7 +10,6 @@ def json_object_hook(o: Mapping) -> Mapping:
 
     :param o: the JSON parsing dict
     :return: the parsed dict
-
     """
     for key, value in o.items():
         if key == "created_at":
