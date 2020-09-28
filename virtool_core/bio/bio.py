@@ -9,7 +9,7 @@ from typing import Generator, List, Callable, Awaitable, Dict, Tuple, Any
 
 import aiofiles
 
-from virtool_core import errors, analyses
+from virtool_core import errors
 from .blast import BLAST
 
 logger = logging.getLogger(__name__)
@@ -122,8 +122,7 @@ TRANSLATION_TABLE = {
 
 
 def read_fasta(path: str) -> List[tuple]:
-    """
-    Parse the FASTA file at `path` and return its content as a `list` of tuples containing the header and sequence.
+    """Parse the FASTA file at `path` and return its content as a `list` of tuples containing the header and sequence.
 
     :param path: the path to the FASTA file
     :return: the FASTA content
@@ -511,7 +510,14 @@ def format_blast_content(result: dict) -> dict:
     return output
 
 
-async def wait_for_blast_result(db, analysis_id, sequence_index, rid, run_in_process, http_get_bytes):
+async def wait_for_blast_result(
+        db,
+        analysis_id: str,
+        sequence_index: int,
+        rid: str,
+        run_in_process: Callable,
+        http_get_bytes: Callable[[str, Dict[str, str]], Awaitable[bytes]]
+):
     """
     Retrieve the Genbank data associated with the given accession and transform it into a Virtool-format sequence
     document.
@@ -527,7 +533,7 @@ async def wait_for_blast_result(db, analysis_id, sequence_index, rid, run_in_pro
         while not blast.ready:
             await blast.sleep()
 
-            blast.ready = await check_rid(settings, rid)
+            blast.ready = await check_rid(rid, http_get)
 
             logger.debug(f"Checked BLAST {rid} ({blast.interval}s)")
 
@@ -536,7 +542,7 @@ async def wait_for_blast_result(db, analysis_id, sequence_index, rid, run_in_pro
                     result_json = await get_ncbi_blast_result(
                         run_in_process,
                         rid,
-                        http_get_byes,
+                        http_get_bytes,
                     )
                 except zipfile.BadZipFile:
                     await blast.update(False, None, error="Unable to interpret NCBI result")
