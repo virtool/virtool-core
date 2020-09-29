@@ -37,17 +37,15 @@ the [run_mongo_with_tests.sh](tests/run_mongo_with_tests.sh) script
 to run mongo using docker. The docker container used to run mongo
 will be stopped and removed once the tests have completed. 
 
-#### MongoDB
-
-some tests require an instance of MongoDB to be running on the 
-local machine. If you do not have MongoDB installed you can use
-the [run_mongo_with_tests.sh](tests/run_mongo_with_tests.sh) script
-to run mongo using docker. The docker container used to run mongo
-will be stopped and removed once the tests have completed. 
-
 ### Documentation
 
 For docstrings, use the [**Sphinx** docstring format](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html).
+
+The packages `sphinx_rtd_theme` and `sphinx_autoapi` are used in rendering the documentation. 
+
+```  shell script
+pip install sphinx_rtd_theme sphinx_autoapi
+```
 
 #### Markdown for Sphinx
 
@@ -66,7 +64,7 @@ To use sphinx rst [directives](https://www.sphinx-doc.org/en/master/usage/restru
 #### Building the documentation
 
 ```shell script
-make html
+cd sphinx && make html
 ```
 
-The rendered HTML files are found under `build/html`
+The rendered HTML files are found under `sphinx/build/html`

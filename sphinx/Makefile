@@ -1,3 +1,4 @@
+
 # Minimal makefile for Sphinx documentation
 #
 
@@ -5,7 +6,7 @@
 # from the environment for the first two.
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = virtool-core
+SOURCEDIR     = .
 BUILDDIR      = build
 
 # Put it first so that "make" without argument is like "make help".
