@@ -11,6 +11,8 @@ Welcome to virtool-core's documentation!
    :caption: Contents:
 
 
+.. include:: docs/modules.rst
+
 
 Indices and tables
 ==================
