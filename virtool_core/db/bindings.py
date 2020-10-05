@@ -1,16 +1,16 @@
 from dataclasses import dataclass
-from typing import Optional, MutableMapping, Awaitable, Callable, Iterable
+from typing import Optional, MutableMapping, Coroutine, Callable, Iterable
 import virtool_core.caches.db
 
-Processor = Callable[["DB", MutableMapping], Awaitable[MutableMapping]]
-DatabaseUpdateListener = Callable[[str, str, Iterable[str]], Awaitable[None]]
+Processor = Callable[["DB", MutableMapping], Coroutine[None, None, MutableMapping]]
+DatabaseUpdateListener = Callable[[str, str, Iterable[str]], Coroutine[None, None, None]]
 
 
 @dataclass
 class CollectionBinding:
     collection_name: str
     projection: Optional[MutableMapping] = None
-    processor: Optional[Callable[["DB", MutableMapping], Awaitable[MutableMapping]]] = None
+    processor: Optional[Callable[["DB", MutableMapping], Coroutine[None, None, MutableMapping]]] = None
     silent: bool = False
 
 
