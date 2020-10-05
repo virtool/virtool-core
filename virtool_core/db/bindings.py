@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional, MutableMapping, Coroutine, Callable, Iterable
+from typing import Optional, MutableMapping, Coroutine, Callable, Tuple, Any
+
 import virtool_core.caches.db
 
 Processor = Callable[["DB", MutableMapping], Coroutine[None, None, MutableMapping]]
-DatabaseUpdateListener = Callable[[str, str, Iterable[str]], Coroutine[None, None, None]]
+DatabaseUpdateListener = Callable[[str, str, Tuple[str, ...]], Coroutine[Any, Any, None]]
 
 
 @dataclass
