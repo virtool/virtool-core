@@ -1,14 +1,14 @@
-import motor.motor_asyncio
-import pymongo.results
-import pymongo.errors
+from typing import Optional
 from typing import Union, List, MutableMapping
+
+import motor.motor_asyncio
+import pymongo.errors
+import pymongo.results
+
+import virtool_core.utils
 import virtool_core.utils
 from . import utils
 from .bindings import BINDINGS, DatabaseUpdateListener, Processor
-from functools import partial
-from typing import Union, Callable, List, MutableMapping, Awaitable, Iterable
-import virtool_core.utils
-from . import utils
 
 
 class Collection:
@@ -107,7 +107,6 @@ class Collection:
 
         return delete_result
 
-
     async def delete_one(self, query: dict, silent: bool = False):
         """
         Delete a single document based on the passed `query`.
@@ -119,7 +118,6 @@ class Collection:
         """
         document_id = await utils.get_one_field(self, "_id", query)
         delete_result = await self._collection.delete_one(query)
-
 
         if delete_result.deleted_count and not silent:
             await self.enqueue_change(
@@ -260,7 +258,7 @@ class DB:
     def __init__(
             self,
             motor_client: motor.motor_asyncio.AsyncIOMotorClient,
-            enqueue_change: DatabaseUpdateListener,
+            enqueue_change: Optional[DatabaseUpdateListener],
     ):
         """
         :param motor_client: The :class:`motor.motor_asyncio.AsyncIOMotorClient` instance
