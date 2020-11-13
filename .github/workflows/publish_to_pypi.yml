@@ -16,5 +16,8 @@ jobs:
         - name: Ensure Tests Pass
           uses: actions/tests
 
-        - name: Deploy To PyPi
-          run: pwdt
+        - name: Prepare Distribution
+          run: python setup.py sdist
+
+        - name: Deploy To PyPi Using Twine
+          run: ls dist/*
