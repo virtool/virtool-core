@@ -21,4 +21,4 @@ jobs:
         - name: Deploy To PyPi Using Twine
           run: |
             pip install twine
-            twine upload --username {{ secrets.PYPI_USERNAME }} --password {{ secrets.PYPI_TOKEN }} dist/*
+            twine upload --repository {{ secrets.PYPI_REPOSITORY}} --username {{ secrets.PYPI_USERNAME }} --password {{ secrets.PYPI_TOKEN }} dist/*
