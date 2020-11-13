@@ -3,7 +3,7 @@ name: PyPi Publish
 
 on:
   release:
-    types: [published, prereleased]
+    types: [published]
 
 jobs:
   build:
@@ -19,4 +19,6 @@ jobs:
           run: python setup.py sdist
 
         - name: Deploy To PyPi Using Twine
-          run: ls dist/*
+          run: |
+            pip install twine
+            twine upload --username {{ secrets.PYPI_USERNAME }} --password {{ secrets.PYPI_TOKEN }} dist/*
