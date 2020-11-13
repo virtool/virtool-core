@@ -1,0 +1,20 @@
+
+name: PyPi Publish
+
+on:
+  release:
+    types: [published, prereleased]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: python:3.9-buster
+
+    steps:
+        - name: Ensure Tests Pass
+          uses: actions/tests
+
+        - name: Deploy To PyPi
+          run: pwdt
