@@ -1,6 +1,6 @@
 # Run test suite using tox.
 
-name: CI
+name: Run tox
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
    
     container:
-      image: python:3.7-buster
+      image: python:3.9-buster
     
     steps:
       - uses: actions/checkout@v2
