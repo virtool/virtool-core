@@ -13,8 +13,7 @@ jobs:
       image: python:3.9-buster
 
     steps:
-        - name: Ensure Tests Pass
-          uses: actions/tests
+        - uses: actions/checkout@v2
 
         - name: Prepare Distribution
           run: python setup.py sdist
