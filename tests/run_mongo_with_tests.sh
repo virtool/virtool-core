@@ -11,5 +11,5 @@ ID=$(sudo docker run -d --network=host mongo)
 
 tox "$@"
 
-sudo docker stop $ID
-sudo docker rm $ID
+sudo docker stop "$ID"
+sudo docker rm "$ID"
