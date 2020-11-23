@@ -1,9 +1,15 @@
 #!/bin/sh
 # run tests with mongodb running
-docker pull mongo
-ID=`docker run -d --network=host mongo`
+if [ "$1" != "--no-pull" ]
+then
+  sudo docker pull mongo
+else
+  shift
+fi
 
-pytest . $@
+ID=$(sudo docker run -d --network=host mongo)
 
-docker stop $ID
-docker rm $ID
+tox "$@"
+
+sudo docker stop "$ID"
+sudo docker rm "$ID"

@@ -1,0 +1,29 @@
+# Run test suite using tox.
+
+name: Run tox
+
+on:
+  pull_request:
+    branches:
+      - "*"
+        
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+   
+    container:
+      image: python:3.9-buster
+
+    services:
+      mongo:
+        image: mongo:4.4
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install tox
+        run: pip install tox
+        
+      - name: Run tox
+        run: tox -- --db-connection-string="mongodb://mongo:27017"

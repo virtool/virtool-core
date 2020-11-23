@@ -1,9 +1,9 @@
-from .fixtures import  *
-
 pytest_plugins = [
-    "tests.fixtures.__init__"
+    "tests.fixtures.db",
+    "tests.fixtures.core",
+    "tests.fixtures.history",
+    "tests.fixtures.otus",
 ]
-
 
 
 def pytest_addoption(parser):

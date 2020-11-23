@@ -14,7 +14,7 @@ INSTALL_REQUIRES = [
 
 setuptools.setup(
     name="virtool_core",
-    version="0.0.2",
+    version="0.1.0",
     description="core utilities for Virtool backend",
     long_description=long_description,
     long_description_content_type="text/markdown",
