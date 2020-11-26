@@ -9,7 +9,7 @@ fi
 
 ID=$(sudo docker run -d --network=host mongo)
 
-tox "$@"
+tox  -- "$@"
 
 sudo docker stop "$ID"
 sudo docker rm "$ID"
