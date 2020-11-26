@@ -9,8 +9,18 @@ Core utilities for Virtool and associated packages.
 ## Install
 
 ```shell script
-git clone https://github.com/virtool/virtool-core
-cd virtool-core && pip install .
+pip install virtool-core
+```
+
+Or install from source;
+
+```shell script
+git clone https://github.com/virtool/virtool-core.git
+pip install .
+
+#  Or
+
+pip install git+https://github.com/virtool/virtool-core.git
 ```
 
 ## Contribute 
