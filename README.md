@@ -27,20 +27,21 @@ pip install git+https://github.com/virtool/virtool-core.git
 
 ### Running Tests
 
-The testing framework used is [pytest](https://docs.pytest.org/en/stable/). Install it using:
+`tox` is used to run the tests in a fresh virtual environment with all of the test dependencies. To install it use;
+
 ```shell script
-pip install pytest
+pip install tox
 ```
 
-Run the tests from the root directory:
+Then from the repository root;
+
 ```shell script
-pytest
+tox
 ```
 
 ### MongoDB
 
-Some tests require an instance of MongoDB to be running on the 
-local machine.
+Some tests require an instance of MongoDB to be running on the local machine.
 
 If you do not have MongoDB installed you can use
 the [run_mongo_with_tests.sh](tests/run_mongo_with_tests.sh) script
