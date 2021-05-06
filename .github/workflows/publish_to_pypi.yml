@@ -15,11 +15,15 @@ jobs:
     steps:
         - uses: actions/checkout@v2
 
-        - name: Set Version Number in setup.py
-          run: python replace_version_number.py ${{ github.event.release.tag_name }}
+
+        - name: Install Poetry
+          run: pip install poetry
+
+        - name: Bump Version Number
+          run: poetry version ${{ github.event.release.tag_name }}
 
         - name: Prepare Distribution
-          run: python setup.py sdist
+          run: poetry build
 
         - name: Deploy To PyPi Using Twine
           run: |
