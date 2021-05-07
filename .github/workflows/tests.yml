@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
    
     container:
-      image: python:3.9-buster
+      image: python:3.8-buster
     
     services:
       mongo:
@@ -26,10 +26,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install tox
-        run: pip install tox tox-poetry
+        run: pip install tox tox-poetry poetry
         
       - name: Run tox
-        run: tox -- --db-connection-string="mongodb://mongo:27017"
+        run: > 
+            tox -- 
+            --db-connection-string="mongodb://mongo:27017"
 
       - name: Upload Coverage Report As Artifact
         uses: actions/upload-artifact@v2

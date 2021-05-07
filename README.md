@@ -8,45 +8,41 @@ Core utilities for Virtool and associated packages.
 
 ## Install
 
+### Last Stable Release
+
 ```shell script
 pip install virtool-core
 ```
 
-Or install from source;
+### Latest Changes
 
 ```shell script
-git clone https://github.com/virtool/virtool-core.git
-pip install .
-
-#  Or
-
 pip install git+https://github.com/virtool/virtool-core.git
 ```
 
 ## Contribute 
 
-### Running Tests
+### Unit Tests
+
+#### Install Tox
 
 `tox` is used to run the tests in a fresh virtual environment with all of the test dependencies. To install it use;
 
 ```shell script
-pip install tox
+pip install tox tox-poetry
 ```
 
-Then from the repository root;
+#### Run Tests
 
 ```shell script
 tox
 ```
 
-### MongoDB
+Any arguments given to tox after a `--` token will be supplied to pytest.
 
-Some tests require an instance of MongoDB to be running on the local machine.
-
-If you do not have MongoDB installed you can use
-the [run_mongo_with_tests.sh](tests/run_mongo_with_tests.sh) script
-to run mongo using docker. The docker container used to run mongo
-will be stopped and removed once the tests have completed. 
+```shell script
+tox -- --log-cli-level=DEBUG
+```
 
 ### Documentation
 
