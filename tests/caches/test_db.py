@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from aiohttp.test_utils import make_mocked_coro
 
@@ -120,12 +122,12 @@ async def test_remove(exception, dbi):
 
     await dbi.caches.insert_one({"_id": "baz"})
 
-    await virtool_core.caches.db.remove(dbi, "/foo", "baz", run_in_thread)
+    await virtool_core.caches.db.remove(dbi, Path("/foo"), "baz", run_in_thread)
 
     assert await dbi.caches.count_documents({}) == 0
 
     run_in_thread.assert_called_with(
         virtool_core.utils.rm,
-        "/foo/caches/baz",
+        Path("/foo/caches/baz"),
         True
     )

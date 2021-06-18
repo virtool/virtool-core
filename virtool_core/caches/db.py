@@ -1,6 +1,6 @@
 import hashlib
 import json
-import os
+from pathlib import Path
 from typing import Dict, Optional, Any
 
 import pymongo.errors
@@ -71,7 +71,14 @@ async def get(db, cache_id: str) -> Dict:
     return virtool_core.db.utils.base_processor(document)
 
 
-async def create(db, sample_id: str, parameters: Dict[str, str], paired: bool, legacy: bool = False, program: str = "skewer-0.2.2"):
+async def create(
+        db,
+        sample_id: str,
+        parameters: Dict[str, str],
+        paired: bool,
+        legacy: bool = False,
+        program: str = "skewer-0.2.2"
+):
     """
     Create and insert a new cache database document. Return the generated unique cache id.
 
@@ -114,7 +121,7 @@ async def create(db, sample_id: str, parameters: Dict[str, str], paired: bool, l
 
 async def remove(
         db,
-        data_path: str,
+        data_path: Path,
         cache_id: str,
         run_in_thread
 ):
@@ -134,12 +141,11 @@ async def remove(
 
             *args and **kwargs must be passed along to the coroutine :func:`async_func`
     """
-
     await db.caches.delete_one({
         "_id": cache_id
     })
 
-    path = os.path.join(data_path, "caches", cache_id)
+    path = data_path / "caches" / cache_id
 
     try:
         await run_in_thread(virtool_core.utils.rm, path, True)

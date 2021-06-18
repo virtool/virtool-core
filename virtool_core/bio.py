@@ -1,4 +1,5 @@
 import typing
+from pathlib import Path
 from typing import Generator, List
 
 import aiofiles
@@ -108,7 +109,7 @@ TRANSLATION_TABLE = {
 }
 
 
-def read_fasta(path: str) -> List[tuple]:
+def read_fasta(path: Path) -> List[tuple]:
     """Parse the FASTA file at `path` and return its content as a `list` of tuples containing the header and sequence.
 
     :param path: the path to the FASTA file
@@ -176,7 +177,7 @@ async def read_fastq(f) -> Generator[tuple, None, list]:
             had_plus = False
 
 
-async def read_fastq_from_path(path: str) -> typing.AsyncIterable:
+async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
     """
     Read the FASTQ file at `path` and yields its content as tuples. Accepts both uncompressed and GZIP-compressed FASTQ
     files.
@@ -190,7 +191,7 @@ async def read_fastq_from_path(path: str) -> typing.AsyncIterable:
             yield record
 
 
-async def read_fastq_headers(path: str) -> list:
+async def read_fastq_headers(path: Path) -> list:
     """
     Return a list of FASTQ headers for the FASTQ file located at `path`. Only accepts uncompressed FASTQ files.
 

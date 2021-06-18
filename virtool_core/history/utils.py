@@ -1,8 +1,9 @@
-import os
-import aiofiles
 import json
-import arrow
+from pathlib import Path
 from typing import Union, Mapping
+
+import aiofiles
+import arrow
 
 
 def json_object_hook(o: Mapping) -> Mapping:
@@ -18,7 +19,7 @@ def json_object_hook(o: Mapping) -> Mapping:
     return o
 
 
-def join_diff_path(data_path: str, otu_id: str, otu_version: Union[int, str]) -> str:
+def join_diff_path(data_path: Path, otu_id: str, otu_version: Union[int, str]) -> Path:
     """Derive the path to a diff file based on the application `data_path` setting and the OTU ID and version.
 
     :param data_path: the application data path settings
@@ -26,10 +27,10 @@ def join_diff_path(data_path: str, otu_id: str, otu_version: Union[int, str]) ->
     :param otu_version: the OTU version to join a diff path for
     :return: the change path
     """
-    return os.path.join(data_path, "history", f"{otu_id}_{otu_version}.json")
+    return data_path / "history" / f"{otu_id}_{otu_version}.json"
 
 
-async def read_diff_file(data_path, otu_id, otu_version):
+async def read_diff_file(data_path: Path, otu_id, otu_version):
     """Read a history diff JSON file."""
     path = join_diff_path(data_path, otu_id, otu_version)
 

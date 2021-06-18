@@ -1,6 +1,7 @@
 import pytest
 import virtool_core.history.db
 
+
 @pytest.mark.parametrize("remove", [True, False])
 async def test_patch_to_version(remove, snapshot, dbi,  create_mock_history):
     await create_mock_history(remove=remove)

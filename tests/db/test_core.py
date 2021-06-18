@@ -15,7 +15,7 @@ def test_base_processor(document, result):
 
 
 @pytest.fixture
-def create_test_collection(mocker, test_motor):
+def create_test_collection(test_motor):
     def func(name="samples", projection=None) -> db.Collection:
         processor = make_mocked_coro(return_value={"id": "foo", "mock": True})
 
@@ -101,7 +101,3 @@ class TestCollection:
             {"_id": "bar", "tag": 2},
             {"_id": "baz", "tag": 1}
         ]
-
-
-
-

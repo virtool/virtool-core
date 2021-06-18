@@ -1,17 +1,19 @@
-import os
+import datetime
 import gzip
-import tarfile
+import os
 import shutil
 import subprocess
-import aiofiles
-import arrow
-import datetime
-from typing import Union, Iterable
+import tarfile
+from pathlib import Path
 from random import choice
 from string import ascii_letters, ascii_lowercase, digits
+from typing import Union, Iterable
+
+import aiofiles
+import arrow
 
 
-def ensure_data_dir(data_path):
+def ensure_data_dir(data_path: Path):
     """
     Ensure the application data structure is correct. Fix it if it is broken.
     :param data_path: the path to create the data folder structure in
@@ -29,7 +31,7 @@ def ensure_data_dir(data_path):
     ]
 
     for subdir in subdirectories:
-        os.makedirs(os.path.join(data_path, subdir), exist_ok=True)
+        (data_path / subdir).mkdir(parents=True, exist_ok=True)
 
 
 def random_alphanumeric(length: int = 6, mixed_case: bool = False, excluded: Union[None, Iterable[str]] = None) -> str:
@@ -64,7 +66,7 @@ def should_use_pigz(processes: int) -> bool:
     return bool(processes > 1 and shutil.which("pigz"))
 
 
-def compress_file(path: str, target: str, processes: int = 1) -> None:
+def compress_file(path: Path, target: Path, processes: int = 1) -> None:
     """
     Compress the file at `path` to a gzipped file at `target`.
 
@@ -78,7 +80,7 @@ def compress_file(path: str, target: str, processes: int = 1) -> None:
         compress_file_with_gzip(path, target)
 
 
-def compress_file_with_gzip(path: str, target: str) -> None:
+def compress_file_with_gzip(path: Path, target: Path) -> None:
     """
     compresses a file using gzip
     :param path: path to the file to be compressed
@@ -89,7 +91,7 @@ def compress_file_with_gzip(path: str, target: str) -> None:
             shutil.copyfileobj(f_in, f_out)
 
 
-def compress_file_with_pigz(path: str, target: str, processes: int):
+def compress_file_with_pigz(path: Path, target: Path, processes: int):
     """
     use pigz to compress a file
     :param path: path to the file to be compressed
@@ -108,7 +110,7 @@ def compress_file_with_pigz(path: str, target: str, processes: int):
         subprocess.call(command, stdout=f)
 
 
-def decompress_file(path: str, target: str, processes: int = 1) -> None:
+def decompress_file(path: Path, target: Path, processes: int = 1) -> None:
     """
     Decompress the gzip-compressed file at `path` to a `target` file.
 
@@ -125,7 +127,7 @@ def decompress_file(path: str, target: str, processes: int = 1) -> None:
         decompress_file_with_gzip(path, target)
 
 
-def decompress_file_with_gzip(path, target):
+def decompress_file_with_gzip(path: Path, target: Path):
     """
     decompress a file using gzip
 
@@ -137,7 +139,7 @@ def decompress_file_with_gzip(path, target):
             shutil.copyfileobj(f_in, f_out)
 
 
-def decompress_file_with_pigz(path: str, target: str, processes: int):
+def decompress_file_with_pigz(path: Path, target: Path, processes: int):
     """
     decompress a file using pigz
 
@@ -158,7 +160,7 @@ def decompress_file_with_pigz(path: str, target: str, processes: int):
         subprocess.call(command, stdout=f)
 
 
-def decompress_tgz(path: str, target: str):
+def decompress_tgz(path: Path, target: Path):
     """
     Decompress the tar.gz file at ``path`` to the directory ``target``.
 
@@ -170,7 +172,7 @@ def decompress_tgz(path: str, target: str):
         tar.extractall(target)
         
         
-def file_stats(path: str) -> dict:
+def file_stats(path: Path) -> dict:
     """
     Return the size and last modification date for the file at `path`.
     Wraps :func:`os.stat`
@@ -185,7 +187,7 @@ def file_stats(path: str) -> dict:
     }
 
 
-async def file_length(path: str) -> int:
+async def file_length(path: Path) -> int:
     """
     Asynchronously determine length of a file
 
@@ -201,7 +203,7 @@ async def file_length(path: str) -> int:
     return length
 
 
-def rm(path: str, recursive: bool = False) -> bool:
+def rm(path: Path, recursive: bool = False) -> bool:
     """
     Remove files. Wraps :func:`os.remove` and func:`shutil.rmtree`.
     :param path: the path to remove
@@ -218,7 +220,7 @@ def rm(path: str, recursive: bool = False) -> bool:
         raise
 
 
-def is_gzipped(path: str) -> bool:
+def is_gzipped(path: Path) -> bool:
     """
     :param path: path of the file to check
     :return: True if the file is gzipped, else False
@@ -246,4 +248,3 @@ def timestamp() -> datetime.datetime:
     dt = dt.replace(microsecond=int(str(dt.microsecond)[0:3] + "000"))
 
     return dt
-
