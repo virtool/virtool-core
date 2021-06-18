@@ -1,14 +1,16 @@
-import dictdiffer
-from typing import Union, Tuple, Dict, List
 from copy import deepcopy
-from . import utils
+from pathlib import Path
+from typing import Union, Tuple, Dict, List
+
+import dictdiffer
 import virtool_core.otus.db
+from virtool_core.history.utils import read_diff_file
 
 
-async def patch_to_version(db, data_path: str, otu_id: str, version: Union[str, int]) -> Tuple[Dict, Dict, List]:
+async def patch_to_version(db, data_path: Path, otu_id: str, version: Union[str, int]) -> Tuple[Dict, Dict, List]:
     """Take a joined otu back in time to the passed ``version``.
 
-    Uses the diffs in the change documents associated withthe otu.
+    Uses the diffs in the change documents associated with the otu.
 
     :param db: the Virtool database
     :param data_path: the Virtool data path
@@ -33,7 +35,7 @@ async def patch_to_version(db, data_path: str, otu_id: str, version: Union[str, 
             reverted_history_ids.append(change["_id"])
 
             if change["diff"] == "file":
-                change["diff"] = await utils.read_diff_file(
+                change["diff"] = await read_diff_file(
                     data_path,
                     otu_id,
                     change["otu"]["version"]

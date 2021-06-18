@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from typing import Sequence, Mapping, Dict, Any, List
 
 PATHOSCOPE_TASK_NAMES = [
@@ -69,7 +69,7 @@ def get_sample_rights(sample: Mapping[str, Any], client): # TODO: add type hint 
     return read, write
 
 
-def join_legacy_read_path(sample_path: str, suffix: int) -> str:
+def join_legacy_read_path(sample_path: Path, suffix: int) -> Path:
     """
     Create a path string for a sample read file using the old file name convention (eg. reads_1.fastq).
 
@@ -78,10 +78,10 @@ def join_legacy_read_path(sample_path: str, suffix: int) -> str:
     :return: the read path
 
     """
-    return os.path.join(sample_path, f"reads_{suffix}.fastq")
+    return sample_path / f"reads_{suffix}.fastq"
 
 
-def join_legacy_read_paths(settings: Mapping[str, str], sample: Mapping[str, Any]):
+def join_legacy_read_paths(settings: Dict[str, Any], sample: Dict[str, Any]) -> List[Path]:
     """
     Create a list of paths for the read files associated with the `sample`.
 
@@ -102,7 +102,7 @@ g
         return [join_legacy_read_path(sample_path, 1)]
 
 
-def join_read_paths(base_path: str, paired: bool) -> List[str]:
+def join_read_paths(base_path: Path, paired: bool) -> List[Path]:
     """
     Return a list of standard read paths given a base path and flag indicating whether the reads are `paired`.
 
@@ -119,7 +119,7 @@ def join_read_paths(base_path: str, paired: bool) -> List[str]:
     return [join_read_path(base_path, 1)]
 
 
-def join_read_path(base_path: str, suffix: int) -> str:
+def join_read_path(base_path: Path, suffix: int) -> Path:
     """
     Return a standard read path given a base path (eg. /mnt/data/samples/foo) and a read suffix.
 
@@ -128,8 +128,8 @@ def join_read_path(base_path: str, suffix: int) -> str:
     :return: a read path
 
     """
-    return os.path.join(base_path, f"reads_{suffix}.fq.gz")
+    return base_path / f"reads_{suffix}.fq.gz"
 
 
-def join_sample_path(settings: Mapping[str, str], sample_id: str):
-    return os.path.join(settings["data_path"], "samples", sample_id)
+def join_sample_path(settings: Dict[str, Any], sample_id: str):
+    return settings["data_path"] / "samples" / sample_id

@@ -1,8 +1,11 @@
 import os
 import sys
+from pathlib import Path
+
 import virtool_core.history.utils
 
 TEST_DIFF_PATH = os.path.join(sys.path[0], "tests", "test_files", "diff.json")
+
 
 def test_json_object_hook(static_time):
     """Test that the hook function correctly decodes created_at ISO format fields to naive `datetime` objects."""
@@ -23,7 +26,7 @@ async def test_read_diff_file(mocker, snapshot):
     """Test that a diff is parsed to a `dict` correctly. ISO format dates must be converted to `datetime` objects."""
     m = mocker.patch("virtool_core.history.utils.join_diff_path", return_value=TEST_DIFF_PATH)
 
-    diff = await virtool_core.history.utils.read_diff_file("foo", "bar", "baz")
+    diff = await virtool_core.history.utils.read_diff_file(Path("foo"), "bar", "baz")
 
-    m.assert_called_with("foo", "bar", "baz")
+    m.assert_called_with(Path("foo"), "bar", "baz")
     snapshot.assert_match(diff)

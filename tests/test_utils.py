@@ -2,15 +2,14 @@ import datetime
 import os
 import shutil
 import sys
+from pathlib import Path
 
 import arrow
 import pytest
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent))
-
 
 import virtool_core.utils
+
+sys.path.append(str(Path(__file__).parent.parent))
 
 
 @pytest.fixture(scope="session")
@@ -19,13 +18,13 @@ def alphanumeric():
 
 
 def test_decompress_tgz(tmpdir):
-    path = str(tmpdir)
+    path = Path(tmpdir)
 
     src_path = Path(__file__).parent/"test_files/virtool.tar.gz"
 
     shutil.copy(src_path, path)
 
-    virtool_core.utils.decompress_tgz(os.path.join(path, "virtool.tar.gz"), os.path.join(path, "de"))
+    virtool_core.utils.decompress_tgz(path / "virtool.tar.gz", path / "de")
 
     assert set(os.listdir(path)) == {"virtool.tar.gz", "de"}
 
@@ -68,17 +67,17 @@ def test_rm(recursive, expected, tmpdir):
 
     assert set(os.listdir(str(tmpdir))) == {"foo.txt", "bar.txt", "baz"}
 
-    virtool_core.utils.rm(os.path.join(str(tmpdir), "bar.txt"))
+    virtool_core.utils.rm(tmpdir / "bar.txt")
 
     if recursive:
         virtool_core.utils.rm(
-            os.path.join(str(tmpdir), "baz"),
+            tmpdir / "baz",
             recursive=recursive
         )
     else:
         with pytest.raises(IsADirectoryError):
             virtool_core.utils.rm(
-                os.path.join(str(tmpdir), "baz"),
+                tmpdir / "baz",
                 recursive=recursive
             )
 
@@ -113,5 +112,3 @@ def test_timestamp(mocker):
     assert isinstance(timestamp, datetime.datetime)
 
     assert timestamp == arrow.arrow.Arrow(2017, 10, 6, 20, 0, 0, 612000).naive
-
-
