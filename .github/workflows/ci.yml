@@ -17,10 +17,6 @@ jobs:
     container:
       image: python:3.8-buster
     
-    services:
-      mongo:
-        image: mongo:4.4
-        
     steps:
       - uses: actions/checkout@v2
 
@@ -28,9 +24,7 @@ jobs:
         run: pip install tox tox-poetry poetry
         
       - name: Run tox
-        run: > 
-            tox -- 
-            --db-connection-string="mongodb://mongo:27017"
+        run: tox
 
       - name: Upload Coverage Report As Artifact
         uses: actions/upload-artifact@v2
