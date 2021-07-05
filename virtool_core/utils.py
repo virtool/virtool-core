@@ -13,27 +13,6 @@ import aiofiles
 import arrow
 
 
-def ensure_data_dir(data_path: Path):
-    """
-    Ensure the application data structure is correct. Fix it if it is broken.
-    :param data_path: the path to create the data folder structure in
-
-    """
-    subdirectories = [
-        "caches",
-        "files",
-        "references",
-        "subtractions",
-        "samples",
-        "history",
-        "hmm",
-        "logs/jobs"
-    ]
-
-    for subdir in subdirectories:
-        (data_path / subdir).mkdir(parents=True, exist_ok=True)
-
-
 def random_alphanumeric(length: int = 6, mixed_case: bool = False, excluded: Union[None, Iterable[str]] = None) -> str:
     """
     Generates a random string composed of letters and numbers.
