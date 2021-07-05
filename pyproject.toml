@@ -19,7 +19,6 @@ python = "^3.8"
 aiofiles = "0.7.0"
 arrow = "0.15.5"
 dictdiffer = "0.8.1"
-motor = "2.4.0"
 psutil = "^5.8.0"
 
 
