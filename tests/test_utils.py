@@ -12,11 +12,6 @@ import virtool_core.utils
 sys.path.append(str(Path(__file__).parent.parent))
 
 
-@pytest.fixture(scope="session")
-def alphanumeric():
-    return "abcdefghijklmnopqrstuvwxyz1234567890"
-
-
 def test_decompress_tgz(tmpdir):
     path = Path(tmpdir)
 
@@ -31,28 +26,6 @@ def test_decompress_tgz(tmpdir):
     assert os.listdir(os.path.join(path, "de")) == ["virtool"]
 
     assert set(os.listdir(os.path.join(path, "de", "virtool"))) == {"run", "client", "VERSION", "install.sh"}
-
-
-class TestRandomAlphanumeric:
-
-    def test_default(self, alphanumeric):
-        for _ in range(0, 10):
-            an = virtool_core.utils.random_alphanumeric()
-            assert len(an) == 6
-            assert all(l in alphanumeric for l in an)
-
-    def test_length(self, alphanumeric):
-        for length in [7, 10, 25, 12, 4, 22, 17, 30, 8, 14, 19]:
-            an = virtool_core.utils.random_alphanumeric(length)
-            assert len(an) == length
-            assert all(l in alphanumeric for l in an)
-
-    def test_excluded(self, alphanumeric):
-        for _ in range(0, 5):
-            an = virtool_core.utils.random_alphanumeric(excluded=["87e9wa"])
-            assert an != "87e9wa"
-            assert len(an) == 6
-            assert all(l in alphanumeric for l in an)
 
 
 @pytest.mark.parametrize("recursive,expected", [

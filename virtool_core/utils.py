@@ -5,41 +5,18 @@ import shutil
 import subprocess
 import tarfile
 from pathlib import Path
-from random import choice
-from string import ascii_letters, ascii_lowercase, digits
-from typing import Union, Iterable
 
 import aiofiles
 import arrow
 
 
-def random_alphanumeric(length: int = 6, mixed_case: bool = False, excluded: Union[None, Iterable[str]] = None) -> str:
-    """
-    Generates a random string composed of letters and numbers.
-    :param length: the length of the string.
-    :param mixed_case: included alpha characters will be mixed case instead of lowercase
-    :param excluded: strings that may not be returned.
-    :return: a random alphanumeric string.
-    """
-    excluded = set(excluded or list())
-
-    characters = digits + (ascii_letters if mixed_case else ascii_lowercase)
-
-    candidate = "".join([choice(characters) for _ in range(length)])
-
-    if candidate not in excluded:
-        return candidate
-
-    return random_alphanumeric(length=length, excluded=excluded)
-
-
 def should_use_pigz(processes: int) -> bool:
     """
-    Decides whether pigz should be used for gzip decompression. If multiple processes are used and pigz is installed,
-    the function evaluates true.
+    Decides whether pigz should be used for gzip decompression.
 
     :param processes: the number of processes to use for decompression
-    :return: a boolean indicating if pigz should be used
+    :return: True if pigz is available and multiple processes
+             should be used, and False otherwise
 
     """
     return bool(processes > 1 and shutil.which("pigz"))
@@ -149,8 +126,8 @@ def decompress_tgz(path: Path, target: Path):
     """
     with tarfile.open(path, "r:gz") as tar:
         tar.extractall(target)
-        
-        
+
+
 def file_stats(path: Path) -> dict:
     """
     Return the size and last modification date for the file at `path`.
@@ -216,8 +193,8 @@ def is_gzipped(path: Path) -> bool:
 
 def timestamp() -> datetime.datetime:
     """
-    Returns a datetime object representing the current UTC time. The last 3 digits of the microsecond frame are set
-    to zero.
+    Returns a datetime object representing the current UTC time.
+    The last 3 digits of the microsecond frame are set to zero.
     :return: a UTC timestamp
     """
     # Get tz-aware datetime object.
