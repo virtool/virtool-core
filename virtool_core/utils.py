@@ -178,6 +178,7 @@ def rm(path: Path, recursive: bool = False) -> bool:
 
 def is_gzipped(path: Path) -> bool:
     """
+
     :param path: path of the file to check
     :return: True if the file is gzipped, else False
     """
@@ -195,6 +196,7 @@ def timestamp() -> datetime.datetime:
     """
     Returns a datetime object representing the current UTC time.
     The last 3 digits of the microsecond frame are set to zero.
+
     :return: a UTC timestamp
     """
     # Get tz-aware datetime object.
