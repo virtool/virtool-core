@@ -10,8 +10,14 @@ API Reference
 
 
 ``virtool_core.utils``
-=====================
+======================
 
 .. automodule:: virtool_core.utils
    :members:
 
+
+``virtool_core.data_model``
+===========================
+
+.. automodule:: virtool_core.data_model
+   :members:
