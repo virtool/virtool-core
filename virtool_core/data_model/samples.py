@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
 
+from pathlib import Path
 from virtool_workflow.analysis.library_types import LibraryType
 
 
@@ -22,6 +23,7 @@ class Sample:
     :param pathoscope: A flag indicating that the sample has
                  a completed pathoscope analysis
     :param files: A list of files associated with the sample
+    :param path: The directory containing the sequencing data files
 
     """
     id: str
@@ -35,10 +37,30 @@ class Sample:
     nuvs: bool = False
     pathoscope: bool = False
     files: List[dict] = field(default_factory=lambda: [])
+    path: Path = None
 
-    def __post_init__(self):
-        self.reads_path = None
-        self.read_paths = None
+    @property
+    def left(self):
+        """
+        The seqencing data for the sample.
+
+        If the sample is paired, this is the first of two
+        compressed fasta files for the sample. Otherwise it
+        is the only fasta file.
+        """
+        return self.path / "reads_1.fq.gz"
+
+    @property
+    def right(self):
+        """
+        The second compressed fasta file containing the sequencing data.
+
+        :return: The path to a compressed fasta file, or None if sample
+                 is not paired.
+        """
+        if not self.paired:
+            return None
+        return self.path / "reads_2.fq.gz"
 
     @property
     def min_length(self) -> Optional[int]:
