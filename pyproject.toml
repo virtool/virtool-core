@@ -20,6 +20,7 @@ aiofiles = "0.7.0"
 arrow = "0.15.5"
 dictdiffer = "0.8.1"
 psutil = "^5.8.0"
+pydantic = "^1.8.2"
 
 
 [tool.poetry.dev-dependencies]
