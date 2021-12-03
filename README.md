@@ -3,43 +3,58 @@
 Core utilities for Virtool and associated packages.
 
 ![Tests](https://github.com/virtool/virtool-core/workflows/Tests/badge.svg?branch=master&event=push)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f04b88f74f2640588ba7dec5022c9b51)](https://www.codacy.com/gh/virtool/virtool-core/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=virtool/virtool-core&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/f04b88f74f2640588ba7dec5022c9b51)](https://www.codacy.com/gh/virtool/virtool-core/dashboard?utm_source=github.com&utm_medium=referral&utm_content=virtool/virtool-core&utm_campaign=Badge_Coverage)
 
 ## Install
 
-### Last Stable Release
+Install `virtool_core` with `pip`:
 
-```shell script
+```
 pip install virtool-core
 ```
 
-### Latest Changes
+## Contributing
 
-```shell script
-pip install git+https://github.com/virtool/virtool-core.git
+### Commits
+
+All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0) specification.
+
+These standardized commit messages are used to automatically publish releases using [`semantic-release`](https://semantic-release.gitbook.io/semantic-release)
+after commits are merged to `main` from successful PRs.
+
+**Example**
+
+```text
+feat: add API support for assigning labels to existing samples
 ```
 
-## Contribute 
+Descriptive bodies and footers are required where necessary to describe the impact of the commit. Use bullets where appropriate.
 
-### Unit Tests
+Additional Requirements
+1. **Write in the imperative**. For example, _"fix bug"_, not _"fixed bug"_ or _"fixes bug"_.
+2. **Don't refer to issues or code reviews**. For example, don't write something like this: _"make style changes requested in review"_.
+Instead, _"update styles to improve accessibility"_.
+3. **Commits are not your personal journal**. For example, don't write something like this: _"got server running again"_
+or _"oops. fixed my code smell"_.
 
-#### Install Tox
+From Tim Pope: [A Note About Git Commit Messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
 
-`tox` is used to run the tests in a fresh virtual environment with all of the test dependencies. To install it use;
+### Tests
 
-```shell script
-pip install tox tox-poetry
-```
+1. Install Tox
 
-#### Run Tests
+   `tox` is used to run the tests in a fresh virtual environment with all of the test dependencies. To install it use;
 
-```shell script
-tox
-```
+   ```shell script
+   pip install tox tox-poetry
+   ```
 
-Any arguments given to tox after a `--` token will be supplied to pytest.
+2. Run Tests
 
+   ```shell script
+   tox
+   ```
+
+Any arguments given to tox after a `--` token will be supplied to pytest:
 ```shell script
 tox -- --log-cli-level=DEBUG
 ```
@@ -48,30 +63,11 @@ tox -- --log-cli-level=DEBUG
 
 For docstrings, use the [**Sphinx** docstring format](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html).
 
-The packages `sphinx_rtd_theme` and `sphinx_autoapi` are used in rendering the documentation. 
-
-```  shell script
-pip install sphinx_rtd_theme sphinx_autoapi
-```
-
-#### Markdown for Sphinx
-
-[recommonmark](https://github.com/readthedocs/recommonmark) is used so that Sphinx can 
-render documentation from *markdown* files as well as *rst* files. It will need to 
-be installed before running `sphinx-build`:
-
-```shell script
-pip install recommonmark
-```
-
-To use sphinx rst [directives](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html) in a *markdown* file use the 
-`eval_rst` [code block](https://recommonmark.readthedocs.io/en/latest/auto_structify.html#embed-restructuredtext)
-
-
-#### Building the documentation
-
+Build the documentation with:
 ```shell script
 cd sphinx && make html
 ```
 
 The rendered HTML files are found under `sphinx/build/html`
+
+
