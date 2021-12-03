@@ -1,31 +1,20 @@
-
 name: Publish
-
 on:
   release:
     types: [published]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     container:
       image: python:3.9-buster
-
     steps:
-        - uses: actions/checkout@v2
-
-
+        - name: Checkout
+          uses: actions/checkout@v2
         - name: Install Poetry
           run: pip install poetry
-
         - name: Bump Version Number
           run: poetry version ${{ github.event.release.tag_name }}
-
         - name: Prepare Distribution
           run: poetry build
-
-        - name: Deploy To PyPi Using Twine
-          run: |
-            pip install twine
-            twine upload -r ${{ secrets.PYPI_REPOSITORY}} --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_TOKEN }} dist/*
+        - name: Publish To PyPI
+          run: poetry publish -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_TOKEN }}
