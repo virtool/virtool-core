@@ -1,12 +1,16 @@
-"""Pydantic models for Virtool resources."""
-from virtool_core.models.analysis import Analysis
-from virtool_core.models.group import Group, Permissions
-from virtool_core.models.user import User, UserMinimal
+import re
 
-__all__ = [
-    "Analysis",
-    "Group",
-    "Permissions",
-    "User",
-    "UserMinimal",
-]
+
+def normalize_hex_color(color: str) -> str:
+    """
+    Validate a hex color and convert all alpha characters to uppercase.
+
+    :param color: the hex color to validate
+
+    """
+    color = color.upper()
+
+    if not re.search(r"^#(?:[\dA-F]{3}){1,2}$", color):
+        raise ValueError("The format of the color code is invalid")
+
+    return color
