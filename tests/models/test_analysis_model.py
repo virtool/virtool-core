@@ -1,7 +1,8 @@
 import pytest
 import json
 from pathlib import Path
-from virtool_core.models import Analysis
+from virtool_core.models.analysis import Analysis
+
 
 @pytest.fixture
 def expected_json_path(test_json_path) -> Path:
@@ -18,9 +19,11 @@ async def test_json_compatibility(expected_json, expected_json_path):
     analysis_from_file = Analysis.parse_file(expected_json_path)
 
     assert analysis == analysis_from_file
-    analysis_dict = analysis.dict(exclude_none=True, exclude = {"created_at", "updated_at"})
-    json_dict = json.loads(expected_json) 
+    analysis_dict = analysis.dict(
+        exclude_none=True, exclude={"created_at", "updated_at"}
+    )
+    json_dict = json.loads(expected_json)
 
-    json_dict = { key: value for key, value in json_dict.items() if key in analysis_dict }
+    json_dict = {key: value for key, value in json_dict.items() if key in analysis_dict}
 
     assert analysis_dict == json_dict

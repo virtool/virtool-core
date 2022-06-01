@@ -1,6 +1,6 @@
-import re
-
 from pydantic import BaseModel, validator
+
+from virtool_core.models import normalize_hex_color
 
 
 class Label(BaseModel):
@@ -10,12 +10,8 @@ class Label(BaseModel):
     id: int
     name: str
 
-    @validator("color")
-    def is_color_valid(cls, color: str) -> str:
-
-        if not re.search(r'^#(?:[\da-fA-F]{3}){1,2}$', color):
-            raise ValueError("The format of the color code is invalid")
-        return color
+    # Validators
+    _normalize_color = validator("color", allow_reuse=True)(normalize_hex_color)
 
 
 LabelMinimal = Label
