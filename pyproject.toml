@@ -23,7 +23,7 @@ dictdiffer = "0.8.1"
 psutil = "^5.8.0"
 pydantic = "^1.8.2"
 coloredlogs = "^15.0.1"
-
+motor = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
@@ -35,6 +35,7 @@ pytest-picked = "^0.4.6"
 pytest-sugar = "^0.9.4"
 pytest-xdist = "^2.2.1"
 black = "^21.11b1"
+syrupy = "^2.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
