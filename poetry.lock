@@ -51,14 +51,14 @@ frozenlist = ">=1.1.0"
 
 [[package]]
 name = "arrow"
-version = "0.15.5"
+version = "1.2.2"
 description = "Better dates & times for Python"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = ">=3.6"
 
 [package.dependencies]
-python-dateutil = "*"
+python-dateutil = ">=2.7.0"
 
 [[package]]
 name = "async-timeout"
@@ -593,7 +593,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8359ff8e2cc16cb461863c937740a57b002c35908ff475f4150415407fc2bc08"
+content-hash = "e978c9107dcd158350153d2c5ea087d2b51181bce4ba2b60926ffbc639d04dff"
 
 [metadata.files]
 aiofiles = [
@@ -683,8 +683,8 @@ aiosignal = [
     {file = "aiosignal-1.2.0.tar.gz", hash = "sha256:78ed67db6c7b7ced4f98e495e572106d5c432a93e1ddd1bf475e1dc05f5b7df2"},
 ]
 arrow = [
-    {file = "arrow-0.15.5-py2.py3-none-any.whl", hash = "sha256:70729bcc831da496ca3cb4b7e89472c8e2d27d398908155e0796179f6d2d41ee"},
-    {file = "arrow-0.15.5.tar.gz", hash = "sha256:5390e464e2c5f76971b60ffa7ee29c598c7501a294bc9f5e6dadcb251a5d027b"},
+    {file = "arrow-1.2.2-py3-none-any.whl", hash = "sha256:d622c46ca681b5b3e3574fcb60a04e5cc81b9625112d5fb2b44220c36c892177"},
+    {file = "arrow-1.2.2.tar.gz", hash = "sha256:05caf1fd3d9a11a1135b2b6f09887421153b94558e5ef4d090b567b47173ac2b"},
 ]
 async-timeout = [
     {file = "async-timeout-4.0.1.tar.gz", hash = "sha256:b930cb161a39042f9222f6efb7301399c87eeab394727ec5437924a36d6eef51"},
