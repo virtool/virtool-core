@@ -10,11 +10,11 @@ class UserMinimal(BaseModel):
     id: str
     handle: str
     administrator: bool
-    force_reset: bool
-    groups: List[Group]
-    last_password_change: datetime
-    primary_group: str
 
 
 class User(UserMinimal):
+    force_reset: bool
+    groups: List[Group]
+    last_password_change: datetime
     permissions: Permissions
+    primary_group: str
