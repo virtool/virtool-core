@@ -3,7 +3,7 @@ from typing import List
 from pydantic import BaseModel, Field
 from datetime import datetime
 from virtool_core.utils import timestamp
-from virtool_core.models import UserMinimal
+from virtool_core.models.user import UserMinimal
 
 
 class NucleotideComposition(BaseModel):
