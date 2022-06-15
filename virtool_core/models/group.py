@@ -5,6 +5,7 @@ class Permissions(BaseModel):
     """
     The permissions possessed by a user and group.
     """
+
     cancel_job: bool = False
     create_ref: bool = False
     create_sample: bool = False
@@ -15,9 +16,9 @@ class Permissions(BaseModel):
     upload_file: bool = False
 
 
-class Group(BaseModel):
-    """
-    A Virtool user group.
-    """
-    permissions: Permissions
+class GroupMinimal(BaseModel):
     id: str
+
+
+class Group(GroupMinimal):
+    permissions: Permissions
