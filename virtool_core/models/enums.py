@@ -10,3 +10,20 @@ class Permission(Enum):
     remove_file = "remove_file"
     remove_job = "remove_job"
     upload_file = "upload_file"
+
+
+class HistoryMethod(Enum):
+    add_isolate = "add_isolate"
+    create = "create"
+    create_sequence = "create_sequence"
+    clone = "clone"
+    edit = "edit"
+    edit_sequence = "edit_sequence"
+    edit_isolate = "edit_isolate"
+    remove = "remove"
+    remote = "remote"
+    remove_isolate = "remove_isolate"
+    remove_sequence = "remove_sequence"
+    import_otu = "import"
+    set_as_default = "set_as_default"
+    update = "update"
