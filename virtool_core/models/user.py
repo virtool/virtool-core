@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -17,4 +17,4 @@ class User(UserMinimal):
     groups: List[GroupMinimal]
     last_password_change: datetime
     permissions: Permissions
-    primary_group: GroupMinimal
+    primary_group: Optional[GroupMinimal]
