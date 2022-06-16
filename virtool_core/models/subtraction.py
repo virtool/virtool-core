@@ -1,17 +1,18 @@
-from typing import List
-
-from pydantic import BaseModel, Field
 from datetime import datetime
-from virtool_core.utils import timestamp
+from typing import List, Optional, Union
+
+from pydantic import BaseModel
+
+from virtool_core.models.upload import UploadMinimal
 from virtool_core.models.user import UserMinimal
 
 
 class NucleotideComposition(BaseModel):
-    a: float = Field(default=0.0)
-    c: float = Field(default=0.0)
-    g: float = Field(default=0.0)
-    t: float = Field(default=0.0)
-    n: float = Field(default=0.0)
+    a: float
+    c: float
+    g: float
+    t: float
+    n: float
 
 
 class SubtractionFile(BaseModel):
@@ -37,14 +38,15 @@ class SubtractionMinimal(BaseModel):
     """
     Minimal Subtraction model used for WebSocked messages and resource listings.
     """
-    count: int
-    created_at: datetime = Field(default_factory=timestamp)
-    file: SubtractionUpload
-    has_file: bool = Field(default=False)
+
+    count: Optional[int] = None
+    created_at: datetime
+    file: Union[UploadMinimal, SubtractionUpload]
+    has_file: bool
     id: str
     name: str
-    nickname: str
-    ready: bool = Field(default=False)
+    nickname: str = ""
+    ready: bool
     user: UserMinimal
 
 
@@ -52,7 +54,8 @@ class Subtraction(SubtractionMinimal):
     """
     Complete Subtraction model.
     """
-    deleted: bool = Field(default=False)
-    linked_samples: List[SubtractionLinkedSample]
+
+    deleted: bool
     files: List[SubtractionFile]
-    gc: NucleotideComposition
+    gc: Optional[NucleotideComposition]
+    linked_samples: List[SubtractionLinkedSample]
