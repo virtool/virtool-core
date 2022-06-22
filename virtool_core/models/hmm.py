@@ -1,6 +1,8 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from pydantic import BaseModel, validator
+
+from virtool_core.models.searchresult import SearchResult
 
 
 class HMMMinimal(BaseModel):
@@ -31,3 +33,8 @@ class HMM(HMMMinimal):
     length: int
     mean_entropy: float
     total_entropy: float
+
+
+class HMMSearchResult(SearchResult):
+    documents: List[HMMMinimal]
+    status: Dict[str, Any]
