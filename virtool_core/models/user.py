@@ -7,10 +7,22 @@ from virtool_core.models.group import Permissions, GroupMinimal
 from virtool_core.models.searchresult import SearchResult
 
 
+class UserB2C(BaseModel):
+    display_name: Optional[str]
+    family_name: Optional[str]
+    given_name: Optional[str]
+    oid: str
+
+
 class UserMinimal(BaseModel):
     id: str
-    handle: str
     administrator: bool
+    handle: str
+    b2c: Optional[UserB2C]
+    b2c_display_name: Optional[str]
+    b2c_family_name: Optional[str]
+    b2c_given_name: Optional[str]
+    b2c_oid: Optional[str]
 
 
 class User(UserMinimal):
