@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from virtool_core.models.enums import HistoryMethod
 from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserMinimal
 from pydantic import BaseModel
 
@@ -31,3 +32,7 @@ class HistoryMinimal(BaseModel):
 
 class History(HistoryMinimal):
     diff: Dict[str, Any]
+
+
+class HistorySearchResult(SearchResult):
+    documents: List[HistoryMinimal]

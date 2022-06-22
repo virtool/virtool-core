@@ -3,6 +3,7 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
+from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.upload import UploadMinimal
 from virtool_core.models.user import UserMinimal
 
@@ -59,3 +60,8 @@ class Subtraction(SubtractionMinimal):
     files: List[SubtractionFile]
     gc: Optional[NucleotideComposition]
     linked_samples: List[SubtractionLinkedSample]
+
+
+class SubtractionSearchResult(SearchResult):
+    ready_count: int
+    documents: List[SubtractionMinimal]
