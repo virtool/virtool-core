@@ -1,42 +1,49 @@
 from datetime import datetime
-from typing import Union
+from typing import List, Optional, Any, Dict
 
-from pydantic import BaseModel, Field, validator
-from virtool_core.utils import timestamp
+from pydantic import BaseModel
+
+from virtool_core.models.index import IndexMinimal
+from virtool_core.models.job import JobMinimal
+from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.searchresult import SearchResult
+from virtool_core.models.subtraction import SubtractionMinimal
+from virtool_core.models.user import UserMinimal
 
 
-class Analysis(BaseModel):
-    _id: str
-    job: Union[str, dict]
-    reference: Union[str, dict]
-    sample: Union[str, dict]
-    subtraction: Union[str, dict]
-    user: Union[str, dict]
-    cache: Union[str, dict]
-    index: Union[str, dict]
+class AnalysisSample(BaseModel):
+    id: str
+
+
+class AnalysisMinimal(BaseModel):
+    created_at: datetime
+    id: str
+    index: IndexMinimal
+    job: JobMinimal
+    ready: bool
+    reference: ReferenceMinimal
+    sample: AnalysisSample
+    subtractions: List[SubtractionMinimal]
+    updated_at: datetime
+    user: UserMinimal
     workflow: str
-    quality: dict = None
-    results: dict = None
-    ready: bool = False
-    created_at: datetime = Field(default_factory=timestamp)
-    updated_at: datetime = Field(default_factory=timestamp)
 
-    @validator(
-        "job", 
-        "sample", 
-        "reference", 
-        "subtraction",
-        "user",
-        "cache",
-        "index",
-        allow_reuse=True
-    )
-    def correct_dict_structure(cls, value):
-        if isinstance(value, str):
-            return {
-                "id": value
-            }
 
-        assert "id" in value
+class AnalysisFile(BaseModel):
+    analysis: str
+    description: Optional[str] = None
+    format: str
+    id: int
+    name: str
+    name_on_disk: str
+    size: int
+    uploaded_at: datetime
 
-        return value
+
+class Analysis(AnalysisMinimal):
+    files: List[AnalysisFile]
+    results: Optional[Dict[str, Any]]
+
+
+class AnalysisSearchResult(SearchResult):
+    documents: List[AnalysisMinimal]
