@@ -11,7 +11,7 @@ class ReferenceClonedFrom(BaseModel):
     name: str
 
 
-class ReferenceDataType(enum.Enum):
+class ReferenceDataType(str, enum.Enum):
     barcode = "barcode"
     genome = "genome"
 

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Permission(Enum):
+class Permission(str, Enum):
     cancel_job = "cancel_job"
     create_ref = "create_ref"
     create_sample = "create_sample"
@@ -12,7 +12,7 @@ class Permission(Enum):
     upload_file = "upload_file"
 
 
-class HistoryMethod(Enum):
+class HistoryMethod(str, Enum):
     add_isolate = "add_isolate"
     create = "create"
     create_sequence = "create_sequence"
