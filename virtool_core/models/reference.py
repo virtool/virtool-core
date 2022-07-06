@@ -67,12 +67,15 @@ class ReferenceBuild(BaseModel):
     has_json: bool
 
 
-class ReferenceMinimal(BaseModel):
+class ReferenceNested(BaseModel):
+    id: str
+
+
+class ReferenceMinimal(ReferenceNested):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
     data_type: ReferenceDataType
     groups: List[ReferenceUser]
-    id: str
     installed: ReferenceInstalled = None
     internal_control: str
     latest_build: ReferenceBuild

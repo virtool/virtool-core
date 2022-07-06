@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 
 from virtool_core.models.enums import HistoryMethod
-from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserMinimal
 from pydantic import BaseModel
@@ -26,7 +26,7 @@ class HistoryMinimal(BaseModel):
     index: HistoryIndex
     method_name: HistoryMethod
     otu: HistoryOTU
-    reference: ReferenceMinimal
+    reference: ReferenceNested
     user: UserMinimal
 
 
