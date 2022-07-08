@@ -27,3 +27,9 @@ class HistoryMethod(str, Enum):
     import_otu = "import"
     set_as_default = "set_as_default"
     update = "update"
+
+
+class QuickAnalyzeWorkflow(str, Enum):
+    aodp = "aodp"
+    nuvs = "nuvs"
+    pathoscope_bowtie = "pathoscope_bowtie"
