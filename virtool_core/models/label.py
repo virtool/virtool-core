@@ -3,14 +3,16 @@ from pydantic import BaseModel, validator
 from virtool_core.models import normalize_hex_color
 
 
-class Label(BaseModel):
+class LabelNested(BaseModel):
     color: str
-    count: int
     description: str
     id: int
     name: str
 
-    # Validators
+
+class Label(LabelNested):
+    count: int
+
     _normalize_color = validator("color", allow_reuse=True)(normalize_hex_color)
 
 

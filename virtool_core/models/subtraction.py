@@ -35,7 +35,12 @@ class SubtractionLinkedSample(BaseModel):
     name: str
 
 
-class SubtractionMinimal(BaseModel):
+class SubtractionNested(BaseModel):
+    id: str
+    name: str
+
+
+class SubtractionMinimal(SubtractionNested):
     """
     Minimal Subtraction model used for WebSocked messages and resource listings.
     """
@@ -44,8 +49,6 @@ class SubtractionMinimal(BaseModel):
     created_at: datetime
     file: Union[UploadMinimal, SubtractionUpload]
     has_file: bool
-    id: str
-    name: str
     nickname: str = ""
     ready: bool
     user: UserMinimal
