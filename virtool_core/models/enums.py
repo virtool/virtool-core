@@ -33,3 +33,10 @@ class QuickAnalyzeWorkflow(str, Enum):
     aodp = "aodp"
     nuvs = "nuvs"
     pathoscope_bowtie = "pathoscope_bowtie"
+
+
+class LibraryType(str, Enum):
+    amplicon = "amplicon"
+    srna = "srna"
+    other = "other"
+    normal = "normal"
