@@ -1,6 +1,11 @@
-from typing import Optional
+from __future__ import annotations
+from typing import Optional, List, TYPE_CHECKING
 
 from pydantic import BaseModel, validator, constr
+
+
+if TYPE_CHECKING:
+    from virtool_core.models.user import UserMinimal
 
 
 class Permissions(BaseModel):
@@ -25,6 +30,7 @@ class GroupMinimal(BaseModel):
 class Group(GroupMinimal):
     permissions: Permissions
     name: Optional[constr(min_length=1)]
+    users: List[UserMinimal]
 
     @validator("name", always=True)
     def check_name(cls, name, values):

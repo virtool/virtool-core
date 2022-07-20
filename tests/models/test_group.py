@@ -18,7 +18,8 @@ def mock_group():
             "remove_file": False,
             "remove_job": False,
             "upload_file": False
-        }
+        },
+        "users": []
     }
 
 
