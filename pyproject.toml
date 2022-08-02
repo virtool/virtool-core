@@ -24,6 +24,7 @@ psutil = "^5.8.0"
 pydantic = "^1.8.2"
 coloredlogs = "^15.0.1"
 motor = "^2.4.0"
+email-validator = "^1.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
