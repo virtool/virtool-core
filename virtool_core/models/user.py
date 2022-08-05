@@ -14,10 +14,13 @@ class UserB2C(BaseModel):
     oid: str
 
 
-class UserMinimal(BaseModel):
+class UserNested(BaseModel):
     id: str
     administrator: bool
     handle: str
+
+
+class UserMinimal(UserNested):
     b2c: Optional[UserB2C]
     b2c_display_name: Optional[str]
     b2c_family_name: Optional[str]
