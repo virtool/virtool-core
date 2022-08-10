@@ -2,7 +2,7 @@ from typing import Optional
 
 from virtool_core.models.enums import QuickAnalyzeWorkflow
 from virtool_core.models.user import User
-from pydantic import BaseModel, constr, validator
+from pydantic import BaseModel, constr, validator, Field
 from email_validator import validate_email, EmailSyntaxError
 
 
@@ -27,6 +27,6 @@ class AccountSettings(BaseModel):
 
 class Account(User):
     settings: AccountSettings
-    email: constr(strip_whitespace=True)
+    email: Optional[constr(strip_whitespace=True)] = Field(default="")
 
     _email_validation = validator("email", allow_reuse=True)(check_email)
