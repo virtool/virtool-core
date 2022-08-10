@@ -10,12 +10,13 @@ def check_email(email: Optional[str]) -> str:
     """
     Checks if the given email is valid.
     """
-    try:
-        validate_email(email)
-    except EmailSyntaxError:
-        raise ValueError("The format of the email is invalid")
+    if email:
+        try:
+            validate_email(email)
+        except EmailSyntaxError:
+            raise ValueError("The format of the email is invalid")
 
-    return email
+        return email
 
 
 class AccountSettings(BaseModel):
