@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Any, List
 
 from virtool_core.models.enums import HistoryMethod
 from virtool_core.models.reference import ReferenceNested
@@ -31,7 +31,7 @@ class HistoryMinimal(BaseModel):
 
 
 class History(HistoryMinimal):
-    diff: Dict[str, Any]
+    diff: Any
 
 
 class HistorySearchResult(SearchResult):
