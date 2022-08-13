@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Dict, Any
 
-from pydantic import BaseModel
+from virtool_core.models.basemodel import BaseModel
 
 
 class Task(BaseModel):

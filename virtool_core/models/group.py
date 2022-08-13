@@ -1,7 +1,8 @@
 from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 
-from pydantic import BaseModel, validator, constr
+from pydantic import validator, constr
+from virtool_core.models.basemodel import BaseModel
 
 
 if TYPE_CHECKING:
@@ -38,4 +39,3 @@ class GroupMinimal(BaseModel):
 class Group(GroupMinimal):
     permissions: Permissions
     users: List[UserMinimal]
-
