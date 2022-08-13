@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import List, Union, Optional
 
-from pydantic import BaseModel
-
+from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.history import HistoryMinimal
 from virtool_core.models.reference import ReferenceMinimal
 from virtool_core.models.user import UserMinimal

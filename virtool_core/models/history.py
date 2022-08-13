@@ -5,7 +5,7 @@ from virtool_core.models.enums import HistoryMethod
 from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserMinimal
-from pydantic import BaseModel
+from virtool_core.models.basemodel import BaseModel
 
 
 class HistoryIndex(BaseModel):

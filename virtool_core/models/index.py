@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import List, Dict
 
-from pydantic import BaseModel
-
 from virtool_core.models.job import JobMinimal
 from virtool_core.models.reference import ReferenceMinimal
 from virtool_core.models.user import UserMinimal
+from virtool_core.models.basemodel import BaseModel
 
 
 class IndexMinimal(BaseModel):

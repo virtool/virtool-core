@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, Any, Dict
 
-from pydantic import BaseModel
-
+from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.index import IndexMinimal
 from virtool_core.models.job import JobMinimal
 from virtool_core.models.reference import ReferenceMinimal
