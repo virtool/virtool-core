@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from virtool_core.models.basemodel import BaseModel
 
 
 class SearchResult(BaseModel):

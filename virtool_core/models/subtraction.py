@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import List, Optional, Union
 
-from pydantic import BaseModel
-
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.upload import UploadMinimal
 from virtool_core.models.user import UserMinimal
+from virtool_core.models.basemodel import BaseModel
 
 
 class NucleotideComposition(BaseModel):

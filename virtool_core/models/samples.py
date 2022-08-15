@@ -1,12 +1,13 @@
 from datetime import datetime
 from typing import List, Union
 
-from pydantic import BaseModel
 
 from virtool_core.models.enums import LibraryType
 from virtool_core.models.label import LabelNested
+from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.subtraction import SubtractionNested
 from virtool_core.models.user import UserMinimal
+from virtool_core.models.basemodel import BaseModel
 
 
 class SampleID(BaseModel):
@@ -77,3 +78,7 @@ class Sample(SampleMinimal):
     paired: bool
     quality: Quality
     reads: List[Read]
+
+
+class SampleSearchResult(SearchResult):
+    documents: List[SampleMinimal]

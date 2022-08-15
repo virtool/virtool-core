@@ -40,3 +40,10 @@ class LibraryType(str, Enum):
     srna = "srna"
     other = "other"
     normal = "normal"
+
+
+class ReferencePermission(str, Enum):
+    build = "build"
+    modify = "modify"
+    modify_otu = "modify_otu"
+    remove = "remove"

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from virtool_core.models.basemodel import BaseModel
 
 from virtool_core.models.group import Permissions, GroupMinimal
 from virtool_core.models.searchresult import SearchResult
@@ -14,10 +14,13 @@ class UserB2C(BaseModel):
     oid: str
 
 
-class UserMinimal(BaseModel):
+class UserNested(BaseModel):
     id: str
     administrator: bool
     handle: str
+
+
+class UserMinimal(UserNested):
     b2c: Optional[UserB2C]
     b2c_display_name: Optional[str]
     b2c_family_name: Optional[str]
