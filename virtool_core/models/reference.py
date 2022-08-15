@@ -71,7 +71,11 @@ class ReferenceNested(BaseModel):
     id: str
 
 
-class ReferenceMinimal(ReferenceNested):
+class AnalysisReference(ReferenceNested):
+    name: str
+
+
+class ReferenceMinimal(AnalysisReference):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
     data_type: ReferenceDataType
@@ -79,7 +83,6 @@ class ReferenceMinimal(ReferenceNested):
     installed: ReferenceInstalled = None
     internal_control: str
     latest_build: ReferenceBuild
-    name: str
     organism: str
     otu_count: int
     release: ReferenceRelease = None

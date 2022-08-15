@@ -3,9 +3,9 @@ from typing import List, Optional, Any, Dict
 
 from pydantic import BaseModel
 
-from virtool_core.models.index import IndexMinimal
-from virtool_core.models.job import JobMinimal
-from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.index import IndexNested
+from virtool_core.models.job import JobNested
+from virtool_core.models.reference import AnalysisReference
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.subtraction import SubtractionMinimal
 from virtool_core.models.user import UserMinimal
@@ -18,10 +18,10 @@ class AnalysisSample(BaseModel):
 class AnalysisMinimal(BaseModel):
     created_at: datetime
     id: str
-    index: IndexMinimal
-    job: JobMinimal
+    index: IndexNested
+    job: JobNested
     ready: bool
-    reference: ReferenceMinimal
+    reference: AnalysisReference
     sample: AnalysisSample
     subtractions: List[SubtractionMinimal]
     updated_at: datetime
