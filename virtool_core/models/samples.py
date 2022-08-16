@@ -25,7 +25,6 @@ class SampleMinimal(SampleID):
     nuvs: bool
     pathoscope: bool
     ready: bool
-    subtractions: List[SubtractionNested]
     user: UserMinimal
 
 
@@ -78,6 +77,7 @@ class Sample(SampleMinimal):
     paired: bool
     quality: Quality
     reads: List[Read]
+    subtractions: List[SubtractionNested]
 
 
 class SampleSearchResult(SearchResult):
