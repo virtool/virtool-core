@@ -30,10 +30,13 @@ class JobArgs(BaseModel):
     workflow: str
 
 
-class JobMinimal(BaseModel):
+class JobNested(BaseModel):
+    id: str
+
+
+class JobMinimal(JobNested):
     archived: bool = False
     created_at: datetime
-    id: str
     progress: int
     rights: Dict
     stage: str

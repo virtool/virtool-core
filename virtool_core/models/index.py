@@ -7,16 +7,19 @@ from virtool_core.models.user import UserMinimal
 from virtool_core.models.basemodel import BaseModel
 
 
-class IndexMinimal(BaseModel):
+class IndexNested(BaseModel):
+    id: str
+    version: int
+
+
+class IndexMinimal(IndexNested):
     change_count: int
     created_at: datetime
     has_files: bool
-    id: str
     job: JobMinimal
     modified_otu_count: int
     reference: ReferenceMinimal
     user: UserMinimal
-    version: int
 
 
 class IndexContributor(UserMinimal):
