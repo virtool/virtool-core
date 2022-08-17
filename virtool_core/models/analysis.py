@@ -36,7 +36,7 @@ class AnalysisFile(BaseModel):
     name: str
     name_on_disk: str
     size: int
-    uploaded_at: datetime
+    uploaded_at: Optional[datetime]
 
 
 class Analysis(AnalysisMinimal):
