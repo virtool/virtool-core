@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, Any, Dict
 
-from pydantic import validator, root_validator
+from pydantic import root_validator
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.index import IndexNested
