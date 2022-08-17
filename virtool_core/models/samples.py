@@ -1,6 +1,5 @@
 from datetime import datetime
-from typing import List, Union
-
+from typing import List, Union, Optional
 
 from virtool_core.models.enums import LibraryType
 from virtool_core.models.label import LabelNested
@@ -75,7 +74,7 @@ class Sample(SampleMinimal):
     is_legacy: bool
     locale: str
     paired: bool
-    quality: Quality
+    quality: Optional[Quality]
     reads: List[Read]
     subtractions: List[SubtractionNested]
 
