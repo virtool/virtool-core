@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import List, Optional, Any, Dict
 
+from pydantic import validator, root_validator
+
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.index import IndexNested
 from virtool_core.models.job import JobNested
@@ -26,6 +28,12 @@ class AnalysisMinimal(BaseModel):
     updated_at: datetime
     user: UserMinimal
     workflow: str
+
+    @root_validator(pre=True)
+    def check_updated_at(cls, values):
+        if "updated_at" not in values:
+            values["updated_at"] = values["created_at"]
+        return values
 
 
 class AnalysisFile(BaseModel):
