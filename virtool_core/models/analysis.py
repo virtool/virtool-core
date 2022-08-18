@@ -43,7 +43,7 @@ class AnalysisFile(BaseModel):
     id: int
     name: str
     name_on_disk: str
-    size: int
+    size: Optional[int]
     uploaded_at: Optional[datetime]
 
 
