@@ -29,7 +29,7 @@ class SubtractionUpload(BaseModel):
     name: str
 
 
-class SubtractionLinkedSample(BaseModel):
+class SampleNested(BaseModel):
     id: str
     name: str
 
@@ -61,7 +61,7 @@ class Subtraction(SubtractionMinimal):
     deleted: bool
     files: List[SubtractionFile]
     gc: Optional[NucleotideComposition]
-    linked_samples: List[SubtractionLinkedSample]
+    linked_samples: List[SampleNested]
 
 
 class SubtractionSearchResult(SearchResult):
