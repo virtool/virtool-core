@@ -29,7 +29,7 @@ class JobMinimal(JobNested):
     archived: bool
     created_at: datetime
     progress: int
-    stage: str
+    stage: Optional[str]
     state: str
     user: UserNested
     workflow: str
