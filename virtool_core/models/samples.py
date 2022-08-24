@@ -14,13 +14,16 @@ class SampleID(BaseModel):
     id: str
 
 
-class SampleMinimal(SampleID):
+class SampleNested(SampleID):
+    name: str
+
+
+class SampleMinimal(SampleNested):
     created_at: datetime
     host: str
     isolate: str
     labels: List[LabelNested]
     library_type: LibraryType
-    name: str
     notes: str
     nuvs: bool
     pathoscope: bool
