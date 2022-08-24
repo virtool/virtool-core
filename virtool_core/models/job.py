@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Dict, Any, Optional
 
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserNested
 
 
@@ -40,3 +41,7 @@ class Job(JobMinimal):
     args: Dict[str, Any]
     rights: Dict
     status: List[JobStatus]
+
+
+class JobSearchResult(SearchResult):
+    documents: List[JobMinimal]
