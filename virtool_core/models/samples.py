@@ -25,7 +25,7 @@ class SampleMinimal(SampleID):
     nuvs: bool
     pathoscope: bool
     ready: bool
-    user: UserMinimal
+    user: UserNested
 
 
 class Quality(BaseModel):
