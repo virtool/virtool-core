@@ -43,7 +43,7 @@ class Job(JobMinimal):
     status: List[JobStatus]
 
 
-class JobAcquire(Job):
+class JobAcquired(Job):
     key: str
 
 
