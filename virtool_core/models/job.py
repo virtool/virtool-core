@@ -43,5 +43,10 @@ class Job(JobMinimal):
     status: List[JobStatus]
 
 
+class JobAcquired(Job):
+    key: str
+
+
 class JobSearchResult(SearchResult):
+    counts: Dict
     documents: List[JobMinimal]
