@@ -1,10 +1,11 @@
 from __future__ import annotations
 from datetime import datetime
-from typing import List, Union, TYPE_CHECKING
+from typing import List, Union, TYPE_CHECKING, Optional
 
 from virtool_core.models.enums import LibraryType
 from virtool_core.models.label import LabelNested
 from virtool_core.models.searchresult import SearchResult
+from virtool_core.models.upload import Upload
 from virtool_core.models.user import UserMinimal
 from virtool_core.models.basemodel import BaseModel
 
