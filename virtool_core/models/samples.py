@@ -1,13 +1,16 @@
+from __future__ import annotations
 from datetime import datetime
-from typing import List, Union
-
+from typing import List, Union, TYPE_CHECKING
 
 from virtool_core.models.enums import LibraryType
 from virtool_core.models.label import LabelNested
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.subtraction import SubtractionNested
 from virtool_core.models.user import UserMinimal
 from virtool_core.models.basemodel import BaseModel
+
+
+if TYPE_CHECKING:
+    from virtool_core.models.subtraction import SubtractionNested
 
 
 class SampleID(BaseModel):

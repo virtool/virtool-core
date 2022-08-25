@@ -1,9 +1,13 @@
 import re
 from . import user
 from . import group
+from . import samples
+from . import subtraction
 
 
 group.Group.update_forward_refs(UserMinimal=user.UserMinimal)
+samples.SampleMinimal.update_forward_refs(SubtractionNested=subtraction.SubtractionNested)
+subtraction.Subtraction.update_forward_refs(SampleNested=samples.SampleNested)
 
 
 def normalize_hex_color(color: str) -> str:
