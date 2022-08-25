@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import List, Optional, Any, Dict
 
+from pydantic import root_validator
+
 from virtool_core.models.basemodel import BaseModel
-from virtool_core.models.index import IndexMinimal
-from virtool_core.models.job import JobMinimal
-from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.index import IndexNested
+from virtool_core.models.job import JobNested
+from virtool_core.models.reference import AnalysisReference
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.subtraction import SubtractionMinimal
+from virtool_core.models.subtraction import SubtractionNested
 from virtool_core.models.user import UserMinimal
 
 
@@ -17,15 +19,21 @@ class AnalysisSample(BaseModel):
 class AnalysisMinimal(BaseModel):
     created_at: datetime
     id: str
-    index: IndexMinimal
-    job: JobMinimal
+    index: IndexNested
+    job: JobNested
     ready: bool
-    reference: ReferenceMinimal
+    reference: AnalysisReference
     sample: AnalysisSample
-    subtractions: List[SubtractionMinimal]
+    subtractions: List[SubtractionNested]
     updated_at: datetime
     user: UserMinimal
     workflow: str
+
+    @root_validator(pre=True)
+    def check_updated_at(cls, values):
+        if "updated_at" not in values:
+            values["updated_at"] = values["created_at"]
+        return values
 
 
 class AnalysisFile(BaseModel):
@@ -35,8 +43,8 @@ class AnalysisFile(BaseModel):
     id: int
     name: str
     name_on_disk: str
-    size: int
-    uploaded_at: datetime
+    size: Optional[int]
+    uploaded_at: Optional[datetime]
 
 
 class Analysis(AnalysisMinimal):

@@ -8,7 +8,6 @@ from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserMinimal
 from virtool_core.models.basemodel import BaseModel
 
-
 if TYPE_CHECKING:
     from virtool_core.models.subtraction import SubtractionNested
 
@@ -31,7 +30,6 @@ class SampleMinimal(SampleNested):
     nuvs: bool
     pathoscope: bool
     ready: bool
-    subtractions: List[SubtractionNested]
     user: UserMinimal
 
 
@@ -52,7 +50,7 @@ class Read(BaseModel):
     name_on_disk: str
     sample: str
     size: int
-    upload: None
+    upload: Optional[Upload]
     uploaded_at: datetime
 
 
@@ -82,8 +80,9 @@ class Sample(SampleMinimal):
     is_legacy: bool
     locale: str
     paired: bool
-    quality: Quality
+    quality: Optional[Quality]
     reads: List[Read]
+    subtractions: List[SubtractionNested]
 
 
 class SampleSearchResult(SearchResult):

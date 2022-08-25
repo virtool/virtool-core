@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Any, Optional
 
-from virtool_core.models.user import UserMinimal
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.searchresult import SearchResult
+from virtool_core.models.user import UserNested
 
 
 class JobError(BaseModel):
@@ -12,37 +13,40 @@ class JobError(BaseModel):
 
 
 class JobStatus(BaseModel):
-    error: JobError = None
+    error: Optional[JobError] = None
     progress: int
-    stage: str = None
+    stage: Optional[str] = None
     state: str
-    step_description: str = None
-    step_name: str = None
+    step_description: Optional[str] = None
+    step_name: Optional[str] = None
     timestamp: datetime
 
 
-class JobArgs(BaseModel):
-    analysis_id: str
-    index_id: str
-    name: str = None
-    sample_id: str
-    username: str
-    workflow: str
-
-
-class JobMinimal(BaseModel):
-    archived: bool = False
-    created_at: datetime
+class JobNested(BaseModel):
     id: str
+
+
+class JobMinimal(JobNested):
+    archived: bool
+    created_at: datetime
     progress: int
-    rights: Dict
-    stage: str
+    stage: Optional[str]
     state: str
-    status: List[JobStatus]
-    user: UserMinimal
+    user: UserNested
     workflow: str
 
 
 class Job(JobMinimal):
     acquired: bool = False
-    args: JobArgs
+    args: Dict[str, Any]
+    rights: Dict
+    status: List[JobStatus]
+
+
+class JobAcquired(Job):
+    key: str
+
+
+class JobSearchResult(SearchResult):
+    counts: Dict
+    documents: List[JobMinimal]
