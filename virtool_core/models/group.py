@@ -1,9 +1,10 @@
 from __future__ import annotations
+
 from typing import Optional, List, TYPE_CHECKING
 
 from pydantic import validator, constr
-from virtool_core.models.basemodel import BaseModel
 
+from virtool_core.models.basemodel import BaseModel
 
 if TYPE_CHECKING:
     from virtool_core.models.user import UserMinimal

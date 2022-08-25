@@ -2,8 +2,8 @@ from typing import List, Dict, Any
 
 from pydantic import validator
 
-from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.searchresult import SearchResult
 
 
 class HMMMinimal(BaseModel):

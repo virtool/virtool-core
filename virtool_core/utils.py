@@ -54,13 +54,7 @@ def compress_file_with_pigz(path: Path, target: Path, processes: int):
     :param target: path where the compressed file should be stored
     :param processes: number of processes allowable for pigz (-p argument)
     """
-    command = [
-        "pigz",
-        "-p", str(processes),
-        "-k",
-        "--stdout",
-        path
-    ]
+    command = ["pigz", "-p", str(processes), "-k", "--stdout", path]
 
     with open(target, "wb") as f:
         subprocess.call(command, stdout=f)
@@ -103,14 +97,7 @@ def decompress_file_with_pigz(path: Path, target: Path, processes: int):
     :param target: path for the newly decompressed file to be stored
     :param processes: the number of allowable processes for pigz (-p argument)
     """
-    command = [
-        "pigz",
-        "-p", str(processes),
-        "-d",
-        "-k",
-        "--stdout",
-        path
-    ]
+    command = ["pigz", "-p", str(processes), "-d", "-k", "--stdout", path]
 
     with open(target, "w") as f:
         subprocess.call(command, stdout=f)
@@ -137,10 +124,7 @@ def file_stats(path: Path) -> dict:
     """
     stats = os.stat(path)
 
-    return {
-        "size": stats.st_size,
-        "modify": arrow.get(stats.st_mtime).datetime
-    }
+    return {"size": stats.st_size, "modify": arrow.get(stats.st_mtime).datetime}
 
 
 async def file_length(path: Path) -> int:

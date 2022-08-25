@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import List, Optional
 
 from virtool_core.models.basemodel import BaseModel
-
 from virtool_core.models.group import Permissions, GroupMinimal
 from virtool_core.models.searchresult import SearchResult
 
