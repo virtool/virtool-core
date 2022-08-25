@@ -1,10 +1,15 @@
+from __future__ import annotations
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import List, Optional, Union, TYPE_CHECKING
 
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.upload import UploadMinimal
 from virtool_core.models.user import UserMinimal
 from virtool_core.models.basemodel import BaseModel
+
+
+if TYPE_CHECKING:
+    from virtool_core.models.samples import SampleNested
 
 
 class NucleotideComposition(BaseModel):
@@ -26,11 +31,6 @@ class SubtractionFile(BaseModel):
 
 class SubtractionUpload(BaseModel):
     id: int
-    name: str
-
-
-class SubtractionLinkedSample(BaseModel):
-    id: str
     name: str
 
 
@@ -61,7 +61,7 @@ class Subtraction(SubtractionMinimal):
     deleted: bool
     files: List[SubtractionFile]
     gc: Optional[NucleotideComposition]
-    linked_samples: List[SubtractionLinkedSample]
+    linked_samples: List[SampleNested]
 
 
 class SubtractionSearchResult(SearchResult):
