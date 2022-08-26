@@ -3,8 +3,6 @@ from __future__ import annotations
 from datetime import datetime
 from typing import List, Union, TYPE_CHECKING, Optional
 
-from pydantic import Field
-
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
 from virtool_core.models.label import LabelNested
