@@ -1,5 +1,7 @@
-from pydantic import validator
 from typing import Optional
+
+from pydantic import validator
+
 from virtool_core.models.basemodel import BaseModel
 
 VALID_SEQUENCE = frozenset("cagntCAGNT")

@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import sys
-
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
 
@@ -91,8 +90,7 @@ async def resubscribe(redis: Redis, redis_channel_name: str) -> Channel:
 
 @asynccontextmanager
 async def configure_redis(
-        redis_connection_string: str,
-        timeout: int = 1
+    redis_connection_string: str, timeout: int = 1
 ) -> AsyncGenerator[Redis, None]:
     """Prepare a redis connection."""
     redis = None

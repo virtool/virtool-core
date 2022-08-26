@@ -1,7 +1,7 @@
 from pydantic import validator
 
-from virtool_core.models.validators import normalize_hex_color
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.validators import normalize_hex_color
 
 
 class LabelNested(BaseModel):

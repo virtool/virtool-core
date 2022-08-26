@@ -1,13 +1,14 @@
 from __future__ import annotations
+
 from datetime import datetime
 from typing import List, Union, TYPE_CHECKING, Optional
 
+from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
 from virtool_core.models.label import LabelNested
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.upload import Upload
-from virtool_core.models.user import UserMinimal
-from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.user import UserNested
 
 if TYPE_CHECKING:
     from virtool_core.models.subtraction import SubtractionNested
@@ -31,7 +32,7 @@ class SampleMinimal(SampleNested):
     nuvs: bool
     pathoscope: bool
     ready: bool
-    user: UserMinimal
+    user: UserNested
 
 
 class Quality(BaseModel):

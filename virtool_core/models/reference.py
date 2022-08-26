@@ -1,10 +1,10 @@
+import enum
 from datetime import datetime
 from typing import List, Any
-import enum
 
-from virtool_core.models.user import UserMinimal
-from virtool_core.models.task import Task
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.task import Task
+from virtool_core.models.user import UserMinimal
 
 
 class ReferenceClonedFrom(BaseModel):
