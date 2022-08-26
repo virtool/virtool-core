@@ -29,8 +29,6 @@ class Job:
 
     :param id: Unique ID for the job
     :param args: A dictionary of arguments
-    :param mem: The maximum amount of memory in GB
-    :param proc: The maximum number of processes
     :param status: A list of :class:`Status` objects
     :param task: The name of the workflow which is used to
                  execute the job
@@ -38,8 +36,6 @@ class Job:
     """
     id: str
     args: dict
-    mem: int = 8
-    proc: int = 4
     status: List[Status] = field(default_factory=lambda: [])
     task: str = None
     key: str = None
