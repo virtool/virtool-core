@@ -11,7 +11,7 @@ class HMMMinimal(BaseModel):
     cluster: int
     count: int
     families: Dict[str, int]
-    name: List[str]
+    names: List[str]
 
     @validator("name")
     def is_name_valid(cls, name: List[str]) -> List[str]:
