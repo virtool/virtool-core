@@ -29,8 +29,8 @@ class SampleMinimal(SampleNested):
     labels: List[LabelNested]
     library_type: LibraryType
     notes: str
-    nuvs: Union[str, bool]
-    pathoscope: Union[str, bool]
+    nuvs: Union[bool, str]
+    pathoscope: Union[bool, str]
     ready: bool
     user: UserNested
 
