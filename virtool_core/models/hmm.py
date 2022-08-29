@@ -1,9 +1,49 @@
+from datetime import datetime
 from typing import List, Dict, Any
 
 from pydantic import validator
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
+from virtool_core.models.task import Task
+from virtool_core.models.user import UserNested
+
+
+class HMMInstalled(BaseModel):
+    body: str
+    created_at: datetime
+    filename: str
+    html_url: str
+    id: int
+    name: str
+    newer: bool
+    published_at: datetime
+    ready: bool
+    size: int
+    user: UserNested
+
+
+class HMMRelease(BaseModel):
+    body: str
+    content_type: str
+    download_url: str
+    etag: str
+    filename: str
+    html_url: str
+    id: int
+    name: str
+    newer: bool
+    published_at: datetime
+    retrieved_at: datetime
+    size: int
+
+
+class HMMStatus(BaseModel):
+    errors: List[str]
+    installed: HMMInstalled
+    release: HMMRelease
+    task: Task
+    updating: bool
 
 
 class HMMMinimal(BaseModel):
