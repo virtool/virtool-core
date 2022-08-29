@@ -13,11 +13,12 @@ class HMMMinimal(BaseModel):
     families: Dict[str, int]
     names: List[str]
 
-    @validator("name")
-    def is_name_valid(cls, name: List[str]) -> List[str]:
-        if len(name) > 3:
+    @validator("names")
+    def is_name_valid(cls, names: List[str]) -> List[str]:
+        if len(names) > 3:
             raise ValueError("The length of name should be a maximum of 3")
-        return name
+
+        return names
 
 
 class HMMSequenceEntry(BaseModel):

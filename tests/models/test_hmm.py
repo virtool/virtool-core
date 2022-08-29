@@ -10,7 +10,11 @@ def test_hmm_model():
     """
 
     HMMMinimal(
-        id="foo", cluster=899, count=45, families={"virus": 19}, name=["ryan", "blake"]
+        id="foo",
+        cluster=899,
+        count=45,
+        families={"virus": 19},
+        names=["replicase", "polymerase"],
     )
 
     with pytest.raises(ValueError) as err:
@@ -19,6 +23,6 @@ def test_hmm_model():
             cluster=899,
             count=45,
             families={"virus": 19},
-            name=["john", "kelly", "tris", "ian"],
+            names=["replicase", "protease", "capsid", "transcriptase"],
         )
         assert "The length of name should be a maximum of 3" in str(err)
