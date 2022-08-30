@@ -71,7 +71,6 @@ class HMMSequenceEntry(BaseModel):
 class HMM(HMMMinimal):
     entries: List[HMMSequenceEntry]
     genera: Dict[str, int]
-    hidden: bool
     length: int
     mean_entropy: float
     total_entropy: float
