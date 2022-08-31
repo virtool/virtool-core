@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from pydantic import validator
 
@@ -40,9 +40,9 @@ class HMMRelease(BaseModel):
 
 class HMMStatus(BaseModel):
     errors: List[str]
-    installed: HMMInstalled
-    release: HMMRelease
-    task: Task
+    installed: Optional[HMMInstalled]
+    release: Optional[HMMRelease]
+    task: Optional[Task]
     updating: bool
 
 
