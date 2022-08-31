@@ -32,6 +32,6 @@ class AccountSettings(BaseModel):
 
 class Account(User):
     settings: AccountSettings
-    email: Optional[constr(strip_whitespace=True)] = None
+    email: Optional[constr(strip_whitespace=True)]
 
     _email_validation = validator("email", allow_reuse=True)(check_email)
