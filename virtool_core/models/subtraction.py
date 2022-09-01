@@ -48,7 +48,7 @@ class SubtractionMinimal(SubtractionNested):
     file: SubtractionUpload
     nickname: str
     ready: bool
-    user: UserNested
+    user: Optional[UserNested]
 
 
 class Subtraction(SubtractionMinimal):
