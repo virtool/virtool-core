@@ -28,7 +28,7 @@ class SubtractionFile(BaseModel):
     type: str
 
 
-class SubtractionUpload:
+class SubtractionUpload(BaseModel):
     id: Union[int, str]
     name: str
 
