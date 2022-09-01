@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional, Union, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING, Union
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.upload import UploadMinimal
-from virtool_core.models.user import UserMinimal
+from virtool_core.models.user import UserNested
 
 if TYPE_CHECKING:
     from virtool_core.models.samples import SampleNested
@@ -29,8 +28,8 @@ class SubtractionFile(BaseModel):
     type: str
 
 
-class SubtractionUpload(BaseModel):
-    id: int
+class SubtractionUpload:
+    id: Union[int, str]
     name: str
 
 
@@ -41,16 +40,15 @@ class SubtractionNested(BaseModel):
 
 class SubtractionMinimal(SubtractionNested):
     """
-    Minimal Subtraction model used for WebSocked messages and resource listings.
+    Minimal Subtraction model used for websocket messages and resource listings.
     """
 
-    count: Optional[int] = None
+    count: int
     created_at: datetime
-    file: Union[UploadMinimal, SubtractionUpload]
-    has_file: bool
-    nickname: str = ""
+    file: SubtractionUpload
+    nickname: str
     ready: bool
-    user: UserMinimal
+    user: UserNested
 
 
 class Subtraction(SubtractionMinimal):
@@ -58,7 +56,6 @@ class Subtraction(SubtractionMinimal):
     Complete Subtraction model.
     """
 
-    deleted: bool
     files: List[SubtractionFile]
     gc: Optional[NucleotideComposition]
     linked_samples: List[SampleNested]
