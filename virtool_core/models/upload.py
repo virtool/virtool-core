@@ -28,4 +28,4 @@ Upload = UploadMinimal
 
 
 class UploadSearchResult(BaseModel):
-    documents: List[Upload]
+    documents: List[UploadMinimal]
