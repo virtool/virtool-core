@@ -43,7 +43,7 @@ class SubtractionMinimal(SubtractionNested):
     Minimal Subtraction model used for websocket messages and resource listings.
     """
 
-    count: int
+    count: Optional[int]
     created_at: datetime
     file: SubtractionUpload
     nickname: str
