@@ -1,7 +1,10 @@
 from datetime import datetime
 from typing import List, Union, Optional
 
+from pydantic import root_validator, Field
+
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.enums import Molecule
 from virtool_core.models.history import HistoryMinimal
 from virtool_core.models.reference import ReferenceMinimal
 from virtool_core.models.user import UserMinimal
@@ -40,9 +43,20 @@ class OTUIsolate(BaseModel):
 
 
 class OTUSegment(BaseModel):
-    molecule: str
+    molecule: Optional[Molecule]
     name: str
     required: bool
+
+    @root_validator(pre=True)
+    def make_molecule_nullable(cls, values):
+        """
+        Convert unset molecule fields from empty strings to ``None``.
+
+        """
+        if values["molecule"] == "":
+            values["molecule"] = None
+
+        return values
 
 
 class OTU(OTUMinimal):
@@ -53,5 +67,5 @@ class OTU(OTUMinimal):
     last_indexed_version: Optional[int] = None
     most_recent_change: Optional[HistoryMinimal] = None
     remote_id: OTURemote
-    schema: List[OTUSegment]
+    otu_schema: List[OTUSegment] = Field(alias="schema")
     user: UserMinimal

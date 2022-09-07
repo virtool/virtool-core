@@ -1,6 +1,15 @@
 from enum import Enum
 
 
+class Molecule(str, Enum):
+    ds_dna = "dsDNA"
+    ds_rna = "dsRNA"
+    ss_dna = "ssDNA"
+    ss_rna = "ssRNA"
+    ss_rna_neg = "ssRNA-"
+    ss_rna_pos = "ssRNA+"
+
+
 class Permission(str, Enum):
     cancel_job = "cancel_job"
     create_ref = "create_ref"
