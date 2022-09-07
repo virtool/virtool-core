@@ -18,9 +18,9 @@ class UploadMinimal(BaseModel):
     removed: bool
     removed_at: Optional[datetime]
     reserved: bool
-    size: int
+    size: Optional[int]
     type: str
-    uploaded_at: datetime
+    uploaded_at: Optional[datetime]
     user: UserMinimal
 
 
