@@ -6,7 +6,7 @@ from pydantic import root_validator, Field
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import Molecule
 from virtool_core.models.history import HistoryMinimal
-from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.user import UserMinimal
 
 
@@ -14,7 +14,7 @@ class OTUMinimal(BaseModel):
     abbreviation: str
     id: str
     name: str
-    reference: ReferenceMinimal
+    reference: ReferenceNested
     verified: bool
     version: int
 
@@ -28,7 +28,7 @@ class OTUSequence(BaseModel):
     definition: str
     host: str
     id: str
-    reference: ReferenceMinimal
+    reference: ReferenceNested
     remote: OTURemote
     segment: str
     sequence: str
