@@ -29,8 +29,8 @@ class OTUSequence(BaseModel):
     host: str
     id: str
     reference: ReferenceNested
-    remote: OTURemote
-    segment: str
+    remote: Optional[OTURemote]
+    segment: Optional[str]
     sequence: str
 
 
@@ -63,9 +63,9 @@ class OTU(OTUMinimal):
     created_at: datetime
     imported: bool
     isolates: List[OTUIsolate]
-    issues: Optional[Union[dict, bool]] = None
-    last_indexed_version: Optional[int] = None
-    most_recent_change: Optional[HistoryMinimal] = None
-    remote_id: OTURemote
+    issues: Optional[Union[dict, bool]]
+    last_indexed_version: Optional[int]
+    most_recent_change: HistoryMinimal
+    remote: Optional[OTURemote]
     otu_schema: List[OTUSegment] = Field(alias="schema")
     user: UserMinimal
