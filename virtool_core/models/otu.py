@@ -5,7 +5,7 @@ from pydantic import root_validator, Field
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import Molecule
-from virtool_core.models.history import HistoryNested
+from virtool_core.models.history import HistoryMinimal
 from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.user import UserMinimal
 
@@ -65,7 +65,7 @@ class OTU(OTUMinimal):
     isolates: List[OTUIsolate]
     issues: Optional[Union[dict, bool]]
     last_indexed_version: Optional[int]
-    most_recent_change: HistoryNested
+    most_recent_change: HistoryMinimal
     remote: Optional[OTURemote]
     otu_schema: List[OTUSegment] = Field(alias="schema")
     user: UserMinimal
