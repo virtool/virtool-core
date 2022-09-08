@@ -60,7 +60,6 @@ class OTUSegment(BaseModel):
 
 
 class OTU(OTUMinimal):
-    created_at: datetime
     imported: bool
     isolates: List[OTUIsolate]
     issues: Optional[Union[dict, bool]]
