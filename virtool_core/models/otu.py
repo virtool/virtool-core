@@ -66,6 +66,5 @@ class OTU(OTUMinimal):
     issues: Optional[Union[dict, bool]]
     last_indexed_version: Optional[int]
     most_recent_change: HistoryNested
-    remote: Optional[OTURemote]
     otu_schema: List[OTUSegment] = Field(alias="schema")
-    user: UserMinimal
+    remote: Optional[OTURemote]
