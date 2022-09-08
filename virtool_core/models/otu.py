@@ -60,7 +60,6 @@ class OTUSegment(BaseModel):
 
 
 class OTU(OTUMinimal):
-    imported: bool
     isolates: List[OTUIsolate]
     issues: Optional[Union[dict, bool]]
     last_indexed_version: Optional[int]
