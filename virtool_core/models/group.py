@@ -7,7 +7,7 @@ from pydantic import validator, constr
 from virtool_core.models.basemodel import BaseModel
 
 if TYPE_CHECKING:
-    from virtool_core.models.user import UserMinimal
+    from virtool_core.models.user import UserNested
 
 
 class Permissions(BaseModel):
@@ -39,4 +39,4 @@ class GroupMinimal(BaseModel):
 
 class Group(GroupMinimal):
     permissions: Permissions
-    users: List[UserMinimal]
+    users: List[UserNested]
