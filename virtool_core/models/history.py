@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List
+from typing import Any, List, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import HistoryMethod
@@ -19,19 +19,60 @@ class HistoryOTU(BaseModel):
     version: str
 
 
-class HistoryMinimal(BaseModel):
+class HistoryNested(BaseModel):
     created_at: datetime
+    """
+    When the change was made.
+    """
+
     description: str
+    """
+    A human readable description for the change.
+    """
+
     id: str
-    index: HistoryIndex
+    """
+    The unique ID for the change.
+    """
+
     method_name: HistoryMethod
-    otu: HistoryOTU
-    reference: ReferenceNested
+    """
+    The name of the method that made the change (eg. edit_sequence). 
+    """
+
     user: UserMinimal
+    """
+    Minimal information for the user that made the change.
+    """
+
+
+class HistoryMinimal(HistoryNested):
+    index: Optional[HistoryIndex]
+    """
+    The index the change is included in.
+    
+    This is optional as not all changes are included in an index.
+    
+    """
+
+    otu: HistoryOTU
+    """
+    The name, ID, and version of the OTU the change affects.
+    """
+
+    reference: ReferenceNested
+    """
+    The ID of the reference the change is associated with.
+    """
 
 
 class History(HistoryMinimal):
     diff: Any
+    """
+    The JSON diff for the change.
+    
+    Generated using ``dictdiffer``.
+    """
 
 
 class HistorySearchResult(SearchResult):
