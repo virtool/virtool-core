@@ -4,7 +4,7 @@ from typing import List, Any
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.task import Task
-from virtool_core.models.user import UserMinimal, UserNested
+from virtool_core.models.user import UserNested
 
 
 class ReferenceClonedFrom(BaseModel):
