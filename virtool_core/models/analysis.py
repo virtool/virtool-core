@@ -9,7 +9,7 @@ from virtool_core.models.job import JobNested
 from virtool_core.models.reference import AnalysisReference
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.subtraction import SubtractionNested
-from virtool_core.models.user import UserMinimal
+from virtool_core.models.user import UserNested
 
 
 class AnalysisSample(BaseModel):
@@ -26,7 +26,7 @@ class AnalysisMinimal(BaseModel):
     sample: AnalysisSample
     subtractions: List[SubtractionNested]
     updated_at: datetime
-    user: UserMinimal
+    user: UserNested
     workflow: str
 
     @root_validator(pre=True)

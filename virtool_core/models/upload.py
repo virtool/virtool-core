@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 
 from virtool_core.models.basemodel import BaseModel
-from virtool_core.models.user import UserMinimal
+from virtool_core.models.user import UserNested
 
 
 class UploadMinimal(BaseModel):
@@ -21,7 +21,7 @@ class UploadMinimal(BaseModel):
     size: Optional[int]
     type: str
     uploaded_at: Optional[datetime]
-    user: UserMinimal
+    user: UserNested
 
 
 Upload = UploadMinimal

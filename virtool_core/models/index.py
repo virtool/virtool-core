@@ -4,7 +4,7 @@ from typing import List, Dict
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobMinimal
 from virtool_core.models.reference import ReferenceMinimal
-from virtool_core.models.user import UserMinimal
+from virtool_core.models.user import UserNested
 
 
 class IndexNested(BaseModel):
@@ -19,10 +19,10 @@ class IndexMinimal(IndexNested):
     job: JobMinimal
     modified_otu_count: int
     reference: ReferenceMinimal
-    user: UserMinimal
+    user: UserNested
 
 
-class IndexContributor(UserMinimal):
+class IndexContributor(UserNested):
     count: int
 
 
