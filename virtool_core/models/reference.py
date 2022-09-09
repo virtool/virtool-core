@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Any
 
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.task import Task
 from virtool_core.models.user import UserNested
 
@@ -100,3 +101,8 @@ class Reference(ReferenceMinimal):
     description: str
     restrict_source_types: bool
     source_types: List[str]
+
+
+class ReferenceSearchResult(SearchResult):
+    documents: List[ReferenceMinimal]
+    official_installed: bool
