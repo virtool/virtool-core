@@ -6,6 +6,7 @@ from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import Molecule
 from virtool_core.models.history import HistoryNested
 from virtool_core.models.reference import ReferenceNested
+from virtool_core.models.searchresult import SearchResult
 
 
 class OTUMinimal(BaseModel):
@@ -64,3 +65,8 @@ class OTU(OTUMinimal):
     most_recent_change: HistoryNested
     otu_schema: List[OTUSegment] = Field(alias="schema")
     remote: Optional[OTURemote]
+
+
+class OTUSearchResult(SearchResult):
+    documents: List[OTUMinimal]
+    modified_count: int
