@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 
 def normalize_hex_color(color: str) -> str:
@@ -14,3 +15,17 @@ def normalize_hex_color(color: str) -> str:
         raise ValueError("The format of the color code is invalid")
 
     return color
+
+
+def prevent_none(value: Any) -> Any:
+    """
+    Validate an optional value to check if it is being set to null when
+    it is not nullable.
+
+    :param value: the optional value to validate
+
+    """
+    if value is None:
+        raise ValueError("Value may not be null")
+
+    return value
