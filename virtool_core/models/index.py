@@ -4,6 +4,7 @@ from typing import List, Dict
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobMinimal
 from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserNested
 
 
@@ -47,3 +48,9 @@ class Index(IndexMinimal):
     manifest: Dict[str, int]
     otus: List[IndexOTU]
     ready: bool
+
+
+class IndexSearchResult(SearchResult):
+    documents: List[IndexMinimal]
+    modified_otu_count: int
+    total_otu_count: int
