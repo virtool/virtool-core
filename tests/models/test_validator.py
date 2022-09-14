@@ -4,7 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from virtool_core.models.basemodel import BaseModel
-from virtool_core.models.validators import prevent_none_validator
+from virtool_core.models.validators import prevent_none
 
 
 class DummyModel(BaseModel):
@@ -12,7 +12,7 @@ class DummyModel(BaseModel):
     id: Optional[int]
     count: Optional[int]
 
-    _prevent_none = prevent_none_validator("count", "id")
+    _prevent_none = prevent_none("count", "id")
 
 
 def test_prevent_null_validator():

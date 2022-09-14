@@ -19,7 +19,7 @@ def normalize_hex_color(color: str) -> str:
     return color
 
 
-def prevent_none(value: Any) -> Any:
+def check_optional_field(value: Any) -> Any:
     """
     Validate an optional value to check if it is being set to null when
     it is not nullable.
@@ -33,7 +33,7 @@ def prevent_none(value: Any) -> Any:
     return value
 
 
-def prevent_none_validator(*args, **kwargs):
+def prevent_none(*args, **kwargs):
     decorator = validator(*args, **kwargs, allow_reuse=True)
-    decorated = decorator(prevent_none)
+    decorated = decorator(check_optional_field)
     return decorated
