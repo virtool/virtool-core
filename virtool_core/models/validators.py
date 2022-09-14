@@ -1,6 +1,8 @@
 import re
 from typing import Any
 
+from pydantic import validator
+
 
 def normalize_hex_color(color: str) -> str:
     """
@@ -29,3 +31,9 @@ def prevent_none(value: Any) -> Any:
         raise ValueError("Value may not be null")
 
     return value
+
+
+def prevent_none_validator(*args, **kwargs):
+    decorator = validator(*args, **kwargs, allow_reuse=True)
+    decorated = decorator(prevent_none)
+    return decorated
