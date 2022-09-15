@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import List, Dict
 
 from virtool_core.models.basemodel import BaseModel
-from virtool_core.models.job import JobMinimal
-from virtool_core.models.reference import ReferenceMinimal
+from virtool_core.models.job import JobNested
+from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserNested
 
@@ -17,9 +17,9 @@ class IndexMinimal(IndexNested):
     change_count: int
     created_at: datetime
     has_files: bool
-    job: JobMinimal
+    job: JobNested
     modified_otu_count: int
-    reference: ReferenceMinimal
+    reference: ReferenceNested
     user: UserNested
 
 
