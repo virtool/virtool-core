@@ -77,10 +77,13 @@ class AnalysisReference(ReferenceNested):
     name: str
 
 
-class ReferenceMinimal(AnalysisReference):
+class IndexReadyReference(AnalysisReference):
+    data_type: ReferenceDataType
+
+
+class ReferenceMinimal(IndexReadyReference):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
-    data_type: ReferenceDataType
     groups: List[ReferenceUser]
     installed: ReferenceInstalled = None
     internal_control: str

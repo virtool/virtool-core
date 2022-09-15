@@ -3,7 +3,7 @@ from typing import List, Dict
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobNested
-from virtool_core.models.reference import ReferenceNested
+from virtool_core.models.reference import ReferenceNested, IndexReadyReference
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserNested
 
@@ -11,6 +11,10 @@ from virtool_core.models.user import UserNested
 class IndexNested(BaseModel):
     id: str
     version: int
+
+
+class IndexReady(IndexNested):
+    reference: IndexReadyReference
 
 
 class IndexMinimal(IndexNested):
