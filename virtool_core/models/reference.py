@@ -1,10 +1,10 @@
 import enum
 from datetime import datetime
-from typing import List, Any
+from typing import List, Any, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.task import Task
+from virtool_core.models.task import TaskNested
 from virtool_core.models.user import UserNested
 
 
@@ -19,9 +19,9 @@ class ReferenceDataType(str, enum.Enum):
 
 
 class ReferenceUser(UserNested):
-    count: int
+    count: Optional[int]
     build: bool
-    created_at: datetime
+    created_at: Optional[datetime]
     modify: bool
     modify_otu: bool
     remove: bool
@@ -83,13 +83,13 @@ class ReferenceMinimal(AnalysisReference):
     data_type: ReferenceDataType
     groups: List[ReferenceUser]
     installed: ReferenceInstalled = None
-    internal_control: str
-    latest_build: ReferenceBuild
+    internal_control: str = None
+    latest_build: ReferenceBuild = None
     organism: str
     otu_count: int
     release: ReferenceRelease = None
     remotes_from: ReferenceRemotesFrom = None
-    task: Task
+    task: Optional[TaskNested]
     updating: bool = None
     unbuilt_change_count: int
     user: UserNested
