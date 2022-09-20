@@ -18,11 +18,24 @@ class ReferenceDataType(str, enum.Enum):
     genome = "genome"
 
 
-class ReferenceUser(UserNested):
+class ReferenceRights(BaseModel):
     build: bool
     modify: bool
     modify_otu: bool
     remove: bool
+
+
+class ReferenceGroupOrUser(ReferenceRights):
+    id: str
+
+
+class ReferenceUsers(ReferenceGroupOrUser):
+    build: bool
+    handle: str
+
+
+class ReferenceContributors(UserNested):
+    count: int
 
 
 class ReferenceRemotesFrom(BaseModel):
@@ -79,7 +92,7 @@ class ReferenceMinimal(AnalysisReference):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
     data_type: ReferenceDataType
-    groups: List[ReferenceUser]
+    groups: List[ReferenceGroupOrUser]
     installed: ReferenceInstalled = None
     internal_control: Optional[str]
     latest_build: Optional[ReferenceBuild]
@@ -91,14 +104,15 @@ class ReferenceMinimal(AnalysisReference):
     updating: bool = None
     unbuilt_change_count: int
     user: UserNested
-    users: List[ReferenceUser]
+    users: List[ReferenceGroupOrUser]
 
 
 class Reference(ReferenceMinimal):
-    contributors: List[ReferenceUser]
+    contributors: List[ReferenceContributors]
     description: str
     restrict_source_types: bool
     source_types: List[str]
+    users: List[ReferenceUsers]
 
 
 class ReferenceSearchResult(SearchResult):
