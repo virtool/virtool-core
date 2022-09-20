@@ -25,20 +25,18 @@ class ReferenceRights(BaseModel):
     remove: bool
 
 
-class ReferenceUserNested(ReferenceRights):
-    id: str
-
-
 class ReferenceGroup(ReferenceRights):
     id: str
 
 
-class ReferenceUsers(ReferenceUserNested):
-    build: bool
+class ReferenceUser(ReferenceRights):
+    administrator: bool
     handle: str
+    id: str
+    created_at: datetime
 
 
-class ReferenceContributors(UserNested):
+class ReferenceContributor(UserNested):
     count: int
 
 
@@ -108,15 +106,14 @@ class ReferenceMinimal(AnalysisReference):
     updating: bool = None
     unbuilt_change_count: int
     user: UserNested
-    users: List[ReferenceUserNested]
+    users: List[ReferenceUser]
 
 
 class Reference(ReferenceMinimal):
-    contributors: List[ReferenceContributors]
+    contributors: List[ReferenceContributor]
     description: str
     restrict_source_types: bool
     source_types: List[str]
-    users: List[ReferenceUsers]
 
 
 class ReferenceSearchResult(SearchResult):
