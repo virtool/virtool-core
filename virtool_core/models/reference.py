@@ -19,9 +19,7 @@ class ReferenceDataType(str, enum.Enum):
 
 
 class ReferenceUser(UserNested):
-    count: Optional[int]
     build: bool
-    created_at: Optional[datetime]
     modify: bool
     modify_otu: bool
     remove: bool
@@ -83,8 +81,8 @@ class ReferenceMinimal(AnalysisReference):
     data_type: ReferenceDataType
     groups: List[ReferenceUser]
     installed: ReferenceInstalled = None
-    internal_control: str = None
-    latest_build: ReferenceBuild = None
+    internal_control: Optional[str]
+    latest_build: Optional[ReferenceBuild]
     organism: str
     otu_count: int
     release: ReferenceRelease = None
