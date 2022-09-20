@@ -1,10 +1,10 @@
 import enum
 from datetime import datetime
-from typing import List, Any
+from typing import List, Any, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.task import Task
+from virtool_core.models.task import TaskNested
 from virtool_core.models.user import UserNested
 
 
@@ -18,13 +18,26 @@ class ReferenceDataType(str, enum.Enum):
     genome = "genome"
 
 
-class ReferenceUser(UserNested):
-    count: int
+class ReferenceRights(BaseModel):
     build: bool
-    created_at: datetime
     modify: bool
     modify_otu: bool
     remove: bool
+
+
+class ReferenceGroup(ReferenceRights):
+    id: str
+
+
+class ReferenceUser(ReferenceRights):
+    administrator: bool
+    handle: str
+    id: str
+    created_at: datetime
+
+
+class ReferenceContributor(UserNested):
+    count: int
 
 
 class ReferenceRemotesFrom(BaseModel):
@@ -81,15 +94,15 @@ class ReferenceMinimal(AnalysisReference):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
     data_type: ReferenceDataType
-    groups: List[ReferenceUser]
+    groups: List[ReferenceGroup]
     installed: ReferenceInstalled = None
-    internal_control: str
-    latest_build: ReferenceBuild
+    internal_control: Optional[str]
+    latest_build: Optional[ReferenceBuild]
     organism: str
     otu_count: int
     release: ReferenceRelease = None
     remotes_from: ReferenceRemotesFrom = None
-    task: Task
+    task: Optional[TaskNested]
     updating: bool = None
     unbuilt_change_count: int
     user: UserNested
@@ -97,7 +110,7 @@ class ReferenceMinimal(AnalysisReference):
 
 
 class Reference(ReferenceMinimal):
-    contributors: List[ReferenceUser]
+    contributors: List[ReferenceContributor]
     description: str
     restrict_source_types: bool
     source_types: List[str]
