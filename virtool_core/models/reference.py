@@ -25,11 +25,15 @@ class ReferenceRights(BaseModel):
     remove: bool
 
 
-class ReferenceGroupOrUser(ReferenceRights):
+class ReferenceUserNested(ReferenceRights):
     id: str
 
 
-class ReferenceUsers(ReferenceGroupOrUser):
+class ReferenceGroup(ReferenceRights):
+    id: str
+
+
+class ReferenceUsers(ReferenceUserNested):
     build: bool
     handle: str
 
@@ -92,7 +96,7 @@ class ReferenceMinimal(AnalysisReference):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
     data_type: ReferenceDataType
-    groups: List[ReferenceGroupOrUser]
+    groups: List[ReferenceGroup]
     installed: ReferenceInstalled = None
     internal_control: Optional[str]
     latest_build: Optional[ReferenceBuild]
@@ -104,7 +108,7 @@ class ReferenceMinimal(AnalysisReference):
     updating: bool = None
     unbuilt_change_count: int
     user: UserNested
-    users: List[ReferenceGroupOrUser]
+    users: List[ReferenceUserNested]
 
 
 class Reference(ReferenceMinimal):
