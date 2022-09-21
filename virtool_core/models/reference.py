@@ -109,7 +109,7 @@ class ReferenceMinimal(AnalysisReference):
     unbuilt_change_count: int
     user: UserNested
     users: List[ReferenceUser]
-    imported_from: Upload = None
+    imported_from: Optional[Upload] = None
 
 
 class Reference(ReferenceMinimal):
