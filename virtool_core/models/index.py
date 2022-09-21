@@ -21,6 +21,7 @@ class IndexMinimal(IndexNested):
     modified_otu_count: int
     reference: ReferenceNested
     user: UserNested
+    ready: bool
 
 
 class IndexContributor(UserNested):
@@ -47,10 +48,10 @@ class Index(IndexMinimal):
     files: List[IndexFile]
     manifest: Dict[str, int]
     otus: List[IndexOTU]
-    ready: bool
 
 
 class IndexSearchResult(SearchResult):
     documents: List[IndexMinimal]
     modified_otu_count: int
     total_otu_count: int
+    change_count: int
