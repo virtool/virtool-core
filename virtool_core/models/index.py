@@ -52,5 +52,6 @@ class Index(IndexMinimal):
 
 class IndexSearchResult(SearchResult):
     documents: List[IndexMinimal]
+    change_count: int
     modified_otu_count: int
     total_otu_count: int
