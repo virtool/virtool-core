@@ -5,6 +5,7 @@ from typing import List, Any, Optional
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.task import TaskNested
+from virtool_core.models.upload import Upload
 from virtool_core.models.user import UserNested
 
 
@@ -27,6 +28,7 @@ class ReferenceRights(BaseModel):
 
 class ReferenceGroup(ReferenceRights):
     id: str
+    created_at: datetime
 
 
 class ReferenceUser(ReferenceRights):
@@ -107,6 +109,7 @@ class ReferenceMinimal(AnalysisReference):
     unbuilt_change_count: int
     user: UserNested
     users: List[ReferenceUser]
+    imported_from: Optional[Upload] = None
 
 
 class Reference(ReferenceMinimal):
@@ -114,6 +117,7 @@ class Reference(ReferenceMinimal):
     description: str
     restrict_source_types: bool
     source_types: List[str]
+    targets: Optional[List[dict]]
 
 
 class ReferenceSearchResult(SearchResult):
