@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserNested
 
 
@@ -27,5 +28,5 @@ class UploadMinimal(BaseModel):
 Upload = UploadMinimal
 
 
-class UploadSearchResult(BaseModel):
-    documents: List[UploadMinimal]
+class UploadSearchResult(SearchResult):
+    items: List[UploadMinimal]
