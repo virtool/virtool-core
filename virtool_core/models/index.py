@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobNested
@@ -39,7 +39,7 @@ class IndexFile(BaseModel):
     id: int
     index: str
     name: str
-    size: int
+    size: Optional[int]
     type: str
 
 
