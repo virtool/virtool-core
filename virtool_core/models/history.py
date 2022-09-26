@@ -16,7 +16,7 @@ class HistoryIndex(BaseModel):
 class HistoryOTU(BaseModel):
     id: str
     name: str
-    version: Union[str, int]
+    version: Union[int, str]
 
 
 class HistoryNested(BaseModel):
