@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import HistoryMethod
@@ -16,7 +16,7 @@ class HistoryIndex(BaseModel):
 class HistoryOTU(BaseModel):
     id: str
     name: str
-    version: str
+    version: Union[str, int]
 
 
 class HistoryNested(BaseModel):
