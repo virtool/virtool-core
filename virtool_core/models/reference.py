@@ -96,8 +96,8 @@ class ReferenceMinimal(AnalysisReference):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
     data_type: ReferenceDataType
-    groups: List[ReferenceGroup]
-    installed: ReferenceInstalled = None
+    imported_from: Optional[Upload] = None
+    installed: Optional[ReferenceInstalled] = None
     internal_control: Optional[str]
     latest_build: Optional[ReferenceBuild]
     organism: str
@@ -105,19 +105,19 @@ class ReferenceMinimal(AnalysisReference):
     release: ReferenceRelease = None
     remotes_from: ReferenceRemotesFrom = None
     task: Optional[TaskNested]
-    updating: bool = None
+    updating: Optional[bool] = None
     unbuilt_change_count: int
     user: UserNested
-    users: List[ReferenceUser]
-    imported_from: Optional[Upload] = None
 
 
 class Reference(ReferenceMinimal):
     contributors: List[ReferenceContributor]
     description: str
+    groups: List[ReferenceGroup]
     restrict_source_types: bool
     source_types: List[str]
     targets: Optional[List[dict]]
+    users: List[ReferenceUser]
 
 
 class ReferenceSearchResult(SearchResult):
