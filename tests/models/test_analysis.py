@@ -16,7 +16,7 @@ def mock_analysis():
         "reference": {"id": "d19exr83", "name": "New Plant Viruses"},
         "sample": {"id": "z5oegpww"},
         "subtractions": [{"id": "1sk885at", "name": "Vitis vinifera"}],
-        "user": {"administrator": True, "handle": "mrott", "id": "ihvze2u9"},
+        "user": {"administrator": True, "active": True, "handle": "mrott", "id": "ihvze2u9"},
         "workflow": "pathoscope_bowtie",
     }
 

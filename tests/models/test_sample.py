@@ -33,6 +33,7 @@ def mock_sample():
         "subtractions": [{"id": "apple", "name": "Apple"}],
         "user": {
             "administrator": False,
+            "active": False,
             "handle": "bob",
             "id": "test",
         },
