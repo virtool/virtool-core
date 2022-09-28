@@ -16,6 +16,7 @@ class UserB2C(BaseModel):
 class UserNested(BaseModel):
     id: str
     administrator: bool
+    active: bool
     handle: str
 
 
