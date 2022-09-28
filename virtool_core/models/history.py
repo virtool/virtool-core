@@ -10,7 +10,7 @@ from virtool_core.models.user import UserNested
 
 class HistoryIndex(BaseModel):
     id: str
-    version: int
+    version: Union[int, str]
 
 
 class HistoryOTU(BaseModel):
