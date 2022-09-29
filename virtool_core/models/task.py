@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from virtool_core.models.basemodel import BaseModel
 
