@@ -16,7 +16,7 @@ class Task(TaskNested):
     error: str = None
     file_size: int = None
     progress: int
-    step: str
+    step: Optional[str]
     type: str
 
 
