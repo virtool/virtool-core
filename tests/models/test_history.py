@@ -32,7 +32,7 @@ def test_history_model():
                 created_at=datetime.now(),
                 id="zoo",
                 version=90,
-                user=UserMinimal(administrator=True, id="ian", handle="ian"),
+                user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
                 has_json=True
             ),
             name="virus",
@@ -49,10 +49,10 @@ def test_history_model():
                 type="any"
             ),
             unbuilt_change_count=34,
-            user=UserMinimal(administrator=True, id="ian", handle="ian"),
+            user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
             users=[]
         ),
-        user=UserMinimal(administrator=True, id="ian", handle="ian")
+        user=UserMinimal(administrator=True, active=True, id="ian", handle="ian")
     )
 
     with pytest.raises(ValidationError) as err:
@@ -73,7 +73,7 @@ def test_history_model():
                     created_at=datetime.now(),
                     id="zoo",
                     version=90,
-                    user=UserMinimal(administrator=True, id="ian", handle="ian"),
+                    user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
                     has_json=True
                 ),
                 name="virus",
@@ -90,10 +90,10 @@ def test_history_model():
                     type="any"
                 ),
                 unbuilt_change_count=34,
-                user=UserMinimal(administrator=True, id="ian", handle="ian"),
+                user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
                 users=[]
             ),
-            user=UserMinimal(administrator=True, id="ian", handle="ian")
+            user=UserMinimal(administrator=True, active=True, id="ian", handle="ian")
         )
 
         assert "method_name value is not a valid enumeration member" in err

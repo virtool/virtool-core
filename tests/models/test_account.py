@@ -8,6 +8,7 @@ from virtool_core.models.account import Account
 def mock_account():
     return {
         "administrator": False,
+        "active": True,
         "groups": [],
         "handle": "bob",
         "force_reset": False,

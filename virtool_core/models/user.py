@@ -20,6 +20,7 @@ class UserNested(BaseModel):
 
 
 class UserMinimal(UserNested):
+    active: bool
     b2c: Optional[UserB2C]
     b2c_display_name: Optional[str]
     b2c_family_name: Optional[str]
