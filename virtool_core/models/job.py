@@ -12,6 +12,10 @@ class JobError(BaseModel):
     type: str
 
 
+class JobPing(BaseModel):
+    pinged_at: datetime
+
+
 class JobStatus(BaseModel):
     error: Optional[JobError] = None
     progress: int
@@ -41,6 +45,7 @@ class Job(JobMinimal):
     args: Dict[str, Any]
     rights: Dict
     status: List[JobStatus]
+    ping: Optional[JobPing]
 
 
 class JobAcquired(Job):
