@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import Optional, Dict
 
+from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.task import TaskNested
 
 
-class NuvsBlast:
+class NuvsBlast(BaseModel):
     id: int
     created_at: datetime
     updated_at: datetime
