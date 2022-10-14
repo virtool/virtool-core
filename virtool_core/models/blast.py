@@ -11,7 +11,7 @@ class NuvsBlast(BaseModel):
     updated_at: datetime
     last_checked_at: datetime
     error: Optional[str]
-    rid: Optional[int]
+    rid: Optional[str]
     ready: bool = False
     result: Optional[Dict]
     task: Optional[TaskNested]
