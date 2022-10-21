@@ -16,6 +16,3 @@ class Session(BaseModel):
     permissions: Permission
     force_reset: bool
     user: UserNested
-
-
-
