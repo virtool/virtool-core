@@ -16,7 +16,7 @@ class SessionAuthentication(BaseModel):
     user: UserNested
 
 
-class SessionReset(BaseModel):
+class SessionPasswordReset(BaseModel):
     code: str
     remember: bool
     user_id: str
@@ -24,6 +24,6 @@ class SessionReset(BaseModel):
 
 class Session(BaseModel):
     authentication: Optional[SessionAuthentication]
-    reset: Optional[SessionReset]
+    reset: Optional[SessionPasswordReset]
     created_at: datetime
     ip: str
