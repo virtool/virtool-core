@@ -1,19 +1,12 @@
 from datetime import datetime
-
-from typing import List, Optional
+from typing import Optional
 
 from virtool_core.models.basemodel import BaseModel
-from virtool_core.models.enums import Permission
-from virtool_core.models.group import Group
-from virtool_core.models.user import UserNested
 
 
 class SessionAuthentication(BaseModel):
     token: str
-    groups: List[Group]
-    permissions: Permission
-    force_reset: bool
-    user: UserNested
+    user_id: str
 
 
 class SessionPasswordReset(BaseModel):
