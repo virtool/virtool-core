@@ -8,9 +8,12 @@ from virtool_core.models.group import Group
 from virtool_core.models.user import UserNested
 
 
-class Session(BaseModel):
+class MinimalSession(BaseModel):
     created_at: datetime
     ip: str
+
+
+class Session(MinimalSession):
     token: str
     groups: List[Group]
     permissions: Permission
