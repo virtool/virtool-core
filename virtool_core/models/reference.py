@@ -4,7 +4,7 @@ from typing import List, Any, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.task import TaskNested
+from virtool_core.models.task import TaskDetailedNested
 from virtool_core.models.upload import Upload
 from virtool_core.models.user import UserNested
 
@@ -104,7 +104,7 @@ class ReferenceMinimal(AnalysisReference):
     otu_count: int
     release: ReferenceRelease = None
     remotes_from: ReferenceRemotesFrom = None
-    task: Optional[TaskNested]
+    task: Optional[TaskDetailedNested]
     updating: Optional[bool] = None
     unbuilt_change_count: int
     user: UserNested
