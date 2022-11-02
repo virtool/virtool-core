@@ -8,16 +8,19 @@ class TaskNested(BaseModel):
     id: int
 
 
-class Task(TaskNested):
+class TaskDetailedNested(TaskNested):
     complete: bool
-    context: Dict[str, Any]
-    count: int
     created_at: datetime
     error: str = None
-    file_size: int = None
     progress: int
     step: Optional[str]
     type: str
+
+
+class Task(TaskDetailedNested):
+    context: Dict[str, Any]
+    count: int
+    file_size: int = None
 
 
 TaskMinimal = Task
