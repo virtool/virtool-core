@@ -5,7 +5,7 @@ from virtool_core.models.enums import MessageColor
 from virtool_core.models.user import UserNested
 
 
-class Message(BaseModel):
+class InstanceMessage(BaseModel):
     id: int
     created_at: datetime
     updated_at: datetime

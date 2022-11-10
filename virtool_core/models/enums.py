@@ -57,6 +57,7 @@ class ReferencePermission(str, Enum):
     modify_otu = "modify_otu"
     remove = "remove"
 
+
 class MessageColor(str, Enum):
     red = "red"
     yellow = "yellow"
