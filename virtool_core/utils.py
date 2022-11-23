@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import tarfile
 from pathlib import Path
+from tarfile import TarFile
 
 import aiofiles
 import arrow
@@ -103,6 +104,38 @@ def decompress_file_with_pigz(path: Path, target: Path, processes: int):
         subprocess.call(command, stdout=f)
 
 
+def is_within_directory(directory: Path, target: Path) -> bool:
+    """
+    Check whether a file is within a directory.
+
+    :param directory: the path to the directory
+    :param target: the path to the file
+
+    """
+    abs_directory = os.path.abspath(directory)
+    abs_target = os.path.abspath(target)
+
+    prefix = os.path.commonprefix([abs_directory, abs_target])
+
+    return prefix == abs_directory
+
+
+def safely_extract_tgz(tar: TarFile, path: Path):
+    """
+    Safely extract a tar.gz file, ensuring that all member files are within the tarball.
+
+    This prevents directory traversal attacks described in CVE-2007-4559.
+
+    :param tar: the tarfile
+    :param path: the path to extract to
+    """
+    for member in tar.getmembers():
+        if not is_within_directory(path, path / member.name):
+            raise Exception("Attempted Path Traversal in Tar File")
+
+    tar.extractall(path)
+
+
 def decompress_tgz(path: Path, target: Path):
     """
     Decompress the tar.gz file at ``path`` to the directory ``target``.
@@ -112,7 +145,7 @@ def decompress_tgz(path: Path, target: Path):
 
     """
     with tarfile.open(path, "r:gz") as tar:
-        tar.extractall(target)
+        safely_extract_tgz(tar, target)
 
 
 def file_stats(path: Path) -> dict:
