@@ -86,16 +86,13 @@ class ReferenceBuild(BaseModel):
 
 class ReferenceNested(BaseModel):
     id: str
-
-
-class AnalysisReference(ReferenceNested):
     name: str
+    data_type: ReferenceDataType
 
 
-class ReferenceMinimal(AnalysisReference):
+class ReferenceMinimal(ReferenceNested):
     cloned_from: ReferenceClonedFrom = None
     created_at: datetime
-    data_type: ReferenceDataType
     imported_from: Optional[Upload] = None
     installed: Optional[ReferenceInstalled] = None
     internal_control: Optional[str]
@@ -105,8 +102,8 @@ class ReferenceMinimal(AnalysisReference):
     release: ReferenceRelease = None
     remotes_from: ReferenceRemotesFrom = None
     task: Optional[TaskDetailedNested]
-    updating: Optional[bool] = None
     unbuilt_change_count: int
+    updating: Optional[bool] = None
     user: UserNested
 
 
