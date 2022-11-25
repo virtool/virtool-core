@@ -13,10 +13,19 @@ def mock_analysis():
         "index": {"id": "u3lm1rk8", "version": 14},
         "job": {"id": "1sm20zpm"},
         "ready": False,
-        "reference": {"id": "d19exr83", "name": "New Plant Viruses"},
+        "reference": {
+            "id": "d19exr83",
+            "name": "New Plant Viruses",
+            "data_type": "genome",
+        },
         "sample": {"id": "z5oegpww"},
         "subtractions": [{"id": "1sk885at", "name": "Vitis vinifera"}],
-        "user": {"administrator": True, "active": True, "handle": "mrott", "id": "ihvze2u9"},
+        "user": {
+            "administrator": True,
+            "active": True,
+            "handle": "mrott",
+            "id": "ihvze2u9",
+        },
         "workflow": "pathoscope_bowtie",
     }
 
