@@ -23,10 +23,27 @@ class OTURemote(BaseModel):
 
 
 class OTUSequence(BaseModel):
+    """
+    An OTU the included in an OTU.
+
+    It does not include a nested reference field as this is included in the parent OTU.
+    """
+
     accession: str
     definition: str
     host: str
     id: str
+    remote: Optional[OTURemote]
+    segment: Optional[str]
+    sequence: str
+
+
+class Sequence(OTUSequence):
+    accession: str
+    definition: str
+    host: str
+    id: str
+    otu_id: str
     reference: ReferenceNested
     remote: Optional[OTURemote]
     segment: Optional[str]
