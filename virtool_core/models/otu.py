@@ -24,7 +24,7 @@ class OTURemote(BaseModel):
 
 class OTUSequence(BaseModel):
     """
-    An OTU the included in an OTU.
+    A sequence nested in an OTU.
 
     It does not include a nested reference field as this is included in the parent OTU.
     """
@@ -39,6 +39,10 @@ class OTUSequence(BaseModel):
 
 
 class Sequence(OTUSequence):
+    """
+    A complete sequence resource as returned for sequence API requests.
+    """
+
     accession: str
     definition: str
     host: str
