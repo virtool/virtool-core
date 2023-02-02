@@ -11,7 +11,20 @@ def mock_analysis():
         "created_at": datetime(2022, 8, 16),
         "id": "s3wnp1py",
         "index": {"id": "u3lm1rk8", "version": 14},
-        "job": {"id": "1sm20zpm"},
+        "job": {
+            "id": "1sm20zpm",
+            "archived": False,
+            "created_at": "2022-07-08T18:37:44.936000Z",
+            "progress": 100,
+            "stage": "",
+            "state": "complete",
+            "user": {
+                "administrator": False,
+                "handle": "jonathan",
+                "id": "88yksx67",
+            },
+            "workflow": "nuvs",
+        },
         "ready": False,
         "reference": {
             "id": "d19exr83",
