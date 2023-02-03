@@ -20,7 +20,7 @@ class AnalysisMinimal(BaseModel):
     created_at: datetime
     id: str
     index: IndexNested
-    job: JobMinimal
+    job: Optional[JobMinimal]
     ready: bool
     reference: ReferenceNested
     sample: AnalysisSample
