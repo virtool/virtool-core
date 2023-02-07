@@ -18,11 +18,7 @@ def mock_analysis():
             "progress": 100,
             "stage": "",
             "state": "complete",
-            "user": {
-                "administrator": False,
-                "handle": "jonathan",
-                "id": "88yksx67",
-            },
+            "user": {"administrator": False, "handle": "jonathan", "id": "88yksx67"},
             "workflow": "nuvs",
         },
         "ready": False,

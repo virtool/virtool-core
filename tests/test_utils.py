@@ -15,7 +15,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 def test_decompress_tgz(tmpdir):
     path = Path(tmpdir)
 
-    src_path = Path(__file__).parent/"test_files/virtool.tar.gz"
+    src_path = Path(__file__).parent / "test_files/virtool.tar.gz"
 
     shutil.copy(src_path, path)
 
@@ -25,13 +25,17 @@ def test_decompress_tgz(tmpdir):
 
     assert os.listdir(os.path.join(path, "de")) == ["virtool"]
 
-    assert set(os.listdir(os.path.join(path, "de", "virtool"))) == {"run", "client", "VERSION", "install.sh"}
+    assert set(os.listdir(os.path.join(path, "de", "virtool"))) == {
+        "run",
+        "client",
+        "VERSION",
+        "install.sh",
+    }
 
 
-@pytest.mark.parametrize("recursive,expected", [
-    (True, {"foo.txt"}),
-    (False, {"foo.txt", "baz"})
-])
+@pytest.mark.parametrize(
+    "recursive,expected", [(True, {"foo.txt"}), (False, {"foo.txt", "baz"})]
+)
 def test_rm(recursive, expected, tmpdir):
     """Test that a file can be removed and that a folder can be removed when `recursive` is set to `True`."""
     tmpdir.join("foo.txt").write("hello world")
@@ -43,16 +47,10 @@ def test_rm(recursive, expected, tmpdir):
     virtool_core.utils.rm(tmpdir / "bar.txt")
 
     if recursive:
-        virtool_core.utils.rm(
-            tmpdir / "baz",
-            recursive=recursive
-        )
+        virtool_core.utils.rm(tmpdir / "baz", recursive=recursive)
     else:
         with pytest.raises(IsADirectoryError):
-            virtool_core.utils.rm(
-                tmpdir / "baz",
-                recursive=recursive
-            )
+            virtool_core.utils.rm(tmpdir / "baz", recursive=recursive)
 
     assert set(os.listdir(str(tmpdir))) == expected
 

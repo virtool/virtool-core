@@ -4,7 +4,7 @@ from pathlib import Path
 
 @pytest.fixture
 def test_json_path() -> Path:
-    return Path(__file__).parent/"models/json"
+    return Path(__file__).parent / "models/json"
 
 
 @pytest.fixture
@@ -14,7 +14,5 @@ def redis_connection_string(request):
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--redis-connection-string",
-        action="store",
-        default="redis://localhost:6379",
+        "--redis-connection-string", action="store", default="redis://localhost:6379"
     )

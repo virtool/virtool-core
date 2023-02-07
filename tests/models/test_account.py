@@ -45,4 +45,3 @@ def test_email(mock_account, error):
             mock_account.update({"email": "devvirtool.ca"})
             Account(**mock_account)
             assert "The format of the email is invalid" in str(err)
-

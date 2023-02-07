@@ -4,19 +4,12 @@ from typing import Generator, List
 
 import aiofiles
 
-COMPLEMENT_TABLE = {
-    "A": "T",
-    "T": "A",
-    "G": "C",
-    "C": "G",
-    "N": "N"
-}
+COMPLEMENT_TABLE = {"A": "T", "T": "A", "G": "C", "C": "G", "N": "N"}
 
 #: A standard translation table, including ambiguity.
 TRANSLATION_TABLE = {
     "TTT": "F",
     "TTC": "F",
-
     "TTA": "L",
     "TTG": "L",
     "CTT": "L",
@@ -24,19 +17,15 @@ TRANSLATION_TABLE = {
     "CTA": "L",
     "CTG": "L",
     "CTN": "L",
-
     "ATT": "I",
     "ATC": "I",
     "ATA": "I",
-
     "ATG": "M",
-
     "GTT": "V",
     "GTC": "V",
     "GTA": "V",
     "GTG": "V",
     "GTN": "V",
-
     "TCT": "S",
     "TCC": "S",
     "TCA": "S",
@@ -44,55 +33,41 @@ TRANSLATION_TABLE = {
     "TCN": "S",
     "AGT": "S",
     "AGC": "S",
-
     "CCT": "P",
     "CCC": "P",
     "CCA": "P",
     "CCG": "P",
     "CCN": "P",
-
     "ACT": "T",
     "ACC": "T",
     "ACA": "T",
     "ACG": "T",
     "ACN": "T",
-
     "GCT": "A",
     "GCC": "A",
     "GCA": "A",
     "GCG": "A",
     "GCN": "A",
-
     "TAT": "Y",
     "TAC": "Y",
-
     "TAA": "*",
     "TAG": "*",
     "TGA": "*",
-
     "CAT": "H",
     "CAC": "H",
-
     "CAA": "Q",
     "CAG": "Q",
-
     "AAT": "N",
     "AAC": "N",
-
     "AAA": "K",
     "AAG": "K",
-
     "GAT": "D",
     "GAC": "D",
-
     "GAA": "E",
     "GAG": "E",
-
     "TGT": "C",
     "TGC": "C",
-
     "TGG": "W",
-
     "CGT": "R",
     "CGC": "R",
     "CGA": "R",
@@ -100,22 +75,26 @@ TRANSLATION_TABLE = {
     "CGN": "R",
     "AGA": "R",
     "AGG": "R",
-
     "GGT": "G",
     "GGC": "G",
     "GGA": "G",
     "GGG": "G",
-    "GGN": "G"
+    "GGN": "G",
 }
 
 
 def read_fasta(path: Path) -> List[tuple]:
-    """Parse the FASTA file at `path` and return its content as a `list` of tuples containing the header and sequence.
+    """Parse the FASTA file at `path` and return its content as a
+    `list` of tuples containing the header and sequence.
 
     :param path: the path to the FASTA file
     :return: the FASTA content
 
     """
+
+    if str(path)[-3:] != ".fa":
+        raise IOError("Invalid FASTA file")
+
     data = list()
 
     with open(path, "r") as f:
@@ -145,7 +124,8 @@ def read_fasta(path: Path) -> List[tuple]:
 
 async def read_fastq(f) -> Generator[tuple, None, list]:
     """
-    Read the FASTQ content in the file object `f`. Yields tuples containing the header, sequence, and quality.
+    Read the FASTQ content in the file object `f`.
+    Yields tuples containing the header, sequence, and quality.
 
     :param f: a file handle
     :return: the FASTQ content as tuples
@@ -179,7 +159,8 @@ async def read_fastq(f) -> Generator[tuple, None, list]:
 
 async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
     """
-    Read the FASTQ file at `path` and yields its content as tuples. Accepts both uncompressed and GZIP-compressed FASTQ
+    Read the FASTQ file at `path` and yields its content as tuples.
+    Accepts both uncompressed and GZIP-compressed FASTQ
     files.
 
     :param path: the path to the FASTQ File
@@ -193,7 +174,8 @@ async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
 
 async def read_fastq_headers(path: Path) -> list:
     """
-    Return a list of FASTQ headers for the FASTQ file located at `path`. Only accepts uncompressed FASTQ files.
+    Return a list of FASTQ headers for the FASTQ file located at `path`.
+    Only accepts uncompressed FASTQ files.
 
     :param path: the path to the FASTQ file
     :return: a list of FASTQ headers
@@ -234,7 +216,8 @@ def reverse_complement(sequence: str) -> str:
 
 def translate(sequence: str) -> str:
     """
-    Translate the passed nucleotide sequence to protein. Substitutes _X_ for invalid codons.
+    Translate the passed nucleotide sequence to protein.
+    Substitutes _X_ for invalid codons.
 
     :param sequence: the nucleotide sequence
     :return: a translated protein sequence
@@ -245,9 +228,10 @@ def translate(sequence: str) -> str:
     protein = list()
 
     for i in range(0, len(sequence) // 3):
-        codon = sequence[i * 3:(i + 1) * 3]
+        codon = sequence[i * 3 : (i + 1) * 3]
 
-        # Translate to X if the codon matches no amino acid (taking into account ambiguous codons where possible)
+        # Translate to X if the codon matches no amino acid
+        # (taking into account ambiguous codons where possible)
         protein.append(TRANSLATION_TABLE.get(codon, "X"))
 
     return "".join(protein)
@@ -255,8 +239,9 @@ def translate(sequence: str) -> str:
 
 def find_orfs(sequence: str) -> List[dict]:
     """
-    Return all ORFs for the nucelotide sequence. No ORFs will be returned for sequences shorter than 300 bp. Only ORFs
-    100 residues long or greater will be returned.
+    Return all ORFs for the nucelotide sequence.
+    No ORFs will be returned for sequences shorter than 300 bp
+    Only ORFs 100 residues long or greater will be returned.
 
     :param sequence:
     :return: a list of ORFs and metadata
@@ -290,16 +275,16 @@ def find_orfs(sequence: str) -> List[dict]:
                             start = sequence_length - frame - aa_end * 3 - 3
                             end = sequence_length - frame - aa_start * 3
 
-                        orfs.append({
-                            "pro": str(translation[aa_start:aa_end]),
-                            "nuc": str(nuc[start:end]),
-                            "frame": frame,
-                            "strand": strand,
-                            "pos": (start, end)
-                        })
+                        orfs.append(
+                            {
+                                "pro": str(translation[aa_start:aa_end]),
+                                "nuc": str(nuc[start:end]),
+                                "frame": frame,
+                                "strand": strand,
+                                "pos": (start, end),
+                            }
+                        )
 
                     aa_start = aa_end + 1
 
     return orfs
-
-
