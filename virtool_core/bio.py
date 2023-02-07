@@ -90,6 +90,10 @@ def read_fasta(path: Path) -> List[tuple]:
     :return: the FASTA content
 
     """
+
+    if str(path)[-3:] != ".fa":
+        raise IOError("Invalid FASTA file")
+
     data = list()
 
     with open(path, "r") as f:
