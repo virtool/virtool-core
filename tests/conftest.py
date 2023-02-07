@@ -4,7 +4,7 @@ from pathlib import Path
 
 @pytest.fixture
 def test_json_path() -> Path:
-    return Path(__file__).parent/"models/json"
+    return Path(__file__).parent / "models/json"
 
 
 @pytest.fixture

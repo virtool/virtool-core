@@ -1,4 +1,3 @@
-
 from pydantic import ValidationError
 
 from virtool_core.models.group import Group
@@ -17,9 +16,9 @@ def mock_group():
             "modify_subtraction": False,
             "remove_file": False,
             "remove_job": False,
-            "upload_file": False
+            "upload_file": False,
         },
-        "users": []
+        "users": [],
     }
 
 

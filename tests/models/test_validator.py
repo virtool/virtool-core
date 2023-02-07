@@ -16,7 +16,6 @@ class DummyModel(BaseModel):
 
 
 def test_prevent_null_validator():
-
     DummyModel(name="baz")
 
     DummyModel(name="bar", id=1, count=2)

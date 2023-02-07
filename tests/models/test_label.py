@@ -9,20 +9,8 @@ def test_label_model():
 
     """
 
-    Label(
-        color="#FFFFFF",
-        count=0,
-        description="dsRNA/Ab",
-        id=22,
-        name="foo"
-    )
+    Label(color="#FFFFFF", count=0, description="dsRNA/Ab", id=22, name="foo")
 
     with pytest.raises(ValueError) as err:
-        Label(
-            color="#12345aa",
-            count=0,
-            description="dsRNA/Ab",
-            id=22,
-            name="foo"
-        )
+        Label(color="#12345aa", count=0, description="dsRNA/Ab", id=22, name="foo")
         assert "The format of the color code is invalid" in err

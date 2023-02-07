@@ -4,19 +4,12 @@ from typing import Generator, List
 
 import aiofiles
 
-COMPLEMENT_TABLE = {
-    "A": "T",
-    "T": "A",
-    "G": "C",
-    "C": "G",
-    "N": "N"
-}
+COMPLEMENT_TABLE = {"A": "T", "T": "A", "G": "C", "C": "G", "N": "N"}
 
 #: A standard translation table, including ambiguity.
 TRANSLATION_TABLE = {
     "TTT": "F",
     "TTC": "F",
-
     "TTA": "L",
     "TTG": "L",
     "CTT": "L",
@@ -24,19 +17,15 @@ TRANSLATION_TABLE = {
     "CTA": "L",
     "CTG": "L",
     "CTN": "L",
-
     "ATT": "I",
     "ATC": "I",
     "ATA": "I",
-
     "ATG": "M",
-
     "GTT": "V",
     "GTC": "V",
     "GTA": "V",
     "GTG": "V",
     "GTN": "V",
-
     "TCT": "S",
     "TCC": "S",
     "TCA": "S",
@@ -44,55 +33,41 @@ TRANSLATION_TABLE = {
     "TCN": "S",
     "AGT": "S",
     "AGC": "S",
-
     "CCT": "P",
     "CCC": "P",
     "CCA": "P",
     "CCG": "P",
     "CCN": "P",
-
     "ACT": "T",
     "ACC": "T",
     "ACA": "T",
     "ACG": "T",
     "ACN": "T",
-
     "GCT": "A",
     "GCC": "A",
     "GCA": "A",
     "GCG": "A",
     "GCN": "A",
-
     "TAT": "Y",
     "TAC": "Y",
-
     "TAA": "*",
     "TAG": "*",
     "TGA": "*",
-
     "CAT": "H",
     "CAC": "H",
-
     "CAA": "Q",
     "CAG": "Q",
-
     "AAT": "N",
     "AAC": "N",
-
     "AAA": "K",
     "AAG": "K",
-
     "GAT": "D",
     "GAC": "D",
-
     "GAA": "E",
     "GAG": "E",
-
     "TGT": "C",
     "TGC": "C",
-
     "TGG": "W",
-
     "CGT": "R",
     "CGC": "R",
     "CGA": "R",
@@ -100,12 +75,11 @@ TRANSLATION_TABLE = {
     "CGN": "R",
     "AGA": "R",
     "AGG": "R",
-
     "GGT": "G",
     "GGC": "G",
     "GGA": "G",
     "GGG": "G",
-    "GGN": "G"
+    "GGN": "G",
 }
 
 
@@ -245,7 +219,7 @@ def translate(sequence: str) -> str:
     protein = list()
 
     for i in range(0, len(sequence) // 3):
-        codon = sequence[i * 3:(i + 1) * 3]
+        codon = sequence[i * 3 : (i + 1) * 3]
 
         # Translate to X if the codon matches no amino acid (taking into account ambiguous codons where possible)
         protein.append(TRANSLATION_TABLE.get(codon, "X"))
@@ -290,16 +264,16 @@ def find_orfs(sequence: str) -> List[dict]:
                             start = sequence_length - frame - aa_end * 3 - 3
                             end = sequence_length - frame - aa_start * 3
 
-                        orfs.append({
-                            "pro": str(translation[aa_start:aa_end]),
-                            "nuc": str(nuc[start:end]),
-                            "frame": frame,
-                            "strand": strand,
-                            "pos": (start, end)
-                        })
+                        orfs.append(
+                            {
+                                "pro": str(translation[aa_start:aa_end]),
+                                "nuc": str(nuc[start:end]),
+                                "frame": frame,
+                                "strand": strand,
+                                "pos": (start, end),
+                            }
+                        )
 
                     aa_start = aa_end + 1
 
     return orfs
-
-

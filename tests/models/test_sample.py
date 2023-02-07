@@ -50,7 +50,6 @@ def test_sample(mock_sample):
 
 @pytest.mark.parametrize("tag_type", [bool, str])
 def test_string_allowed(tag_type, mock_sample):
-
     if tag_type == str:
         mock_sample.update({"nuvs": "test"})
 

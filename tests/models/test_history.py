@@ -32,8 +32,10 @@ def test_history_model():
                 created_at=datetime.now(),
                 id="zoo",
                 version=90,
-                user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
-                has_json=True
+                user=UserMinimal(
+                    administrator=True, active=True, id="ian", handle="ian"
+                ),
+                has_json=True,
             ),
             name="virus",
             organism="covid",
@@ -46,13 +48,13 @@ def test_history_model():
                 id=6,
                 progress=45,
                 step="saihsiah",
-                type="any"
+                type="any",
             ),
             unbuilt_change_count=34,
             user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
-            users=[]
+            users=[],
         ),
-        user=UserMinimal(administrator=True, active=True, id="ian", handle="ian")
+        user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
     )
 
     with pytest.raises(ValidationError) as err:
@@ -73,8 +75,10 @@ def test_history_model():
                     created_at=datetime.now(),
                     id="zoo",
                     version=90,
-                    user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
-                    has_json=True
+                    user=UserMinimal(
+                        administrator=True, active=True, id="ian", handle="ian"
+                    ),
+                    has_json=True,
                 ),
                 name="virus",
                 organism="covid",
@@ -87,13 +91,15 @@ def test_history_model():
                     id=6,
                     progress=45,
                     step="messiahs",
-                    type="any"
+                    type="any",
                 ),
                 unbuilt_change_count=34,
-                user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
-                users=[]
+                user=UserMinimal(
+                    administrator=True, active=True, id="ian", handle="ian"
+                ),
+                users=[],
             ),
-            user=UserMinimal(administrator=True, active=True, id="ian", handle="ian")
+            user=UserMinimal(administrator=True, active=True, id="ian", handle="ian"),
         )
 
         assert "method_name value is not a valid enumeration member" in err
