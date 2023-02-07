@@ -14,7 +14,5 @@ def redis_connection_string(request):
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--redis-connection-string",
-        action="store",
-        default="redis://localhost:6379",
+        "--redis-connection-string", action="store", default="redis://localhost:6379"
     )

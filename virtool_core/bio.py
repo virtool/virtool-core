@@ -84,7 +84,8 @@ TRANSLATION_TABLE = {
 
 
 def read_fasta(path: Path) -> List[tuple]:
-    """Parse the FASTA file at `path` and return its content as a `list` of tuples containing the header and sequence.
+    """Parse the FASTA file at `path` and return its content as a
+    `list` of tuples containing the header and sequence.
 
     :param path: the path to the FASTA file
     :return: the FASTA content
@@ -123,7 +124,8 @@ def read_fasta(path: Path) -> List[tuple]:
 
 async def read_fastq(f) -> Generator[tuple, None, list]:
     """
-    Read the FASTQ content in the file object `f`. Yields tuples containing the header, sequence, and quality.
+    Read the FASTQ content in the file object `f`.
+    Yields tuples containing the header, sequence, and quality.
 
     :param f: a file handle
     :return: the FASTQ content as tuples
@@ -157,7 +159,8 @@ async def read_fastq(f) -> Generator[tuple, None, list]:
 
 async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
     """
-    Read the FASTQ file at `path` and yields its content as tuples. Accepts both uncompressed and GZIP-compressed FASTQ
+    Read the FASTQ file at `path` and yields its content as tuples.
+    Accepts both uncompressed and GZIP-compressed FASTQ
     files.
 
     :param path: the path to the FASTQ File
@@ -171,7 +174,8 @@ async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
 
 async def read_fastq_headers(path: Path) -> list:
     """
-    Return a list of FASTQ headers for the FASTQ file located at `path`. Only accepts uncompressed FASTQ files.
+    Return a list of FASTQ headers for the FASTQ file located at `path`.
+    Only accepts uncompressed FASTQ files.
 
     :param path: the path to the FASTQ file
     :return: a list of FASTQ headers
@@ -212,7 +216,8 @@ def reverse_complement(sequence: str) -> str:
 
 def translate(sequence: str) -> str:
     """
-    Translate the passed nucleotide sequence to protein. Substitutes _X_ for invalid codons.
+    Translate the passed nucleotide sequence to protein.
+    Substitutes _X_ for invalid codons.
 
     :param sequence: the nucleotide sequence
     :return: a translated protein sequence
@@ -233,8 +238,9 @@ def translate(sequence: str) -> str:
 
 def find_orfs(sequence: str) -> List[dict]:
     """
-    Return all ORFs for the nucelotide sequence. No ORFs will be returned for sequences shorter than 300 bp. Only ORFs
-    100 residues long or greater will be returned.
+    Return all ORFs for the nucelotide sequence.
+    No ORFs will be returned for sequences shorter than 300 bp
+    Only ORFs 100 residues long or greater will be returned.
 
     :param sequence:
     :return: a list of ORFs and metadata
