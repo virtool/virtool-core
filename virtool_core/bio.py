@@ -230,7 +230,8 @@ def translate(sequence: str) -> str:
     for i in range(0, len(sequence) // 3):
         codon = sequence[i * 3 : (i + 1) * 3]
 
-        # Translate to X if the codon matches no amino acid (taking into account ambiguous codons where possible)
+        # Translate to X if the codon matches no amino acid
+        # (taking into account ambiguous codons where possible)
         protein.append(TRANSLATION_TABLE.get(codon, "X"))
 
     return "".join(protein)
