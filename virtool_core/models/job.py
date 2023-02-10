@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Dict, Any, Optional
 
 from virtool_core.models.basemodel import BaseModel
@@ -16,11 +17,22 @@ class JobPing(BaseModel):
     pinged_at: datetime
 
 
+class JobState(Enum):
+    CANCELLED = "cancelled"
+    COMPLETE = "complete"
+    ERROR = "error"
+    PREPARING = "preparing"
+    RUNNING = "running"
+    TIMEOUT = "timeout"
+    TERMINATED = "terminated"
+    WAITING = "waiting"
+
+
 class JobStatus(BaseModel):
     error: Optional[JobError] = None
     progress: int
     stage: Optional[str] = None
-    state: str
+    state: JobState
     step_description: Optional[str] = None
     step_name: Optional[str] = None
     timestamp: datetime
@@ -35,7 +47,7 @@ class JobMinimal(JobNested):
     created_at: datetime
     progress: int
     stage: Optional[str]
-    state: str
+    state: JobState
     user: UserNested
     workflow: str
 
