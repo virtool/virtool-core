@@ -36,6 +36,7 @@ class OTUSequence(BaseModel):
     remote: Optional[OTURemote]
     segment: Optional[str]
     sequence: str
+    target: Optional[str]
 
 
 class Sequence(OTUSequence):
@@ -43,15 +44,8 @@ class Sequence(OTUSequence):
     A complete sequence resource as returned for sequence API requests.
     """
 
-    accession: str
-    definition: str
-    host: str
-    id: str
     otu_id: str
     reference: ReferenceNested
-    remote: Optional[OTURemote]
-    segment: Optional[str]
-    sequence: str
 
 
 class OTUIsolate(BaseModel):
