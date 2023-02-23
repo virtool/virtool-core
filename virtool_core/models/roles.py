@@ -58,57 +58,83 @@ class SpaceRole(str, Enum):
     """Access a space."""
 
 
-class SpaceResourceRole(str, Enum):
-    LABEL_MANAGER = "label_manager"
+class SpaceLabelRole(str, Enum):
+    MANAGER = "label_manager"
     """Create, edit, or delete labels."""
 
-    PROJECT_MANAGER = "project_manager"
+
+class SpaceProjectRole(str, Enum):
+    """Roles that control space member access to all projects in the space."""
+
+    MANAGER = "project_manager"
     """Create, edit, or delete projects."""
 
-    PROJECT_EDITOR = "project_editor"
+    EDITOR = "project_editor"
     """Create or edit projects."""
 
-    PROJECT_VIEWER = "project_viewer"
+    VIEWER = "project_viewer"
     """View projects."""
 
-    REFERENCE_MANAGER = "reference_manager"
+
+class SpaceReferenceRole(str, Enum):
+    """Roles that control space member access to all references in the space."""
+
+    MANAGER = "reference_manager"
     """
     Edit, build, contribute to (modify otus), or delete any reference. Modify access
     control and settings for any reference.
     """
 
-    REFERENCE_BUILDER = "reference_builder"
+    BUILDER = "reference_builder"
     """Edit, build, and contribute to any reference."""
 
-    REFERENCE_EDITOR = "reference_editor"
+    EDITOR = "reference_editor"
     """Edit or contribute to any reference."""
 
-    REFERENCE_CONTRIBUTOR = "reference_contributor"
+    CONTRIBUTOR = "reference_contributor"
     """Create, edit, or delete (modify) OTUs in any reference."""
 
-    REFERENCE_VIEWER = "reference_viewer"
+    VIEWER = "reference_viewer"
     """View any and use any reference."""
 
-    SAMPLE_MANAGER = "sample_manager"
-    """Create, edit, and delete sample."""
 
-    SAMPLE_EDITOR = "sample_editor"
-    """Create and edit samples."""
+class SpaceSampleRole(str, Enum):
+    """Roles that control space member access to all samples in the space."""
 
-    SAMPLE_ANALYZER = "sample_analyzer"
+    MANAGER = "sample_manager"
+    """Create, edit, or delete samples."""
+
+    EDITOR = "sample_editor"
+    """Create or edit samples."""
+
+    ANALYZER = "sample_analyzer"
     """Analyze samples."""
 
-    SAMPLE_VIEWER = "sample_viewer"
+    VIEWER = "sample_viewer"
     """View samples."""
 
-    SUBTRACTION_MANAGER = "subtraction_manager"
+
+class SpaceSubtractionRole(str, Enum):
+    """Roles that control space member access to all subtractions in the space."""
+
+    MANAGER = "subtraction_manager"
     """Create, edit, or delete subtractions."""
 
-    SUBTRACTION_EDITOR = "subtraction_editor"
+    EDITOR = "subtraction_editor"
     """Edit subtractions."""
 
-    SUBTRACTION_VIEWER = "subtraction_viewer"
+    VIEWER = "subtraction_viewer"
     """View or use subtractions."""
+
+
+class SpaceUploadRole(str, Enum):
+    """Roles that control space member access to all uploads in the space."""
+
+    MANAGER = "upload_manager"
+    """Create, use, or delete uploads."""
+
+    VIEWER = "upload_viewer"
+    """View or use uploads."""
 
 
 class ReferenceRole(str, Enum):
@@ -133,4 +159,14 @@ class ReferenceRole(str, Enum):
     """View the reference and OTUs."""
 
 
-RoleType = Union[AdministratorRole, SpaceRole, ReferenceRole]
+SpaceRoleType = Union[
+    SpaceRole,
+    SpaceLabelRole,
+    SpaceProjectRole,
+    SpaceReferenceRole,
+    SpaceSampleRole,
+    SpaceSubtractionRole,
+    SpaceUploadRole,
+]
+
+RoleType = Union[AdministratorRole, SpaceRoleType, ReferenceRole]
