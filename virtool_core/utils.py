@@ -1,14 +1,27 @@
+import ast
 import datetime
 import gzip
+import inspect
 import os
 import shutil
 import subprocess
 import tarfile
+import warnings
 from pathlib import Path
 from tarfile import TarFile
+from textwrap import dedent
 
 import aiofiles
 import arrow
+
+from enum_tools.documentation import (
+    EnumType,
+    EnumMeta,
+    _docstring_from_expr,
+    _docstring_from_eol_comment,
+    _docstring_from_sphinx_comment,
+    MultipleDocstringsWarning,
+)
 
 
 def should_use_pigz(processes: int) -> bool:
@@ -223,3 +236,108 @@ def timestamp() -> datetime.datetime:
     dt = dt.replace(microsecond=int(str(dt.microsecond)[0:3] + "000"))
 
     return dt
+
+
+def document_enum(an_enum: EnumType) -> EnumType:
+    """
+    Document all members of an enum by parsing a docstring from the Python source.
+
+    The docstring can be added in several ways:
+
+    #. A comment at the end the line, starting with ``doc:``:
+
+       .. code-block:: python
+
+           Running = 1  # doc: The system is running.
+
+    #. A comment on the previous line, starting with ``#:``. This is the format used by Sphinx.
+
+       .. code-block:: python
+
+           #: The system is running.
+           Running = 1
+
+    #. A string on the line *after* the attribute. This can be used for multiline docstrings.
+
+       .. code-block:: python
+
+           Running = 1
+           \"\"\"
+           The system is running.
+
+           Hello World
+           \"\"\"
+
+    If more than one docstring format is found for an enum member
+    a :exc:`MultipleDocstringsWarning` is emitted.
+
+    :param an_enum: An :class:`~enum.Enum` subclass
+    :type an_enum: :class:`enum.Enum`
+
+    :returns: The same object passed as ``an_enum``. This allows this function to be used as a decorator.
+    :rtype: :class:`enum.Enum`
+
+    .. versionchanged:: 0.8.0  Added support for other docstring formats and multiline docstrings.
+    """
+
+    if not isinstance(an_enum, EnumMeta):
+        raise TypeError(f"'an_enum' must be an 'Enum', not {type(an_enum)}!")
+
+    func_source = dedent(inspect.getsource(an_enum))
+    func_source_tree = ast.parse(func_source)
+
+    assert len(func_source_tree.body) == 1
+    module_body = func_source_tree.body[0]
+    assert isinstance(module_body, ast.ClassDef)
+    class_body = module_body.body
+
+    for idx, node in enumerate(class_body):
+        targets = []
+
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                assert isinstance(t, ast.Name)
+                targets.append(t.id)
+
+        elif isinstance(node, ast.AnnAssign):
+            assert isinstance(node.target, ast.Name)
+            targets.append(node.target.id)
+        else:
+            continue
+
+        assert isinstance(node, (ast.Assign, ast.AnnAssign))
+        # print(targets)
+
+        if idx + 1 == len(class_body):
+            next_node = None
+        else:
+            next_node = class_body[idx + 1]
+
+        docstring_candidates = []
+
+        if isinstance(next_node, ast.Expr):
+            # might be docstring
+            docstring_candidates.append(_docstring_from_expr(next_node))
+
+        # maybe no luck with """ docstring? look for EOL comment.
+        docstring_candidates.append(_docstring_from_eol_comment(func_source, node))
+
+        # check non-whitespace lines above for Sphinx-style comment.
+        docstring_candidates.append(_docstring_from_sphinx_comment(func_source, node))
+
+        docstring_candidates_nn = list(filter(None, docstring_candidates))
+        if len(docstring_candidates_nn) > 1:
+            # Multiple docstrings found, warn
+            warnings.warn(
+                MultipleDocstringsWarning(
+                    getattr(an_enum, targets[0]), docstring_candidates_nn
+                )
+            )
+
+        if docstring_candidates_nn:
+            docstring = docstring_candidates_nn[0]
+
+            for target in targets:
+                getattr(an_enum, target).__doc__ = docstring
+
+    return an_enum
