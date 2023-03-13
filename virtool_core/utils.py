@@ -250,14 +250,15 @@ def document_enum(an_enum: EnumType) -> EnumType:
 
            Running = 1  # doc: The system is running.
 
-    #. A comment on the previous line, starting with ``#:``. This is the format used by Sphinx.
+    #. A comment on the previous line, starting with ``#:``.
 
        .. code-block:: python
 
            #: The system is running.
            Running = 1
 
-    #. A string on the line *after* the attribute. This can be used for multiline docstrings.
+    #. A string on the line *after* the attribute.
+    This can be used for multiline docstrings.
 
        .. code-block:: python
 
@@ -274,10 +275,9 @@ def document_enum(an_enum: EnumType) -> EnumType:
     :param an_enum: An :class:`~enum.Enum` subclass
     :type an_enum: :class:`enum.Enum`
 
-    :returns: The same object passed as ``an_enum``. This allows this function to be used as a decorator.
+    :returns: The same object passed as ``an_enum``.
+    This allows this function to be used as a decorator.
     :rtype: :class:`enum.Enum`
-
-    .. versionchanged:: 0.8.0  Added support for other docstring formats and multiline docstrings.
     """
 
     if not isinstance(an_enum, EnumMeta):
@@ -286,9 +286,7 @@ def document_enum(an_enum: EnumType) -> EnumType:
     func_source = dedent(inspect.getsource(an_enum))
     func_source_tree = ast.parse(func_source)
 
-    assert len(func_source_tree.body) == 1
     module_body = func_source_tree.body[0]
-    assert isinstance(module_body, ast.ClassDef)
     class_body = module_body.body
 
     for idx, node in enumerate(class_body):
@@ -296,17 +294,12 @@ def document_enum(an_enum: EnumType) -> EnumType:
 
         if isinstance(node, ast.Assign):
             for t in node.targets:
-                assert isinstance(t, ast.Name)
                 targets.append(t.id)
 
         elif isinstance(node, ast.AnnAssign):
-            assert isinstance(node.target, ast.Name)
             targets.append(node.target.id)
         else:
             continue
-
-        assert isinstance(node, (ast.Assign, ast.AnnAssign))
-        # print(targets)
 
         if idx + 1 == len(class_body):
             next_node = None
