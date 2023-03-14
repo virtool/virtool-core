@@ -14,5 +14,5 @@ class Administrator(AdministratorMinimal):
 
 
 class AdministratorSearch(BaseModel):
-    documents: List[AdministratorMinimal]
+    items: List[AdministratorMinimal]
     available_roles: List[dict]
