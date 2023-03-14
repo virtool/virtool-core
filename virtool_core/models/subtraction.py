@@ -60,7 +60,6 @@ class Subtraction(SubtractionMinimal):
     files: List[SubtractionFile]
     gc: Optional[NucleotideComposition]
     linked_samples: List[SampleNested]
-    job: Optional[JobMinimal]
 
 
 class SubtractionSearchResult(SearchResult):

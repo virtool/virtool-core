@@ -81,12 +81,12 @@ class Sample(SampleMinimal):
     group_write: bool
     hold: bool
     is_legacy: bool
+    job: Optional[JobMinimal]
     locale: str
     paired: bool
     quality: Optional[Quality]
     reads: List[Read]
     subtractions: List[SubtractionNested]
-    job: Optional[JobMinimal]
 
 
 class SampleSearchResult(SearchResult):
