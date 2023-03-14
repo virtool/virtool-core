@@ -5,6 +5,7 @@ from typing import List, Union, TYPE_CHECKING, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
+from virtool_core.models.job import JobMinimal
 from virtool_core.models.label import LabelNested
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.upload import Upload
@@ -85,6 +86,7 @@ class Sample(SampleMinimal):
     quality: Optional[Quality]
     reads: List[Read]
     subtractions: List[SubtractionNested]
+    job: Optional[JobMinimal]
 
 
 class SampleSearchResult(SearchResult):
