@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING, Union
 
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.job import JobMinimal
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.user import UserNested
 
@@ -59,6 +60,7 @@ class Subtraction(SubtractionMinimal):
     files: List[SubtractionFile]
     gc: Optional[NucleotideComposition]
     linked_samples: List[SampleNested]
+    job: Optional[JobMinimal]
 
 
 class SubtractionSearchResult(SearchResult):
