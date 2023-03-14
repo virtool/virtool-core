@@ -47,6 +47,7 @@ class SubtractionMinimal(SubtractionNested):
     count: Optional[int]
     created_at: datetime
     file: SubtractionUpload
+    job: Optional[JobMinimal]
     nickname: str
     ready: bool
     user: Optional[UserNested]
@@ -59,7 +60,6 @@ class Subtraction(SubtractionMinimal):
 
     files: List[SubtractionFile]
     gc: Optional[NucleotideComposition]
-    job: Optional[JobMinimal]
     linked_samples: List[SampleNested]
 
 
