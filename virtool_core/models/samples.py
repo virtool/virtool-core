@@ -27,6 +27,7 @@ class SampleMinimal(SampleNested):
     created_at: datetime
     host: str
     isolate: str
+    job: Optional[JobMinimal]
     labels: List[LabelNested]
     library_type: LibraryType
     notes: str
@@ -81,7 +82,6 @@ class Sample(SampleMinimal):
     group_write: bool
     hold: bool
     is_legacy: bool
-    job: Optional[JobMinimal]
     locale: str
     paired: bool
     quality: Optional[Quality]
