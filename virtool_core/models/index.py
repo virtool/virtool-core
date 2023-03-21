@@ -17,7 +17,7 @@ class IndexMinimal(IndexNested):
     change_count: int
     created_at: datetime
     has_files: bool
-    job: JobMinimal
+    job: Optional[JobMinimal]
     modified_otu_count: int
     reference: ReferenceNested
     user: UserNested
