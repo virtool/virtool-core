@@ -5,6 +5,7 @@ from typing import List, Union, TYPE_CHECKING, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
+from virtool_core.models.job import JobMinimal
 from virtool_core.models.label import LabelNested
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.upload import Upload
@@ -26,6 +27,7 @@ class SampleMinimal(SampleNested):
     created_at: datetime
     host: str
     isolate: str
+    job: Optional[JobMinimal]
     labels: List[LabelNested]
     library_type: LibraryType
     notes: str
