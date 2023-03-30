@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.group import Permissions, GroupMinimal
+from virtool_core.models.roles import AdministratorRole
 from virtool_core.models.searchresult import SearchResult
 
 
@@ -34,6 +35,7 @@ class User(UserMinimal):
     last_password_change: datetime
     permissions: Permissions
     primary_group: Optional[GroupMinimal]
+    role: Optional[AdministratorRole]
 
 
 class UserSearchResult(SearchResult):
