@@ -35,6 +35,7 @@ class SampleMinimal(SampleNested):
     pathoscope: Union[bool, str]
     ready: bool
     user: UserNested
+    workflows: dict[str, str]
 
 
 class Quality(BaseModel):
