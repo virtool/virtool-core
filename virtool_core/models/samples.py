@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Union, TYPE_CHECKING, Optional
+from typing import List, Union, TYPE_CHECKING, Optional, Dict
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
@@ -35,7 +35,7 @@ class SampleMinimal(SampleNested):
     pathoscope: Union[bool, str]
     ready: bool
     user: UserNested
-    workflows: dict[str, str]
+    workflows: Dict[str, str]
 
 
 class Quality(BaseModel):
