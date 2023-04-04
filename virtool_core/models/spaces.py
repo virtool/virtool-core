@@ -36,7 +36,6 @@ class SpaceMinimal(SpaceNested):
 class Space(SpaceMinimal):
     created_at: datetime
     updated_at: datetime
-    created_by: str
     members: List[SpaceMember]
 
 
