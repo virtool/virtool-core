@@ -39,4 +39,4 @@ class User(UserMinimal):
 
 
 class UserSearchResult(SearchResult):
-    documents: List[UserMinimal]
+    documents: List[User]
