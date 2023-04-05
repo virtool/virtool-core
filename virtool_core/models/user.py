@@ -35,7 +35,7 @@ class User(UserMinimal):
     last_password_change: datetime
     permissions: Permissions
     primary_group: Optional[GroupMinimal]
-    role: Optional[AdministratorRole]
+    administrator_role: Optional[AdministratorRole]
 
 
 class UserSearchResult(SearchResult):
