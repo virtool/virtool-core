@@ -22,6 +22,7 @@ class SampleID(BaseModel):
 class SampleNested(SampleID):
     name: str
 
+
 class SampleWorkflows(BaseModel):
     aodp: str
     nuvs: str
