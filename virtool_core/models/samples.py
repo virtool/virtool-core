@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from datetime import datetime
+from enum import Enum
 from typing import List, Union, TYPE_CHECKING, Optional
+
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
@@ -23,6 +25,19 @@ class SampleNested(SampleID):
     name: str
 
 
+class WorkflowState(Enum):
+    COMPLETE = "complete"
+    INCOMPATIBLE = "incompatible"
+    NONE = "none"
+    PENDING = "pending"
+
+
+class SampleWorkflows(BaseModel):
+    aodp: WorkflowState
+    nuvs: WorkflowState
+    pathoscope: WorkflowState
+
+
 class SampleMinimal(SampleNested):
     created_at: datetime
     host: str
@@ -35,6 +50,7 @@ class SampleMinimal(SampleNested):
     pathoscope: Union[bool, str]
     ready: bool
     user: UserNested
+    workflows: SampleWorkflows
 
 
 class Quality(BaseModel):

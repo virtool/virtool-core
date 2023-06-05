@@ -37,6 +37,11 @@ def mock_sample():
             "handle": "bob",
             "id": "test",
         },
+        "workflows": {
+            "aodp": "incompatible",
+            "nuvs": "none",
+            "pathoscope": "none",
+        },
     }
 
 
