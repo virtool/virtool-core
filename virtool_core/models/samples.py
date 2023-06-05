@@ -23,10 +23,17 @@ class SampleNested(SampleID):
     name: str
 
 
+class WorkflowState(Enum):
+    COMPLETE = "complete"
+    INCOMPATIBLE = "incompatible"
+    NONE = "none"
+    PENDING = "pending"
+
+
 class SampleWorkflows(BaseModel):
-    aodp: str
-    nuvs: str
-    pathoscope: str
+    aodp: WorkflowState
+    nuvs: WorkflowState
+    pathoscope: WorkflowState
 
 
 class SampleMinimal(SampleNested):
