@@ -65,7 +65,6 @@ class ReferenceRelease(BaseModel):
     body: str
     content_type: str
     download_url: str
-    etag: str
     filename: str
     html_url: str
     id: int
