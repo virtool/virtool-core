@@ -30,7 +30,7 @@ async def check_redis_server_version(redis: Redis) -> Optional[str]:
     return None
 
 
-async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
+async def connect_redis(redis_connection_string: str, timeout: int = 1) -> Redis:
     """
     Create a connection to Redis server specified in passed `redis_connection_string`.
 
@@ -97,7 +97,7 @@ async def configure_redis(
     ping_task = None
 
     try:
-        redis = await connect(redis_connection_string, timeout)
+        redis = await connect_redis(redis_connection_string, timeout)
         ping_task = asyncio.create_task(periodically_ping_redis(redis))
         yield redis
     finally:
