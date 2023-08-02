@@ -9,7 +9,7 @@ from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.searchresult import SearchResult
 
 
-class SequenceString(str, PydanticBaseModel):
+class SequenceString(str):
     ALLOWED_CHARS = set('ATCGRYKM\n ')
 
     def __new__(cls, value):
