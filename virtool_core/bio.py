@@ -4,8 +4,6 @@ from typing import Generator, List
 
 import aiofiles
 
-from virtool_core.models.otu import SequenceString
-
 COMPLEMENT_TABLE = {"A": "T", "T": "A", "G": "C", "C": "G", "N": "N"}
 
 #: A standard translation table, including ambiguity.
@@ -203,7 +201,7 @@ async def read_fastq_headers(path: Path) -> list:
     return headers
 
 
-def reverse_complement(sequence: SequenceString) -> str:
+def reverse_complement(sequence: str) -> str:
     """
     Calculate the reverse complement of the passed `sequence`.
 
@@ -216,7 +214,7 @@ def reverse_complement(sequence: SequenceString) -> str:
     return "".join(complement)
 
 
-def translate(sequence: SequenceString) -> str:
+def translate(sequence: str) -> str:
     """
     Translate the passed nucleotide sequence to protein.
     Substitutes _X_ for invalid codons.
@@ -239,7 +237,7 @@ def translate(sequence: SequenceString) -> str:
     return "".join(protein)
 
 
-def find_orfs(sequence: SequenceString) -> List[dict]:
+def find_orfs(sequence: str) -> List[dict]:
     """
     Return all ORFs for the nucelotide sequence.
     No ORFs will be returned for sequences shorter than 300 bp

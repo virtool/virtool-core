@@ -53,7 +53,7 @@ class OTUSequence(BaseModel):
     id: str
     remote: Optional[OTURemote]
     segment: Optional[str]
-    sequence: SequenceString
+    sequence: str
     target: Optional[str]
 
 
