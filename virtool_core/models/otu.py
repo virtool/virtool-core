@@ -1,6 +1,6 @@
 from typing import List, Union, Optional
 
-from pydantic import root_validator, Field, BaseModel as PydanticBaseModel
+from pydantic import root_validator, Field
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import Molecule
@@ -10,11 +10,14 @@ from virtool_core.models.searchresult import SearchResult
 
 
 class SequenceString(str):
-    ALLOWED_CHARS = set('ATCGRYKM\n ')
+    ALLOWED_CHARS = set("ATCGRYKM\n ")
 
     def __new__(cls, value):
         if not set(value).issubset(cls.ALLOWED_CHARS):
-            raise ValueError("Invalid characters in the string. Only A, T, C, G, R, Y, K, and M are allowed.")
+            raise ValueError(
+                "Invalid characters in the string.\
+                Only A, T, C, G, R, Y, K, and M are allowed."
+            )
 
         return super().__new__(cls, value)
 
