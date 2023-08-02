@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import validator
 
 from virtool_core.models.basemodel import BaseModel
+from virtool_core.models.otu import SequenceString
 
 VALID_SEQUENCE = frozenset("cagntCAGNT")
 
@@ -11,10 +12,10 @@ class Genbank(BaseModel):
     accession: str
     definition: str
     host: str
-    sequence: str
+    sequence: SequenceString
 
     @validator("sequence")
-    def check_sequence(cls, sequence: Optional[str]) -> str:
+    def check_sequence(cls, sequence: Optional[SequenceString]) -> str:
         """
         Checks if the given sequence is valid.
         """
