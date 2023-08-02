@@ -1,12 +1,27 @@
 from typing import List, Union, Optional
 
-from pydantic import root_validator, Field
+from pydantic import root_validator, Field, BaseModel as PydanticBaseModel
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import Molecule
 from virtool_core.models.history import HistoryNested
 from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.searchresult import SearchResult
+
+
+class SequenceString(str, PydanticBaseModel):
+    ALLOWED_CHARS = set('ATCGRYKM\n ')
+
+    def __new__(cls, value):
+        if not set(value).issubset(cls.ALLOWED_CHARS):
+            raise ValueError("Invalid characters in the string. Only A, T, C, G, R, Y, K, and M are allowed.")
+
+        return super().__new__(cls, value)
+
+    def __add__(self, other):
+        new_value = super().__add__(other)
+
+        return SequenceString(new_value)
 
 
 class OTUMinimal(BaseModel):
@@ -35,7 +50,7 @@ class OTUSequence(BaseModel):
     id: str
     remote: Optional[OTURemote]
     segment: Optional[str]
-    sequence: str
+    sequence: SequenceString
     target: Optional[str]
 
 
