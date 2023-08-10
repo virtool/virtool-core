@@ -8,7 +8,6 @@ def mock_sample():
         "all_read": True,
         "all_write": False,
         "artifacts": [],
-        "caches": [],
         "created_at": "2015-10-06T20:00:00Z",
         "format": "fastq",
         "group": "none",
