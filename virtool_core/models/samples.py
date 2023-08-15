@@ -74,24 +74,10 @@ class Read(BaseModel):
     uploaded_at: datetime
 
 
-class Cache(BaseModel):
-    created_at: datetime
-    files: List
-    id: str
-    key: str
-    legacy: bool
-    missing: bool
-    paired: bool
-    quality: Quality
-    ready: bool
-    sample: SampleID
-
-
 class Sample(SampleMinimal):
     all_read: bool
     all_write: bool
     artifacts: List
-    caches: List[Cache]
     format: str
     group: str
     group_read: bool
