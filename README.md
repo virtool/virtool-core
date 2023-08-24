@@ -2,7 +2,7 @@
 
 Core utilities for Virtool and associated packages.
 
-![Tests](https://github.com/virtool/virtool-core/workflows/Tests/badge.svg?branch=master&event=push)
+![Tests](https://github.com/virtool/virtool-core/workflows/ci/badge.svg?branch=main&event=push)
 [![PyPI version](https://badge.fury.io/py/virtool-core.svg)](https://badge.fury.io/py/virtool-core)
 
 ## Install
