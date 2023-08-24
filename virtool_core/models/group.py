@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, List, TYPE_CHECKING
-
-from pydantic import validator, constr
+from typing import List, TYPE_CHECKING
 
 from virtool_core.models.basemodel import BaseModel
 
