@@ -40,6 +40,7 @@ def test_email(mock_account, error):
     Tests if the `name` field is set to the `id` as default.
     """
     Account(**mock_account)
+
     if error:
         with pytest.raises(ValidationError) as err:
             mock_account.update({"email": "devvirtool.ca"})

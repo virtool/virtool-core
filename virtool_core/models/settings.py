@@ -2,7 +2,7 @@ from virtool_core.models.basemodel import BaseModel
 
 
 class Settings(BaseModel):
-    sample_group: str = None
+    sample_group: int = None
     sample_group_read: bool = True
     sample_group_write: bool = False
     sample_all_read: bool = True

@@ -79,7 +79,7 @@ class Sample(SampleMinimal):
     all_write: bool
     artifacts: List
     format: str
-    group: str
+    group: Union[int, str]
     group_read: bool
     group_write: bool
     hold: bool
