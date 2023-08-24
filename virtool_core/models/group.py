@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 
 from virtool_core.models.basemodel import BaseModel
 
@@ -25,7 +25,7 @@ class Permissions(BaseModel):
 
 class GroupMinimal(BaseModel):
     id: int
-    legacy_id: str
+    legacy_id: Optional[str]
     name: str
 
 
