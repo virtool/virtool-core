@@ -27,8 +27,9 @@ class ReferenceRights(BaseModel):
 
 
 class ReferenceGroup(ReferenceRights):
-    id: str
+    id: int
     created_at: datetime
+    legacy_id: str
 
 
 class ReferenceUser(ReferenceRights):
@@ -85,8 +86,8 @@ class ReferenceBuild(BaseModel):
 
 class ReferenceNested(BaseModel):
     id: str
-    name: str
     data_type: ReferenceDataType
+    name: str
 
 
 class ReferenceMinimal(ReferenceNested):

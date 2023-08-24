@@ -26,15 +26,9 @@ class Permissions(BaseModel):
 
 
 class GroupMinimal(BaseModel):
-    id: str
-    name: Optional[constr(min_length=1)]
-
-    @validator("name", always=True)
-    def check_name(cls, name, values):
-        """
-        Sets `name` to the provided `id` if it is `None`.
-        """
-        return name or values["id"]
+    id: int
+    legacy_id: str
+    name: str
 
 
 class Group(GroupMinimal):
