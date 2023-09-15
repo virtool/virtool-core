@@ -14,7 +14,7 @@ def configure_logs(debug: bool):
 
     """
 
-    log_format = "{asctime:<20} {module:<11} {levelname:<8} {message}"
+    log_format = "{asctime:<20} {name:<11} {levelname:<8} {message}"
 
     if debug:
         log_format += " ({name}:{funcName}:{lineno})"
