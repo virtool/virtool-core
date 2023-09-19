@@ -1,12 +1,12 @@
 import asyncio
-import logging
+from structlog import get_logger
 import sys
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
 
 from aioredis import Redis, create_redis_pool, Channel, ConnectionClosedError
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 async def check_redis_server_version(redis: Redis) -> Optional[str]:
