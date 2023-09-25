@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import tarfile
 import warnings
+from _ast import Module, FunctionDef
 from pathlib import Path
 from tarfile import TarFile
 from textwrap import dedent
@@ -68,7 +69,9 @@ def compress_file_with_pigz(path: Path, target: Path, processes: int):
     :param target: path where the compressed file should be stored
     :param processes: number of processes allowable for pigz (-p argument)
     """
-    command = ["pigz", "-p", str(processes), "-k", "--stdout", path]
+    processes_str: str = str(processes)
+    abs_path: str = os.path.abspath(path)
+    command = ["pigz", "-p", processes_str, "-k", "--stdout", abs_path]
 
     with open(target, "wb") as f:
         subprocess.call(command, stdout=f)
@@ -111,7 +114,8 @@ def decompress_file_with_pigz(path: Path, target: Path, processes: int):
     :param target: path for the newly decompressed file to be stored
     :param processes: the number of allowable processes for pigz (-p argument)
     """
-    command = ["pigz", "-p", str(processes), "-d", "-k", "--stdout", path]
+    abs_path = os.path.abspath(path)
+    command = ["pigz", "-p", str(processes), "-d", "-k", "--stdout", abs_path]
 
     with open(target, "w") as f:
         subprocess.call(command, stdout=f)
@@ -284,7 +288,7 @@ def document_enum(an_enum: EnumType) -> EnumType:
         raise TypeError(f"'an_enum' must be an 'Enum', not {type(an_enum)}!")
 
     func_source = dedent(inspect.getsource(an_enum))
-    func_source_tree = ast.parse(func_source)
+    func_source_tree: Module = ast.parse(func_source)
 
     module_body = func_source_tree.body[0]
     class_body = module_body.body

@@ -83,7 +83,7 @@ TRANSLATION_TABLE = {
 }
 
 
-def read_fasta(path: Path) -> List[tuple]:
+def read_fasta(path: Path) -> List[tuple[str, str]]:
     """Parse the FASTA file at `path` and return its content as a
     `list` of tuples containing the header and sequence.
 
@@ -99,7 +99,7 @@ def read_fasta(path: Path) -> List[tuple]:
 
     with open(path, "r") as f:
         header = None
-        seq = []
+        seq: List[str] = []
 
         for line in f:
             if line[0] == ">":
@@ -122,7 +122,8 @@ def read_fasta(path: Path) -> List[tuple]:
     return data
 
 
-async def read_fastq(f) -> Generator[tuple, None, list]:
+async def read_fastq(f) -> typing.AsyncGenerator[tuple, None]:
+    #Yield Type Send Type Return Type
     """
     Read the FASTQ content in the file object `f`.
     Yields tuples containing the header, sequence, and quality.
@@ -228,7 +229,7 @@ def translate(sequence: str) -> str:
     protein = list()
 
     for i in range(0, len(sequence) // 3):
-        codon = sequence[i * 3 : (i + 1) * 3]
+        codon = sequence[i * 3: (i + 1) * 3]
 
         # Translate to X if the codon matches no amino acid
         # (taking into account ambiguous codons where possible)

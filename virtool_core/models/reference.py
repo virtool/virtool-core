@@ -91,7 +91,7 @@ class ReferenceNested(BaseModel):
 
 
 class ReferenceMinimal(ReferenceNested):
-    cloned_from: ReferenceClonedFrom = None
+    cloned_from: ReferenceClonedFrom | None = None
     created_at: datetime
     imported_from: Optional[Upload] = None
     installed: Optional[ReferenceInstalled] = None
@@ -99,8 +99,8 @@ class ReferenceMinimal(ReferenceNested):
     latest_build: Optional[ReferenceBuild]
     organism: str
     otu_count: int
-    release: ReferenceRelease = None
-    remotes_from: ReferenceRemotesFrom = None
+    release: ReferenceRelease | None = None
+    remotes_from: ReferenceRemotesFrom | None = None
     task: Optional[TaskDetailedNested]
     unbuilt_change_count: int
     updating: Optional[bool] = None
