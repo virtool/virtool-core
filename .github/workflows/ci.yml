@@ -49,7 +49,7 @@ jobs:
           if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
           run: poetry install --no-interaction
         - name: Run
-          run: poetry run mypy virtool
+          run: poetry run mypy .
   release:
     runs-on: ubuntu-20.04
     if: github.event_name == 'push'
