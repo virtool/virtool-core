@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 
 from email_validator import validate_email, EmailSyntaxError
-from pydantic import constr, validator
+from pydantic import constr, validator, ConstrainedStr
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import QuickAnalyzeWorkflow
@@ -32,9 +32,13 @@ class AccountSettings(BaseModel):
     skip_quick_analyze_dialog: bool
 
 
+class ConstrainedEmail(ConstrainedStr):
+    strip_whitespace = True
+
+
 class Account(User):
     settings: AccountSettings
-    email: Optional[constr(strip_whitespace=True)]
+    email: Optional[ConstrainedEmail]
 
     _email_validation = validator("email", allow_reuse=True)(check_email)
 

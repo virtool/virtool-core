@@ -7,7 +7,8 @@ import shutil
 import subprocess
 import tarfile
 import warnings
-from _ast import Module, FunctionDef
+from _ast import FunctionDef, Name, AsyncFunctionDef, ClassDef, While, If, With, AsyncWith, Try, For, \
+    AsyncFor, Assign, AnnAssign
 from pathlib import Path
 from tarfile import TarFile
 from textwrap import dedent
@@ -288,53 +289,58 @@ def document_enum(an_enum: EnumType) -> EnumType:
         raise TypeError(f"'an_enum' must be an 'Enum', not {type(an_enum)}!")
 
     func_source = dedent(inspect.getsource(an_enum))
-    func_source_tree: Module = ast.parse(func_source)
+    func_source_tree = ast.parse(func_source)
 
     module_body = func_source_tree.body[0]
-    class_body = module_body.body
+    if isinstance(module_body,
+                  FunctionDef | AsyncFunctionDef | ClassDef | For | AsyncFor | While | If | With | AsyncWith | Try):
+        class_body = module_body.body
 
-    for idx, node in enumerate(class_body):
-        targets = []
+        for idx, node in enumerate(class_body):
+            targets = []
 
-        if isinstance(node, ast.Assign):
-            for t in node.targets:
-                targets.append(t.id)
+            if isinstance(node, Assign):
+                for t in node.targets:
+                    if isinstance(t, Name):
+                        targets.append(t.id)
 
-        elif isinstance(node, ast.AnnAssign):
-            targets.append(node.target.id)
-        else:
-            continue
+            elif isinstance(node, AnnAssign):
+                if isinstance(node.target, Name):
+                    targets.append(node.target.id)
+            else:
+                continue
 
-        if idx + 1 == len(class_body):
-            next_node = None
-        else:
-            next_node = class_body[idx + 1]
+            if idx + 1 == len(class_body):
+                next_node = None
+            else:
+                next_node = class_body[idx + 1]
 
-        docstring_candidates = []
+            docstring_candidates = []
 
-        if isinstance(next_node, ast.Expr):
-            # might be docstring
-            docstring_candidates.append(_docstring_from_expr(next_node))
+            if isinstance(next_node, ast.Expr):
+                # might be docstring
+                docstring_candidates.append(_docstring_from_expr(next_node))
 
-        # maybe no luck with """ docstring? look for EOL comment.
-        docstring_candidates.append(_docstring_from_eol_comment(func_source, node))
+            if isinstance(node, Assign | AnnAssign):
+                # maybe no luck with """ docstring? look for EOL comment.
+                docstring_candidates.append(_docstring_from_eol_comment(func_source, node))
 
-        # check non-whitespace lines above for Sphinx-style comment.
-        docstring_candidates.append(_docstring_from_sphinx_comment(func_source, node))
+                # check non-whitespace lines above for Sphinx-style comment.
+                docstring_candidates.append(_docstring_from_sphinx_comment(func_source, node))
 
-        docstring_candidates_nn = list(filter(None, docstring_candidates))
-        if len(docstring_candidates_nn) > 1:
-            # Multiple docstrings found, warn
-            warnings.warn(
-                MultipleDocstringsWarning(
-                    getattr(an_enum, targets[0]), docstring_candidates_nn
+            docstring_candidates_nn = list(filter(None, docstring_candidates))
+            if len(docstring_candidates_nn) > 1:
+                # Multiple docstrings found, warn
+                warnings.warn(
+                    MultipleDocstringsWarning(
+                        getattr(an_enum, targets[0]), docstring_candidates_nn
+                    )
                 )
-            )
 
-        if docstring_candidates_nn:
-            docstring = docstring_candidates_nn[0]
+            if docstring_candidates_nn:
+                docstring = docstring_candidates_nn[0]
 
-            for target in targets:
-                getattr(an_enum, target).__doc__ = docstring
+                for target in targets:
+                    getattr(an_enum, target).__doc__ = docstring
 
     return an_enum
