@@ -61,7 +61,8 @@ jobs:
         - name: Install Packages
           if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
           run: poetry install --no-interaction
-        - name: poetry run mypy --install-types
+        - name: install stubs
+          run: poetry run mypy --install-types
         - name: Run
           run: poetry run mypy .
   release:
