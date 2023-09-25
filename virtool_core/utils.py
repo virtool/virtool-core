@@ -7,8 +7,21 @@ import shutil
 import subprocess
 import tarfile
 import warnings
-from _ast import FunctionDef, Name, AsyncFunctionDef, ClassDef, While, If, With, AsyncWith, Try, For, \
-    AsyncFor, Assign, AnnAssign
+from _ast import (
+    FunctionDef,
+    Name,
+    AsyncFunctionDef,
+    ClassDef,
+    While,
+    If,
+    With,
+    AsyncWith,
+    Try,
+    For,
+    AsyncFor,
+    Assign,
+    AnnAssign,
+)
 from pathlib import Path
 from tarfile import TarFile
 from textwrap import dedent
@@ -292,8 +305,19 @@ def document_enum(an_enum: EnumType) -> EnumType:
     func_source_tree = ast.parse(func_source)
 
     module_body = func_source_tree.body[0]
-    if isinstance(module_body,
-                  FunctionDef | AsyncFunctionDef | ClassDef | For | AsyncFor | While | If | With | AsyncWith | Try):
+    if isinstance(
+        module_body,
+        FunctionDef
+        | AsyncFunctionDef
+        | ClassDef
+        | For
+        | AsyncFor
+        | While
+        | If
+        | With
+        | AsyncWith
+        | Try,
+    ):
         class_body = module_body.body
 
         for idx, node in enumerate(class_body):
@@ -323,10 +347,14 @@ def document_enum(an_enum: EnumType) -> EnumType:
 
             if isinstance(node, Assign | AnnAssign):
                 # maybe no luck with """ docstring? look for EOL comment.
-                docstring_candidates.append(_docstring_from_eol_comment(func_source, node))
+                docstring_candidates.append(
+                    _docstring_from_eol_comment(func_source, node)
+                )
 
                 # check non-whitespace lines above for Sphinx-style comment.
-                docstring_candidates.append(_docstring_from_sphinx_comment(func_source, node))
+                docstring_candidates.append(
+                    _docstring_from_sphinx_comment(func_source, node)
+                )
 
             docstring_candidates_nn = list(filter(None, docstring_candidates))
             if len(docstring_candidates_nn) > 1:

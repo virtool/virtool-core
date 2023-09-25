@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 
 from email_validator import validate_email, EmailSyntaxError
-from pydantic import constr, validator, ConstrainedStr
+from pydantic import validator, ConstrainedStr
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import QuickAnalyzeWorkflow

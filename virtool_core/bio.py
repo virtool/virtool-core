@@ -1,6 +1,6 @@
 import typing
 from pathlib import Path
-from typing import Generator, List
+from typing import List
 
 import aiofiles
 
@@ -123,7 +123,6 @@ def read_fasta(path: Path) -> List[tuple[str, str]]:
 
 
 async def read_fastq(f) -> typing.AsyncGenerator[tuple, None]:
-    #Yield Type Send Type Return Type
     """
     Read the FASTQ content in the file object `f`.
     Yields tuples containing the header, sequence, and quality.
