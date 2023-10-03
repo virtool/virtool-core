@@ -1,6 +1,6 @@
 import typing
 from pathlib import Path
-from typing import List
+from typing import List, AsyncGenerator
 
 import aiofiles
 
@@ -122,7 +122,7 @@ def read_fasta(path: Path) -> List[tuple[str, str]]:
     return data
 
 
-async def read_fastq(f) -> typing.AsyncGenerator[tuple, None]:
+async def read_fastq(f) -> AsyncGenerator[tuple, None]:
     """
     Read the FASTQ content in the file object `f`.
     Yields tuples containing the header, sequence, and quality.
@@ -228,7 +228,7 @@ def translate(sequence: str) -> str:
     protein = list()
 
     for i in range(0, len(sequence) // 3):
-        codon = sequence[i * 3: (i + 1) * 3]
+        codon = sequence[i * 3 : (i + 1) * 3]
 
         # Translate to X if the codon matches no amino acid
         # (taking into account ambiguous codons where possible)

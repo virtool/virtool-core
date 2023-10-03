@@ -12,10 +12,10 @@ class BufferedBulkWriter:
     """
 
     def __init__(
-            self,
-            collection,
-            batch_size,
-            session: Optional[AsyncIOMotorClientSession] = None,
+        self,
+        collection,
+        batch_size,
+        session: Optional[AsyncIOMotorClientSession] = None,
     ):
         self.collection = collection
         self.batch_size = batch_size
@@ -49,7 +49,7 @@ class BufferedBulkWriter:
 
 @asynccontextmanager
 async def buffered_bulk_writer(
-        collection, batch_size=100, session: Optional[AsyncIOMotorClientSession] = None
+    collection, batch_size=100, session: Optional[AsyncIOMotorClientSession] = None
 ):
     """
     A context manager for bulk writing to MongoDB.

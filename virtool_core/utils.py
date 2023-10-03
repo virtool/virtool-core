@@ -83,9 +83,7 @@ def compress_file_with_pigz(path: Path, target: Path, processes: int):
     :param target: path where the compressed file should be stored
     :param processes: number of processes allowable for pigz (-p argument)
     """
-    processes_str: str = str(processes)
-    abs_path: str = os.path.abspath(path)
-    command = ["pigz", "-p", processes_str, "-k", "--stdout", abs_path]
+    command = ["pigz", "-p", str(processes), "-k", "--stdout", path.resolve()]
 
     with open(target, "wb") as f:
         subprocess.call(command, stdout=f)
@@ -128,8 +126,7 @@ def decompress_file_with_pigz(path: Path, target: Path, processes: int):
     :param target: path for the newly decompressed file to be stored
     :param processes: the number of allowable processes for pigz (-p argument)
     """
-    abs_path = os.path.abspath(path)
-    command = ["pigz", "-p", str(processes), "-d", "-k", "--stdout", abs_path]
+    command = ["pigz", "-p", str(processes), "-d", "-k", "--stdout", path.resolve()]
 
     with open(target, "w") as f:
         subprocess.call(command, stdout=f)
