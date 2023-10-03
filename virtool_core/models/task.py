@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 from virtool_core.models.basemodel import BaseModel
 
@@ -13,7 +13,7 @@ class TaskDetailedNested(TaskNested):
     created_at: datetime
     error: str | None = None
     progress: int
-    step: Optional[str]
+    step: str | None
     type: str
 
 
