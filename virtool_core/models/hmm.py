@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import List, Any
 
 from pydantic import validator
 
@@ -40,9 +40,9 @@ class HMMRelease(BaseModel):
 
 class HMMStatus(BaseModel):
     errors: List[str]
-    installed: Optional[HMMInstalled]
-    release: Optional[HMMRelease]
-    task: Optional[Task]
+    installed: HMMInstalled | None
+    release: HMMRelease | None
+    task: Task | None
     updating: bool
 
 
@@ -50,7 +50,7 @@ class HMMMinimal(BaseModel):
     id: str
     cluster: int
     count: int
-    families: Dict[str, int]
+    families: dict[str, int]
     names: List[str]
 
     @validator("names")
@@ -70,7 +70,7 @@ class HMMSequenceEntry(BaseModel):
 
 class HMM(HMMMinimal):
     entries: List[HMMSequenceEntry]
-    genera: Dict[str, int]
+    genera: dict[str, int]
     length: int
     mean_entropy: float
     total_entropy: float
@@ -78,4 +78,4 @@ class HMM(HMMMinimal):
 
 class HMMSearchResult(SearchResult):
     documents: List[HMMMinimal]
-    status: Dict[str, Any]
+    status: dict[str, Any]

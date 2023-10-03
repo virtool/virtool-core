@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobMinimal
@@ -17,7 +17,7 @@ class IndexMinimal(IndexNested):
     change_count: int
     created_at: datetime
     has_files: bool
-    job: Optional[JobMinimal]
+    job: JobMinimal | None
     modified_otu_count: int
     reference: ReferenceNested
     user: UserNested
@@ -39,14 +39,14 @@ class IndexFile(BaseModel):
     id: int
     index: str
     name: str
-    size: Optional[int]
+    size: int | None
     type: str
 
 
 class Index(IndexMinimal):
     contributors: List[IndexContributor]
     files: List[IndexFile]
-    manifest: Dict[str, int]
+    manifest: dict[str, int]
     otus: List[IndexOTU]
 
 

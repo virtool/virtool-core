@@ -126,7 +126,15 @@ def decompress_file_with_pigz(path: Path, target: Path, processes: int):
     :param target: path for the newly decompressed file to be stored
     :param processes: the number of allowable processes for pigz (-p argument)
     """
-    command = ["pigz", "-p", str(processes), "-d", "-k", "--stdout", str(path.resolve())]
+    command = [
+        "pigz",
+        "-p",
+        str(processes),
+        "-d",
+        "-k",
+        "--stdout",
+        str(path.resolve()),
+    ]
 
     with open(target, "w") as f:
         subprocess.call(command, stdout=f)

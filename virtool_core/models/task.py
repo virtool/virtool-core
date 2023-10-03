@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any
 
 from virtool_core.models.basemodel import BaseModel
 
@@ -18,7 +18,7 @@ class TaskDetailedNested(TaskNested):
 
 
 class Task(TaskDetailedNested):
-    context: Dict[str, Any]
+    context: dict[str, Any]
     count: int
     file_size: int | None = None
 
