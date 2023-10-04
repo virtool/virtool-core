@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional, Dict
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.task import TaskNested
@@ -10,8 +9,8 @@ class NuvsBlast(BaseModel):
     created_at: datetime
     updated_at: datetime
     last_checked_at: datetime
-    error: Optional[str]
-    rid: Optional[str]
+    error: str | None
+    rid: str | None
     ready: bool = False
-    result: Optional[Dict]
-    task: Optional[TaskNested]
+    result: dict | None
+    task: TaskNested | None

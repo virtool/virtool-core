@@ -1,6 +1,6 @@
 import typing
 from pathlib import Path
-from typing import Generator, List
+from typing import List, AsyncGenerator
 
 import aiofiles
 
@@ -83,7 +83,7 @@ TRANSLATION_TABLE = {
 }
 
 
-def read_fasta(path: Path) -> List[tuple]:
+def read_fasta(path: Path) -> List[tuple[str, str]]:
     """Parse the FASTA file at `path` and return its content as a
     `list` of tuples containing the header and sequence.
 
@@ -99,7 +99,7 @@ def read_fasta(path: Path) -> List[tuple]:
 
     with open(path, "r") as f:
         header = None
-        seq = []
+        seq: List[str] = []
 
         for line in f:
             if line[0] == ">":
@@ -122,7 +122,7 @@ def read_fasta(path: Path) -> List[tuple]:
     return data
 
 
-async def read_fastq(f) -> Generator[tuple, None, list]:
+async def read_fastq(f) -> AsyncGenerator[tuple, None]:
     """
     Read the FASTQ content in the file object `f`.
     Yields tuples containing the header, sequence, and quality.
