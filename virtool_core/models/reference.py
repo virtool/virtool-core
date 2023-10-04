@@ -29,7 +29,7 @@ class ReferenceRights(BaseModel):
 class ReferenceGroup(ReferenceRights):
     id: int
     created_at: datetime
-    legacy_id: str
+    legacy_id: str | None
 
 
 class ReferenceUser(ReferenceRights):
