@@ -5,14 +5,6 @@ Core utilities for Virtool and associated packages.
 ![Tests](https://github.com/virtool/virtool-core/workflows/ci/badge.svg?branch=main&event=push)
 [![PyPI version](https://badge.fury.io/py/virtool-core.svg)](https://badge.fury.io/py/virtool-core)
 
-## Install
-
-Install `virtool_core` with `pip`:
-
-```
-pip install virtool-core
-```
-
 ## Contributing
 
 ### Commits
