@@ -9,28 +9,71 @@ on:
       - "main"
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     services:
       redis:
         image: redis:6.0
-    container:
-      image: python:3.8-buster
+        ports:
+          - 6379:6379
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - name: Install Poetry
-        run: pip install poetry
-      - name: Install dependencies
-        run: poetry install
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: Load Cached Packages
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install Packages
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
       - name: Test
-        run: poetry run pytest --redis-connection-string redis://redis:6379
+        run: poetry run pytest --redis-connection-string redis://localhost:6379
+  mypy:
+      runs-on: ubuntu-22.04
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+        - name: Setup Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.10'
+        - name: Install Poetry
+          uses: snok/install-poetry@v1
+          with:
+            virtualenvs-create: true
+            virtualenvs-in-project: true
+            installer-parallel: true
+        - name: Load Cached Packages
+          id: cached-poetry-dependencies
+          uses: actions/cache@v3
+          with:
+            path: .venv
+            key: venv-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        - name: Install Packages
+          if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+          run: poetry install --no-interaction
+        - name: install stubs
+          run: poetry run mypy --install-types . --non-interactive
+        - name: Run
+          run: poetry run mypy .
   release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.event_name == 'push'
     needs: test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup NodeJS
         uses: actions/setup-node@v1
         with:

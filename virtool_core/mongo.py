@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import Optional, Union
+from typing import List
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import InsertOne, UpdateOne
@@ -15,14 +15,14 @@ class BufferedBulkWriter:
         self,
         collection,
         batch_size,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: AsyncIOMotorClientSession | None = None,
     ):
         self.collection = collection
         self.batch_size = batch_size
-        self._buffer = []
+        self._buffer: List[InsertOne | UpdateOne] = []
         self._session = session
 
-    async def add(self, request: Union[InsertOne, UpdateOne]):
+    async def add(self, request: InsertOne | UpdateOne):
         """
         Add a write request to the buffer.
 
@@ -49,7 +49,7 @@ class BufferedBulkWriter:
 
 @asynccontextmanager
 async def buffered_bulk_writer(
-    collection, batch_size=100, session: Optional[AsyncIOMotorClientSession] = None
+    collection, batch_size=100, session: AsyncIOMotorClientSession | None = None
 ):
     """
     A context manager for bulk writing to MongoDB.

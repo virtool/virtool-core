@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Any, Optional
+from typing import List, Any
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
@@ -29,12 +29,12 @@ class JobState(Enum):
 
 
 class JobStatus(BaseModel):
-    error: Optional[JobError] = None
+    error: JobError | None = None
     progress: int
-    stage: Optional[str] = None
+    stage: str | None = None
     state: JobState
-    step_description: Optional[str] = None
-    step_name: Optional[str] = None
+    step_description: str | None = None
+    step_name: str | None = None
     timestamp: datetime
 
 
@@ -46,7 +46,7 @@ class JobMinimal(JobNested):
     archived: bool
     created_at: datetime
     progress: int
-    stage: Optional[str]
+    stage: str | None
     state: JobState
     user: UserNested
     workflow: str
@@ -54,10 +54,10 @@ class JobMinimal(JobNested):
 
 class Job(JobMinimal):
     acquired: bool = False
-    args: Dict[str, Any]
-    rights: Dict
+    args: dict[str, Any]
+    rights: dict
     status: List[JobStatus]
-    ping: Optional[JobPing]
+    ping: JobPing | None
 
 
 class JobAcquired(Job):
@@ -65,5 +65,5 @@ class JobAcquired(Job):
 
 
 class JobSearchResult(SearchResult):
-    counts: Dict
+    counts: dict
     documents: List[JobMinimal]

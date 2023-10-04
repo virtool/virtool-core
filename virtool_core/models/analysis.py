@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, Any, Dict
+from typing import List, Any
 
 from pydantic import root_validator
 
@@ -20,7 +20,7 @@ class AnalysisMinimal(BaseModel):
     created_at: datetime
     id: str
     index: IndexNested
-    job: Optional[JobMinimal]
+    job: JobMinimal | None
     ready: bool
     reference: ReferenceNested
     sample: AnalysisSample
@@ -38,18 +38,18 @@ class AnalysisMinimal(BaseModel):
 
 class AnalysisFile(BaseModel):
     analysis: str
-    description: Optional[str] = None
+    description: str | None = None
     format: str
     id: int
     name: str
     name_on_disk: str
-    size: Optional[int]
-    uploaded_at: Optional[datetime]
+    size: int | None
+    uploaded_at: datetime | None
 
 
 class Analysis(AnalysisMinimal):
     files: List[AnalysisFile]
-    results: Optional[Dict[str, Any]]
+    results: dict[str, Any] | None
 
 
 class AnalysisSearchResult(SearchResult):

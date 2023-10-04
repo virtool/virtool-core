@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Any
 
 from virtool_core.models.basemodel import BaseModel
 
@@ -11,16 +11,16 @@ class TaskNested(BaseModel):
 class TaskDetailedNested(TaskNested):
     complete: bool
     created_at: datetime
-    error: str = None
+    error: str | None = None
     progress: int
-    step: Optional[str]
+    step: str | None
     type: str
 
 
 class Task(TaskDetailedNested):
-    context: Dict[str, Any]
+    context: dict[str, Any]
     count: int
-    file_size: int = None
+    file_size: int | None = None
 
 
 TaskMinimal = Task
