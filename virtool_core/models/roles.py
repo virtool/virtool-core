@@ -1,6 +1,5 @@
 """All Virtool roles."""
 from enum import Enum
-from typing import Union
 
 
 class AdministratorRole(str, Enum):
@@ -159,14 +158,14 @@ class ReferenceRole(str, Enum):
     """View the reference and OTUs."""
 
 
-SpaceRoleType = Union[
-    SpaceRole,
-    SpaceLabelRole,
-    SpaceProjectRole,
-    SpaceReferenceRole,
-    SpaceSampleRole,
-    SpaceSubtractionRole,
-    SpaceUploadRole,
-]
+SpaceRoleType = (
+    SpaceRole
+    | SpaceLabelRole
+    | SpaceProjectRole
+    | SpaceReferenceRole
+    | SpaceSampleRole
+    | SpaceSubtractionRole
+    | SpaceUploadRole
+)
 
-RoleType = Union[AdministratorRole, SpaceRoleType, ReferenceRole]
+RoleType = AdministratorRole | SpaceRoleType | ReferenceRole

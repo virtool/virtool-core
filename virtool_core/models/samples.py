@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Union, TYPE_CHECKING, Optional
-
+from typing import TYPE_CHECKING
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
@@ -42,25 +41,25 @@ class SampleMinimal(SampleNested):
     created_at: datetime
     host: str
     isolate: str
-    job: Optional[JobMinimal]
-    labels: List[LabelNested]
+    job: JobMinimal | None
+    labels: list[LabelNested]
     library_type: LibraryType
     notes: str
-    nuvs: Union[bool, str]
-    pathoscope: Union[bool, str]
+    nuvs: bool | str
+    pathoscope: bool | str
     ready: bool
     user: UserNested
     workflows: SampleWorkflows
 
 
 class Quality(BaseModel):
-    bases: List[List[Union[int, float]]]
-    composition: List[List[Union[int, float]]]
+    bases: list[list[int | float]]
+    composition: list[list[int | float]]
     count: int
     encoding: str
-    gc: Union[int, float]
-    length: List[int]
-    sequences: List[int]
+    gc: int | float
+    length: list[int]
+    sequences: list[int]
 
 
 class Read(BaseModel):
@@ -70,26 +69,26 @@ class Read(BaseModel):
     name_on_disk: str
     sample: str
     size: int
-    upload: Optional[Upload]
+    upload: Upload | None
     uploaded_at: datetime
 
 
 class Sample(SampleMinimal):
     all_read: bool
     all_write: bool
-    artifacts: List
+    artifacts: list
     format: str
-    group: Union[int, str]
+    group: int | str | None
     group_read: bool
     group_write: bool
     hold: bool
     is_legacy: bool
     locale: str
     paired: bool
-    quality: Optional[Quality]
-    reads: List[Read]
-    subtractions: List[SubtractionNested]
+    quality: Quality | None
+    reads: list[Read]
+    subtractions: list[SubtractionNested]
 
 
 class SampleSearchResult(SearchResult):
-    documents: List[SampleMinimal]
+    documents: list[SampleMinimal]

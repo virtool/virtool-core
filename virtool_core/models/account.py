@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from email_validator import validate_email, EmailSyntaxError
 from pydantic import validator, ConstrainedStr
@@ -47,6 +46,6 @@ class APIKey(BaseModel):
     id: str
     name: str
     administrator: bool
-    groups: List[GroupMinimal]
+    groups: list[GroupMinimal]
     permissions: Permissions
     created_at: datetime
