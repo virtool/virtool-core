@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from virtool_core.models.basemodel import BaseModel
 
@@ -24,11 +24,11 @@ class Permissions(BaseModel):
 
 
 class GroupMinimal(BaseModel):
-    id: int
-    legacy_id: Optional[str]
+    id: int | str
+    legacy_id: str | None
     name: str
 
 
 class Group(GroupMinimal):
     permissions: Permissions
-    users: List[UserNested]
+    users: list[UserNested]

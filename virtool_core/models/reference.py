@@ -1,6 +1,6 @@
 import enum
 from datetime import datetime
-from typing import List, Any
+from typing import Any
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
@@ -27,7 +27,7 @@ class ReferenceRights(BaseModel):
 
 
 class ReferenceGroup(ReferenceRights):
-    id: int
+    id: int | str
     created_at: datetime
     legacy_id: str | None
 
@@ -44,7 +44,7 @@ class ReferenceContributor(UserNested):
 
 
 class ReferenceRemotesFrom(BaseModel):
-    errors: List[Any]
+    errors: list[Any]
     slug: str
 
 
@@ -108,15 +108,15 @@ class ReferenceMinimal(ReferenceNested):
 
 
 class Reference(ReferenceMinimal):
-    contributors: List[ReferenceContributor]
+    contributors: list[ReferenceContributor]
     description: str
-    groups: List[ReferenceGroup]
+    groups: list[ReferenceGroup]
     restrict_source_types: bool
-    source_types: List[str]
-    targets: List[dict] | None
-    users: List[ReferenceUser]
+    source_types: list[str]
+    targets: list[dict] | None
+    users: list[ReferenceUser]
 
 
 class ReferenceSearchResult(SearchResult):
-    documents: List[ReferenceMinimal]
+    documents: list[ReferenceMinimal]
     official_installed: bool
