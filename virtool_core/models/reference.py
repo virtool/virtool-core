@@ -30,6 +30,7 @@ class ReferenceGroup(ReferenceRights):
     id: int | str
     created_at: datetime
     legacy_id: str | None
+    name: str
 
 
 class ReferenceUser(ReferenceRights):
