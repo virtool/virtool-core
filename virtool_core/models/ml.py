@@ -1,6 +1,7 @@
 import datetime
 from typing import List
-from basemodel import BaseModel
+
+from virtool_core.models.basemodel import BaseModel
 
 
 class MLModelRelease(BaseModel):
