@@ -16,6 +16,13 @@ if TYPE_CHECKING:
     from virtool_core.models.subtraction import SubtractionNested
 
 
+class SampleArtifact(BaseModel):
+    id: int
+    download_url: str
+    name: str
+    size: int
+
+
 class SampleID(BaseModel):
     id: str
 
@@ -76,7 +83,7 @@ class Read(BaseModel):
 class Sample(SampleMinimal):
     all_read: bool
     all_write: bool
-    artifacts: list
+    artifacts: list[SampleArtifact]
     format: str
     group: int | str | None
     group_read: bool
