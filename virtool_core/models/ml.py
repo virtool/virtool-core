@@ -1,20 +1,17 @@
+from __future__ import annotations
+
 import datetime
 from typing import List
 
 from virtool_core.models.basemodel import BaseModel
 
 
-class MLModelRelease(BaseModel):
-    """A release of a machine learning model"""
-
+class MLModelReleaseMinimal(BaseModel):
     id: int
     """The unique ID for the release."""
 
     created_at: datetime.datetime
     """When the release was loaded into the Virtool instance."""
-
-    download_url: str
-    """The URL to download the model data file."""
 
     github_url: str
     """The URL to the release HTML page for the release on GitHub."""
@@ -30,6 +27,16 @@ class MLModelRelease(BaseModel):
 
     size: int
     """The size of the model data file."""
+
+
+class MLModelRelease(MLModelReleaseMinimal):
+    """A release of a machine learning model"""
+
+    download_url: str
+    """The URL to download the model data file."""
+
+    model: MLModelMinimal
+    """The machine learning model."""
 
 
 class MLModelMinimal(BaseModel):
@@ -57,7 +64,8 @@ class MLModelMinimal(BaseModel):
 class MLModel(MLModelMinimal):
     """A machine learning model"""
 
-    releases: List[MLModelRelease]
+    releases: List[MLModelReleaseMinimal]
+    """The available releases for the model."""
 
 
 class MLModelListResult(BaseModel):
