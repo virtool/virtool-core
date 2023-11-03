@@ -11,4 +11,5 @@ class BaseModel(PydanticBaseModel):
     def __eq__(self, other):
         return NotImplemented
 
-    __hash__ = None
+    def __hash__(self):
+        return NotImplemented
