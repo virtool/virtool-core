@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import List
 
 from virtool_core.models.basemodel import BaseModel
 
@@ -64,14 +63,14 @@ class MLModelMinimal(BaseModel):
 class MLModel(MLModelMinimal):
     """A machine learning model"""
 
-    releases: List[MLModelReleaseMinimal]
+    releases: list[MLModelReleaseMinimal]
     """The available releases for the model."""
 
 
 class MLModelListResult(BaseModel):
     """A search result for an ML model"""
 
-    items: List[MLModelMinimal]
+    items: list[MLModelMinimal]
     """The available ML models."""
 
     last_synced_at: datetime.datetime | None
