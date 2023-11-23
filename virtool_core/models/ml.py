@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import List
 
 from virtool_core.models.basemodel import BaseModel
 
@@ -29,16 +28,6 @@ class MLModelReleaseMinimal(BaseModel):
     """The size of the model data file."""
 
 
-class MLModelRelease(MLModelReleaseMinimal):
-    """A release of a machine learning model"""
-
-    download_url: str
-    """The URL to download the model data file."""
-
-    model: MLModelMinimal
-    """The machine learning model."""
-
-
 class MLModelMinimal(BaseModel):
     """A machine learning model"""
 
@@ -51,7 +40,7 @@ class MLModelMinimal(BaseModel):
     description: str
     """A description of the model."""
 
-    latest_release: MLModelRelease | None
+    latest_release: MLModelReleaseMinimal | None
     """The latest release of the model."""
 
     name: str
@@ -61,17 +50,27 @@ class MLModelMinimal(BaseModel):
     """The number of releases for the model."""
 
 
+class MLModelRelease(MLModelReleaseMinimal):
+    """A release of a machine learning model"""
+
+    download_url: str
+    """The URL to download the model data file."""
+
+    model: MLModelMinimal
+    """The machine learning model."""
+
+
 class MLModel(MLModelMinimal):
     """A machine learning model"""
 
-    releases: List[MLModelReleaseMinimal]
+    releases: list[MLModelReleaseMinimal]
     """The available releases for the model."""
 
 
 class MLModelListResult(BaseModel):
     """A search result for an ML model"""
 
-    items: List[MLModelMinimal]
+    items: list[MLModelMinimal]
     """The available ML models."""
 
     last_synced_at: datetime.datetime | None
