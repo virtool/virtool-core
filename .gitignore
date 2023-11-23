@@ -7,14 +7,10 @@ __pycache__
 .coverage
 .idea
 .pytest_cache
+.ruff_cache
 .tox
+.vscode
 
 coverage.xml
-
 build
-build/*
-*.egg
-*.egg-info
-
 tags
-.vscode/settings.json
