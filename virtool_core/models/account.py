@@ -44,8 +44,7 @@ class Account(User):
 
 class APIKey(BaseModel):
     id: str
-    name: str
-    administrator: bool
-    groups: list[GroupMinimal]
-    permissions: Permissions
     created_at: datetime
+    groups: list[GroupMinimal]
+    name: str
+    permissions: Permissions
