@@ -34,10 +34,9 @@ class ReferenceGroup(ReferenceRights):
 
 
 class ReferenceUser(ReferenceRights):
-    administrator: bool
+    created_at: datetime
     handle: str
     id: str
-    created_at: datetime
 
 
 class ReferenceContributor(UserNested):
