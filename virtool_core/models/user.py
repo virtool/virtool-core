@@ -15,7 +15,6 @@ class UserB2C(BaseModel):
 
 class UserNested(BaseModel):
     id: str
-    administrator: bool
     handle: str
 
 
@@ -29,12 +28,12 @@ class UserMinimal(UserNested):
 
 
 class User(UserMinimal):
+    administrator_role: AdministratorRole | None
     force_reset: bool
     groups: list[GroupMinimal]
     last_password_change: datetime
     permissions: Permissions
     primary_group: GroupMinimal | None
-    administrator_role: AdministratorRole | None
 
 
 class UserSearchResult(SearchResult):
