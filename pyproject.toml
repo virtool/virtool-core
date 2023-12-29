@@ -2,7 +2,16 @@
 name = "virtool-core"
 version = "0.2.0"
 description = "Core utilities for Virtool."
-authors = ["Ian Boyes", "Blake Smith"]
+authors = [
+    "Ian Boyes",
+    "Blake Smith",
+    "Aman Monga",
+    "Ryan Fang",
+    "Markus Swoveland",
+    "Reece Hoffmann",
+    "Matt Curtis",
+    "Christine Wong Chong"
+]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/virtool/virtool-core"
