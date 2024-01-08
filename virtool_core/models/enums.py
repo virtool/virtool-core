@@ -38,9 +38,6 @@ class HistoryMethod(str, Enum):
     update = "update"
 
 
-
-
-
 class AnalysisWorkflows(str, Enum):
     aodp = "aodp"
     nuvs = "nuvs"
