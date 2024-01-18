@@ -38,7 +38,7 @@ class HistoryMethod(str, Enum):
     update = "update"
 
 
-class AnalysisWorkflows(str, Enum):
+class AnalysisWorkflow(str, Enum):
     aodp = "aodp"
     nuvs = "nuvs"
     pathoscope_bowtie = "pathoscope_bowtie"
