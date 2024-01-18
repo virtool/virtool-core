@@ -4,7 +4,7 @@ from email_validator import validate_email, EmailSyntaxError
 from pydantic import validator, ConstrainedStr
 
 from virtool_core.models.basemodel import BaseModel
-from virtool_core.models.enums import AnalysisWorkflows
+from virtool_core.models.enums import AnalysisWorkflow
 from virtool_core.models.group import GroupMinimal, Permissions
 from virtool_core.models.user import User
 
@@ -25,7 +25,7 @@ def check_email(email: str | None) -> str | None:
 
 
 class AccountSettings(BaseModel):
-    quick_analyze_workflow: AnalysisWorkflows
+    quick_analyze_workflow: AnalysisWorkflow
     show_ids: bool
     show_versions: bool
     skip_quick_analyze_dialog: bool
