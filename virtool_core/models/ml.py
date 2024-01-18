@@ -28,7 +28,7 @@ class MLModelReleaseMinimal(BaseModel):
     """The size of the model data file."""
 
 
-class MLModelMinimal(BaseModel):
+class MLModelNested(BaseModel):
     """A machine learning model"""
 
     id: int
@@ -40,14 +40,16 @@ class MLModelMinimal(BaseModel):
     description: str
     """A description of the model."""
 
-    latest_release: MLModelReleaseMinimal | None
-    """The latest release of the model."""
-
     name: str
     """The name of the model."""
 
+
+class MLModelMinimal(MLModelNested):
     release_count: int
     """The number of releases for the model."""
+
+    latest_release: MLModelReleaseMinimal | None
+    """The latest release of the model."""
 
 
 class MLModelRelease(MLModelReleaseMinimal):
@@ -56,7 +58,7 @@ class MLModelRelease(MLModelReleaseMinimal):
     download_url: str
     """The URL to download the model data file."""
 
-    model: MLModelMinimal
+    model: MLModelNested
     """The machine learning model."""
 
 
