@@ -40,12 +40,12 @@ class HistoryMethod(str, Enum):
 
 class AnalysisWorkflow(str, Enum):
     aodp = "aodp"
+    iimi = "iimi"
     nuvs = "nuvs"
     pathoscope_bowtie = "pathoscope_bowtie"
-    iimi = "iimi"
 
 
-QuickAnalyzeWorkflow = AnalysisWorkflows
+QuickAnalyzeWorkflow = AnalysisWorkflow
 
 
 class LibraryType(str, Enum):
