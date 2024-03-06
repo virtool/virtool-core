@@ -4,7 +4,7 @@ import sys
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
 
-from aioredis import Redis, create_redis_pool, Channel, ConnectionClosedError
+from aioredis import Redis
 
 logger = get_logger(__name__)
 
@@ -18,7 +18,7 @@ async def check_redis_server_version(redis: Redis) -> Optional[str]:
     :param redis: the Redis connection
     :return: the version
     """
-    info = await redis.execute("INFO", encoding="utf-8")
+    info = await redis.info()
 
     for line in info.split("\n"):
         if line.startswith("redis_version"):
@@ -48,7 +48,8 @@ async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
     logger.info("Connecting to Redis")
 
     try:
-        redis = await create_redis_pool(redis_connection_string, timeout=timeout)
+        redis = Redis.from_url(redis_connection_string)
+        redis.__init__(socket_connect_timeout=timeout)
         await check_redis_server_version(redis)
 
         return redis
@@ -71,7 +72,7 @@ async def periodically_ping_redis(redis: Redis):
         await redis.ping()
 
 
-async def resubscribe(redis: Redis, redis_channel_name: str) -> Channel:
+async def resubscribe(redis: Redis, redis_channel_name: str):
     """
     Subscribe to the passed channel of the passed :class:`Redis` object.
 
@@ -82,9 +83,9 @@ async def resubscribe(redis: Redis, redis_channel_name: str) -> Channel:
     """
     while True:
         try:
-            (channel,) = await redis.subscribe(redis_channel_name)
+            (channel,) = await redis.pubsub().subscribe(redis_channel_name)
             return channel
-        except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
+        except (ConnectionRefusedError, ConnectionResetError):
             await asyncio.sleep(5)
 
 
