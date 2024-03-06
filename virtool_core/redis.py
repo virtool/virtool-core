@@ -1,10 +1,9 @@
 import asyncio
-from structlog import get_logger
 import sys
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
-
-from aioredis import Redis
+from redis.asyncio import Redis
+from structlog import get_logger
 
 logger = get_logger(__name__)
 
