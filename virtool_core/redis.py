@@ -18,15 +18,11 @@ async def check_redis_server_version(redis: Redis) -> Optional[str]:
     :return: the version
     """
     info = await redis.info()
+    version = info["redis_version"]
+    logger.info(f"Found Redis {version}")
 
-    for line in info.split("\n"):
-        if line.startswith("redis_version"):
-            version = line.replace("redis_version:", "")
-            logger.info(f"Found Redis {version}")
+    return version
 
-            return version
-
-    return None
 
 
 async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
