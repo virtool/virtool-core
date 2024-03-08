@@ -24,7 +24,6 @@ async def check_redis_server_version(redis: Redis) -> Optional[str]:
     return version
 
 
-
 async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
     """
     Create a connection to Redis server specified in passed `redis_connection_string`.
