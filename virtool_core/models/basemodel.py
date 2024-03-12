@@ -7,3 +7,9 @@ class BaseModel(PydanticBaseModel):
         if "_id" in values:
             values["id"] = values.pop("_id")
         return values
+
+    def __eq__(self, other):
+        return NotImplemented
+
+    def __hash__(self):
+        return NotImplemented
