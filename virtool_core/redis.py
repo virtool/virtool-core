@@ -1,9 +1,10 @@
 import asyncio
+from structlog import get_logger
 import sys
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
-from redis.asyncio import Redis
-from structlog import get_logger
+
+from aioredis import Redis, create_redis_pool, Channel, ConnectionClosedError
 
 logger = get_logger(__name__)
 
@@ -17,11 +18,16 @@ async def check_redis_server_version(redis: Redis) -> Optional[str]:
     :param redis: the Redis connection
     :return: the version
     """
-    info = await redis.info()
-    version = info["redis_version"]
-    logger.info(f"Found Redis {version}")
+    info = await redis.execute("INFO", encoding="utf-8")
 
-    return version
+    for line in info.split("\n"):
+        if line.startswith("redis_version"):
+            version = line.replace("redis_version:", "")
+            logger.info(f"Found Redis {version}")
+
+            return version
+
+    return None
 
 
 async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
@@ -42,8 +48,7 @@ async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
     logger.info("Connecting to Redis")
 
     try:
-        redis = Redis.from_url(redis_connection_string)
-        redis.__init__(socket_connect_timeout=timeout)
+        redis = await create_redis_pool(redis_connection_string, timeout=timeout)
         await check_redis_server_version(redis)
 
         return redis
@@ -66,7 +71,7 @@ async def periodically_ping_redis(redis: Redis):
         await redis.ping()
 
 
-async def resubscribe(redis: Redis, redis_channel_name: str):
+async def resubscribe(redis: Redis, redis_channel_name: str) -> Channel:
     """
     Subscribe to the passed channel of the passed :class:`Redis` object.
 
@@ -77,9 +82,9 @@ async def resubscribe(redis: Redis, redis_channel_name: str):
     """
     while True:
         try:
-            (channel,) = await redis.pubsub().subscribe(redis_channel_name)
+            (channel,) = await redis.subscribe(redis_channel_name)
             return channel
-        except (ConnectionRefusedError, ConnectionResetError):
+        except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
             await asyncio.sleep(5)
 
 
@@ -103,4 +108,5 @@ async def configure_redis(
             with suppress(asyncio.CancelledError):
                 await ping_task
 
-            await redis.close()
+            redis.close()
+            await redis.wait_closed()
