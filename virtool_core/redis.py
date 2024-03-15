@@ -1,9 +1,9 @@
 import asyncio
-import pytest
 from structlog import get_logger
 import sys
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
+
 from aioredis import Redis, create_redis_pool, Channel, ConnectionClosedError
 
 logger = get_logger(__name__)
@@ -12,37 +12,6 @@ logger = get_logger(__name__)
 class CoreRedis(Redis):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-
-@pytest.fixture
-async def redis(redis_connection_string, worker_id):
-    """
-    A connected Redis client for testing.
-    """
-    client = await create_redis_pool(redis_connection_string)
-    await client.flushdb()
-
-    yield client
-    await client.flushdb()
-    client.close()
-    await client.wait_closed()
-
-
-@pytest.fixture()
-async def channel(redis: Redis):
-    (channel,) = await redis.subscribe("channel:test")
-    return channel
-
-
-@pytest.fixture
-def redis_connection_string(request, worker_id: str) -> str:
-    """
-    The connection string for the Redis database used for testing.
-    """
-    base_connection_string = request.config.getoption("redis_connection_string")
-    number = 0 if worker_id == "master" else int(worker_id[2:])
-
-    return f"{base_connection_string}/{number}"
 
 
 async def check_redis_server_version(redis: Redis) -> Optional[str]:
