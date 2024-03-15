@@ -3,15 +3,33 @@ from structlog import get_logger
 import sys
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
-
-from aioredis import Redis, create_redis_pool, Channel, ConnectionClosedError
+import aioredis
 
 logger = get_logger(__name__)
 
 
-class CoreRedis(Redis):
+class Redis(aioredis.Redis):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
+class Channel(aioredis.Channel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class ConnectionClosedError(aioredis.ConnectionClosedError):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class ChannelClosedError(aioredis.ChannelClosedError):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+async def create_redis_pool(redis_connection_string: str, *args, **kwargs):
+    return await aioredis.create_redis_pool(redis_connection_string, *args, **kwargs)
 
 
 async def check_redis_server_version(redis: Redis) -> Optional[str]:
