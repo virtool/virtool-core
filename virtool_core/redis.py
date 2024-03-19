@@ -13,17 +13,18 @@ class Redis(aioredis.Redis):
         super().__init__(*args, **kwargs)
 
 
-class Channel(aioredis.Channel):
+
+class Channel(aioredis.client.PubSub):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class ConnectionClosedError(aioredis.ConnectionClosedError):
+class ConnectionClosedError(aioredis.exceptions.TimeoutError):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class ChannelClosedError(aioredis.ChannelClosedError):
+class ChannelClosedError(aioredis.exceptions.TimeoutError):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
