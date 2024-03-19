@@ -29,8 +29,8 @@ class ChannelClosedError(aioredis.exceptions.TimeoutError):
         super().__init__(*args, **kwargs)
 
 
-async def create_redis_pool(redis_connection_string: str, *args, **kwargs):
-    return await aioredis.create_redis_pool(redis_connection_string, *args, **kwargs)
+async def create_redis_pool(redis_connection_string: str, **kwargs):
+    return await aioredis.from_url(redis_connection_string, **kwargs)
 
 
 async def check_redis_server_version(redis: Redis) -> Optional[str]:
