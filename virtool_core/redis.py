@@ -129,5 +129,4 @@ async def configure_redis(
             with suppress(asyncio.CancelledError):
                 await ping_task
 
-            redis.close()
-            await redis.wait_closed()
+            await redis.close()
