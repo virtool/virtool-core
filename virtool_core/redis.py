@@ -12,6 +12,10 @@ class Redis(aioredis.Redis):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    async def subscribe(self, channel_name: str):
+        channel = self.pubsub()
+        await channel.subscribe(channel_name)
+        return (channel,)
 
 
 class Channel(aioredis.client.PubSub):
@@ -29,8 +33,8 @@ class ChannelClosedError(aioredis.exceptions.TimeoutError):
         super().__init__(*args, **kwargs)
 
 
-async def create_redis_pool(redis_connection_string: str, **kwargs):
-    return await aioredis.from_url(redis_connection_string, **kwargs)
+async def create_redis_pool(redis_connection_string: str, **kwargs) -> aioredis.Redis:
+    return await Redis.from_url(redis_connection_string, **kwargs)
 
 
 async def check_redis_server_version(redis: Redis) -> Optional[str]:
@@ -42,16 +46,9 @@ async def check_redis_server_version(redis: Redis) -> Optional[str]:
     :param redis: the Redis connection
     :return: the version
     """
-    info = await redis.execute("INFO", encoding="utf-8")
-
-    for line in info.split("\n"):
-        if line.startswith("redis_version"):
-            version = line.replace("redis_version:", "")
-            logger.info(f"Found Redis {version}")
-
-            return version
-
-    return None
+    info = await redis.info()
+    version = info["redis_version"]
+    logger.info(f"Found Redis {version}")
 
 
 async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
@@ -106,7 +103,7 @@ async def resubscribe(redis: Redis, redis_channel_name: str) -> Channel:
     """
     while True:
         try:
-            (channel,) = await redis.subscribe(redis_channel_name)
+            (channel,) = await redis.pubsub().subscribe(redis_channel_name)
             return channel
         except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
             await asyncio.sleep(5)
