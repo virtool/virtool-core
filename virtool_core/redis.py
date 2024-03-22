@@ -58,7 +58,7 @@ async def connect(redis_connection_string: str, timeout: int = 1) -> Redis:
     Will exit the application if the server cannot be reached.
 
     :param redis_connection_string: the Redis connection string
-    :param timeout: max time to open a connection
+    :param timeout: DEPRECATED: Redis connection timeout
     :return: a Redis connection object
 
     """
@@ -118,7 +118,7 @@ async def configure_redis(
     ping_task = None
 
     try:
-        redis = await connect(redis_connection_string, timeout)
+        redis = await connect(redis_connection_string)
         ping_task = asyncio.create_task(periodically_ping_redis(redis))
         yield redis
     finally:
