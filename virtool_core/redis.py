@@ -18,8 +18,9 @@ class Redis(aioredis.Redis):
         await channel.subscribe(channel_name)
         return (channel,)
 
-    async def lrange(self, name, start: int, end: int) -> list[bytes]:
-        return await super().lrange(name, start, end)
+    async def lrange(self, name, start: int, end: int):
+        names_list = await super().lrange(name, start, end)
+        return names_list
     async def lpop(self, key):
         return (await super().lpop(key)).decode('utf-8')
 
