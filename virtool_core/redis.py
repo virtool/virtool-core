@@ -18,7 +18,7 @@ class Redis(aioredis.Redis):
         await channel.subscribe(channel_name)
         return (channel,)
 
-    async def lrange(self, name, start: int, end: int):
+    async def lrange(self, name, start: int, end: int) -> list[bytes]:
         return await super().lrange(name, start, end)
     async def lpop(self, key):
         return (await super().lpop(key)).decode('utf-8')
@@ -55,6 +55,8 @@ async def check_redis_server_version(redis: Redis) -> Optional[str]:
     info = await redis.info()
     version = info["redis_version"]
     logger.info(f"Found Redis {version}")
+
+    return version
 
 
 async def connect(redis_connection_string: str) -> Redis:
