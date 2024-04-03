@@ -3,13 +3,13 @@ from structlog import get_logger
 import sys
 from contextlib import asynccontextmanager, suppress
 from typing import Optional, AsyncGenerator
-from redis import asyncio as aioredis
-from redis import exceptions
+import redis.asyncio
+import redis.exceptions
 
 logger = get_logger(__name__)
 
 
-class Redis(aioredis.Redis):
+class Redis(redis.asyncio.Redis):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -25,17 +25,17 @@ class Redis(aioredis.Redis):
         return (await super().lpop(key)).decode('utf-8')
 
 
-class Channel(aioredis.client.PubSub):
+class Channel(redis.asyncio.client.PubSub):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class ConnectionClosedError(exceptions.TimeoutError):
+class ConnectionClosedError(redis.exceptions.TimeoutError):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class ChannelClosedError(exceptions.TimeoutError):
+class ChannelClosedError(redis.exceptions.TimeoutError):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
