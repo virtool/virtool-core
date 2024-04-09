@@ -94,7 +94,6 @@ async def connect(redis_connection_string: str) -> Redis:
     Will exit the application if the server cannot be reached.
 
     :param redis_connection_string: the Redis connection string
-    :param timeout: DEPRECATED: Redis connection timeout
     :return: a Redis connection object
 
     """
@@ -147,7 +146,7 @@ async def resubscribe(redis: Redis, redis_channel_name: str):
 
 @asynccontextmanager
 async def configure_redis(
-        redis_connection_string: str, timeout: int = 1
+        redis_connection_string: str
 ) -> AsyncGenerator[Redis, None]:
     """Prepare a redis connection."""
     redis = None
