@@ -4,7 +4,7 @@ from redis.commands.core import ResponseT
 from structlog import get_logger
 import sys
 from contextlib import asynccontextmanager, suppress
-from typing import Optional, AsyncGenerator, Union, Awaitable
+from typing import Optional, Union, Awaitable
 import redis.asyncio
 import redis.exceptions
 
@@ -14,9 +14,30 @@ logger = get_logger(__name__)
 class Redis(redis.asyncio.Redis):
     def __init__(self, redis_connection_string, **kwargs):
         self._client = redis.asyncio.from_url(redis_connection_string, **kwargs)
+        self.redis_connection_string = redis_connection_string
 
+    async def __aenter__(self):
+        self._client = await connect(self.redis_connection_string)
+        self._ping_task = asyncio.create_task(self.periodically_ping())
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self._ping_task is not None:
+            logger.info("Disconnecting from Redis")
+            self._ping_task.cancel()
+
+            with suppress(asyncio.CancelledError):
+                await self._ping_task
+
+        if self._client is not None:
+            await self._client.close()
+
+    @asynccontextmanager
     async def client(self, *args, **kwargs):
-        return self._client.client()
+        try:
+            yield self._client
+        finally:
+            await self._client.close()
 
     async def get(self, *args, **kwargs):
         return await self._client.get(*args, **kwargs)
@@ -75,6 +96,17 @@ class Redis(redis.asyncio.Redis):
 
         return version
 
+    async def periodically_ping(self):
+        """
+        Ping the Redis server every two minutes.
+
+        When using Azure Cache for Redis, connections inactive for more than 10 minutes
+        are dropped. Regular pings prevent this from happening.
+
+        """
+        while True:
+            await asyncio.sleep(120)
+            await self._client.ping()
 
 
 class ConnectionClosedError(redis.exceptions.TimeoutError):
@@ -113,20 +145,6 @@ async def connect(redis_connection_string: str) -> Redis:
         sys.exit(1)
 
 
-async def periodically_ping_redis(redis: Redis):
-    """
-    Ping the Redis server every two minutes.
-
-    When using Azure Cache for Redis, connections inactive for more than 10 minutes
-    are dropped. Regular pings prevent this from happening.
-
-    :param redis: the Redis client
-    """
-    while True:
-        await asyncio.sleep(120)
-        await redis.ping()
-
-
 async def resubscribe(redis: Redis, redis_channel_name: str):
     """
     Subscribe to the passed channel of the passed :class:`Redis` object.
@@ -143,25 +161,3 @@ async def resubscribe(redis: Redis, redis_channel_name: str):
         except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
             await asyncio.sleep(5)
 
-
-@asynccontextmanager
-async def configure_redis(
-        redis_connection_string: str
-) -> AsyncGenerator[Redis, None]:
-    """Prepare a redis connection."""
-    redis = None
-    ping_task = None
-
-    try:
-        redis = await connect(redis_connection_string)
-        ping_task = asyncio.create_task(periodically_ping_redis(redis))
-        yield redis
-    finally:
-        if ping_task is not None and redis is not None:
-            logger.info("Disconnecting from Redis")
-            ping_task.cancel()
-
-            with suppress(asyncio.CancelledError):
-                await ping_task
-
-            await redis.close()
