@@ -15,6 +15,7 @@ class Redis(redis.asyncio.Redis):
     def __init__(self, redis_connection_string, **kwargs):
         self._client = redis.asyncio.from_url(redis_connection_string, **kwargs)
         self.redis_connection_string = redis_connection_string
+        self._ping_task = None
 
     async def __aenter__(self):
         self._client = await connect(self.redis_connection_string)
@@ -52,9 +53,20 @@ class Redis(redis.asyncio.Redis):
         return await self._client.ttl(session_identifier)
 
     async def subscribe(self, channel_name: str):
-        channel = self._client.pubsub()
-        await channel.subscribe(channel_name)
-        return channel
+        """
+        Subscribe to the passed channel.
+        Automatically resubscribes if the connection is broken.
+
+        :param channel_name: name of the channel to subscribe to
+        :return: AsyncIterator[dict]
+        """
+        while True:
+            try:
+                channel = self._client.pubsub()
+                await channel.subscribe(channel_name)
+                yield channel
+            except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
+                await asyncio.sleep(5)
 
     async def publish(self, channel_name: str, message: str):
         return await self._client.publish(channel_name, message)
@@ -109,14 +121,9 @@ class Redis(redis.asyncio.Redis):
             await self._client.ping()
 
 
-class ConnectionClosedError(redis.exceptions.TimeoutError):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
 
-class ChannelClosedError(redis.exceptions.TimeoutError):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+
 
 
 async def connect(redis_connection_string: str) -> Redis:
@@ -136,28 +143,27 @@ async def connect(redis_connection_string: str) -> Redis:
     logger.info("Connecting to Redis")
 
     try:
-        redis = Redis(redis_connection_string)
-        await redis.check_redis_server_version()
+        redis_con = Redis(redis_connection_string)
+        await redis_con.check_redis_server_version()
 
-        return redis
+        return redis_con
     except ConnectionRefusedError:
         logger.fatal("Could not connect to Redis: Connection refused")
         sys.exit(1)
 
 
-async def resubscribe(redis: Redis, redis_channel_name: str):
+async def resubscribe(redis_con: Redis, redis_channel_name: str):
     """
     Subscribe to the passed channel of the passed :class:`Redis` object.
 
-    :param redis: the Redis connection
+    :param redis_con: the Redis connection
     :param redis_channel_name: name of the channel to reconnect to
     :return: Channel
 
     """
     while True:
         try:
-            (channel,) = await redis.pubsub().subscribe(redis_channel_name)
+            channel = await redis_con.pubsub().subscribe(redis_channel_name)
             return channel
         except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
             await asyncio.sleep(5)
-
