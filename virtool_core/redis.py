@@ -174,5 +174,5 @@ async def resubscribe(redis_con: Redis, redis_channel_name: str):
         try:
             channel = await redis_con.pubsub().subscribe(redis_channel_name)
             return channel
-        except (ConnectionRefusedError, ConnectionResetError, ConnectionError):
+        except ConnectionError:
             await asyncio.sleep(5)
