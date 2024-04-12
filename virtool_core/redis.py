@@ -1,6 +1,4 @@
 import asyncio
-
-from redis import ConnectionError
 from redis.commands.core import ResponseT
 from structlog import get_logger
 import sys
