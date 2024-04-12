@@ -1,5 +1,6 @@
 import asyncio
 
+from redis import ConnectionError
 from redis.commands.core import ResponseT
 from structlog import get_logger
 import sys
@@ -9,6 +10,10 @@ import redis.asyncio
 import redis.exceptions
 
 logger = get_logger(__name__)
+
+
+class ChannelClosedError(Exception):
+    pass
 
 
 class Redis(redis.asyncio.Redis):
@@ -53,9 +58,10 @@ class Redis(redis.asyncio.Redis):
         return await self._client.ttl(session_identifier)
 
     async def subscribe(self, channel_name: str):
-        channel = self._client.pubsub()
+        channel = Channel(self._client)
         await channel.subscribe(channel_name)
         return channel
+
     async def publish(self, channel_name: str, message: str):
         return await self._client.publish(channel_name, message)
 
@@ -109,9 +115,26 @@ class Redis(redis.asyncio.Redis):
             await self._client.ping()
 
 
+class Channel(redis.client.PubSub):
+    def __init__(self, client):
+        self._channel = client.pubsub()
 
+    def subscribe(self, channel_name: str):
+        return self._channel.subscribe(channel_name)
 
+    def listen(self):
+        return self._channel.listen()
 
+    def get_message(
+            self, ignore_subscribe_messages: bool = False, timeout: float = 0.0
+    ):
+        try:
+            return self._channel.get_message(ignore_subscribe_messages, timeout)
+        except redis.exceptions.TimeoutError:
+            raise ChannelClosedError
+
+    def unsubscribe(self, *args):
+        return self._channel.unsubscribe(*args)
 
 
 async def connect(redis_connection_string: str) -> Redis:
@@ -153,5 +176,5 @@ async def resubscribe(redis_con: Redis, redis_channel_name: str):
         try:
             channel = await redis_con.pubsub().subscribe(redis_channel_name)
             return channel
-        except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
+        except (ConnectionRefusedError, ConnectionResetError, ConnectionError):
             await asyncio.sleep(5)
