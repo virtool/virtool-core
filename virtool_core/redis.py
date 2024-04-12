@@ -53,21 +53,9 @@ class Redis(redis.asyncio.Redis):
         return await self._client.ttl(session_identifier)
 
     async def subscribe(self, channel_name: str):
-        """
-        Subscribe to the passed channel.
-        Automatically resubscribes if the connection is broken.
-
-        :param channel_name: name of the channel to subscribe to
-        :return: AsyncIterator[dict]
-        """
-        while True:
-            try:
-                channel = self._client.pubsub()
-                await channel.subscribe(channel_name)
-                yield channel
-            except (ConnectionRefusedError, ConnectionResetError, ConnectionClosedError):
-                await asyncio.sleep(5)
-
+        channel = self._client.pubsub()
+        await channel.subscribe(channel_name)
+        return channel
     async def publish(self, channel_name: str, message: str):
         return await self._client.publish(channel_name, message)
 
