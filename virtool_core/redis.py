@@ -2,7 +2,7 @@ import asyncio
 from redis.commands.core import ResponseT
 from structlog import get_logger
 import sys
-from contextlib import asynccontextmanager, suppress
+from contextlib import suppress
 from typing import Optional, Union, Awaitable
 import redis.asyncio
 import redis.exceptions
@@ -35,8 +35,6 @@ class Redis(redis.asyncio.Redis):
 
         if self._client is not None:
             await self._client.close()
-
-
 
     async def get(self, *args, **kwargs):
         return await self._client.get(*args, **kwargs)
