@@ -36,12 +36,7 @@ class Redis(redis.asyncio.Redis):
         if self._client is not None:
             await self._client.close()
 
-    @asynccontextmanager
-    async def client(self, *args, **kwargs):
-        try:
-            yield self._client
-        finally:
-            await self._client.close()
+
 
     async def get(self, *args, **kwargs):
         return await self._client.get(*args, **kwargs)
@@ -62,6 +57,9 @@ class Redis(redis.asyncio.Redis):
 
     async def publish(self, channel_name: str, message: str):
         return await self._client.publish(channel_name, message)
+
+    async def blpop(self, *args):
+        return await self._client.blpop(*args)
 
     async def llen(self, name: str) -> Union[Awaitable[int], int]:
         return await self._client.llen(name)
