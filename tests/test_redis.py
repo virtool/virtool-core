@@ -1,6 +1,6 @@
 import pytest
 
-from virtool_core.redis import Redis, connect, Channel, ChannelClosedError
+from virtool_core.redis import Redis, connect
 import logging
 
 
