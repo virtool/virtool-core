@@ -1,9 +1,14 @@
-Virtol Core
+Virtool Core
 ========================================
 
 Core utilities for Virtool and associated packages.
 
 
 .. toctree::
+   :maxdepth: 2
 
-   reference.rst
+   bio
+   logging
+   models
+   redis
+   utils
