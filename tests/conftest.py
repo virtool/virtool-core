@@ -1,12 +1,5 @@
-from pathlib import Path
-
 import pytest
 from virtool_core.redis import Redis
-
-
-@pytest.fixture()
-def test_json_path() -> Path:
-    return Path(__file__).parent / "models/json"
 
 
 @pytest.fixture()

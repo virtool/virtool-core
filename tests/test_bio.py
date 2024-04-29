@@ -4,14 +4,13 @@ import sys
 from pathlib import Path
 
 import pytest
-
 import virtool_core.bio
 
 TEST_FILES_PATH = Path(sys.path[0]) / "tests" / "test_files"
 TEST_BIO_PATH = TEST_FILES_PATH / "bio"
 
 
-@pytest.fixture
+@pytest.fixture()
 def orf_containing():
     data = virtool_core.bio.read_fasta(TEST_BIO_PATH / "has_orfs.fa")
     return data[0][1]
@@ -49,7 +48,7 @@ def test_read_fasta(illegal, tmpdir):
 async def test_read_fastq_from_path(tmpdir):
     tmpfile = tmpdir.join("test.fa")
 
-    with open(os.path.join(TEST_FILES_PATH, "test.fq"), "r") as f:
+    with open(os.path.join(TEST_FILES_PATH, "test.fq")) as f:
         lines = list()
 
         while len(lines) < 16:
@@ -89,7 +88,7 @@ async def test_read_fastq_from_path(tmpdir):
 async def test_read_fastq_headers(tmpdir):
     tmpfile = tmpdir.join("test.fa")
 
-    with open(os.path.join(TEST_FILES_PATH, "test.fq"), "r") as f:
+    with open(os.path.join(TEST_FILES_PATH, "test.fq")) as f:
         lines = list()
 
         while len(lines) < 16:
@@ -133,10 +132,7 @@ def test_reverse_complement():
     ids=["no_ambiguous", "ambiguous", "ambigous_x"],
 )
 def test_translate(sequence, expected):
-    """
-    Test that translation works properly. Cases are standard, resolvable ambiguity, and non-resolvable ambiguity (X).
-
-    """
+    """Test that translation works properly. Cases are standard, resolvable ambiguity, and non-resolvable ambiguity (X)."""
     assert virtool_core.bio.translate(sequence) == expected
 
 
