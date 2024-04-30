@@ -1,6 +1,5 @@
 import asyncio
 import datetime
-import json
 from typing import AsyncGenerator, TypeAlias
 
 import arrow
@@ -12,6 +11,9 @@ from structlog import get_logger
 logger = get_logger("redis")
 
 RedisElement: TypeAlias = float | int | str | dict
+"""A type alias for the types that can be stored in Redis, including JSON-serializable
+dictionaries.
+"""
 
 
 class RedisError(Exception):
@@ -36,19 +38,13 @@ def _coerce_redis_response(value: bytes | str | int | None) -> RedisElement | No
     if value is None:
         return None
 
-    decoded = value.decode("utf-8")
+    if isinstance(value, (float, int)):
+        return value
 
     try:
-        return int(decoded)
-    except ValueError:
-        ...
-
-    try:
-        return json.loads(decoded)
-    except json.JSONDecodeError:
-        ...
-
-    return decoded
+        return orjson.loads(value)
+    except orjson.JSONDecodeError:
+        return value.decode("utf-8")
 
 
 class Redis:
