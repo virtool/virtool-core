@@ -1,6 +1,6 @@
 import asyncio
 import datetime
-from typing import AsyncGenerator, TypeAlias
+from typing import Any, AsyncGenerator, TypeAlias
 
 import arrow
 import orjson
@@ -38,7 +38,7 @@ def _coerce_redis_response(value: bytes | str | int | None) -> RedisElement | No
     if value is None:
         return None
 
-    if isinstance(value, (float, int)):
+    if isinstance(value, (float, int, str)):
         return value
 
     try:
@@ -79,7 +79,7 @@ class Redis:
         self._client = redis.asyncio.from_url(connection_string)
         """The underlying Redis client object."""
 
-        self._client_info: dict | None = None
+        self._client_info: dict[str, Any] | None = None
         """The Redis server information, first fetched when the connection is opened."""
 
         self._ping_task: asyncio.Task | None = None
@@ -177,7 +177,10 @@ class Redis:
         """Get the time-to-live for a ``key`` in seconds."""
         return await self._client.ttl(key)
 
-    async def subscribe(self, channel_name: str) -> AsyncGenerator[RedisElement, None]:
+    async def subscribe(
+        self,
+        channel_name: str,
+    ) -> AsyncGenerator[RedisElement | None, None]:
         """Subscribe to a channel with ``channel_name`` and yield messages.
 
         Example:
