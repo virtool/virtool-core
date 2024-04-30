@@ -106,6 +106,9 @@ class Redis:
             if "Connect call failed" in str(e):
                 raise RedisError("Could not connect")
 
+            if "invalid username-password" in str(e):
+                raise RedisError("Could not authenticate: invalid username or password")
+
             raise RedisError(f"Unhandled client error: {e}")
 
         self._ping_task = asyncio.create_task(self._ping())

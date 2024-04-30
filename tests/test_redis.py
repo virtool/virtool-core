@@ -1,6 +1,7 @@
 import asyncio
 
 import pytest
+
 from virtool_core.redis import Redis, RedisError
 
 
@@ -17,12 +18,12 @@ class TestConnect:
 
         assert "Could not connect" in str(e.value)
 
-    async def test_auth_fail(self):
+    async def test_auth_fail(self, redis_connection_string: str):
         with pytest.raises(RedisError) as e:
-            async with Redis("redis://:wrong@localhost:6379") as _:
+            async with Redis(redis_connection_string.replace("virtool", "wrong")) as _:
                 ...
 
-        assert "Could not connect" in str(e.value)
+        assert str(e.value) == "Could not authenticate: invalid username or password"
 
 
 class TestGet:
