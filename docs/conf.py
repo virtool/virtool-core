@@ -38,12 +38,15 @@ extensions = [
 ]
 
 
-intersphinx_mapping = {"python": ("https://docs.python.org/3.9", None)}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3.9", None),
+    "redis": ("https://redis-py.readthedocs.io/en/stable", None),
+}
 
 html_theme_options = {"page_width": "1200px", "sidebar_width": "20%"}
 
 html_sidebars = {
-    "**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]
+    "**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"],
 }
 
 # Add any paths that contain templates here, relative to this directory.

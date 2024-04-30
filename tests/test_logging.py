@@ -1,8 +1,7 @@
 import pytest
-
-from virtool_core.logging import configure_logs
 from structlog import get_logger
 from structlog.testing import capture_logs
+from virtool_core.logging import configure_logs
 
 
 @pytest.mark.parametrize("debug,expected", [(False, 4), (True, 5)])

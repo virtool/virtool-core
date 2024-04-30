@@ -1,10 +1,9 @@
 import pytest
 from pydantic import ValidationError
-
 from virtool_core.models.account import Account
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_account():
     return {
         "administrator": False,
@@ -34,14 +33,11 @@ def mock_account():
     }
 
 
-@pytest.mark.parametrize("error", [None, "email"])
-def test_email(mock_account, error):
-    """
-    Tests if the `name` field is set to the `id` as default.
-    """
-    Account(**mock_account)
+class TestEmail:
+    def test_ok(self, mock_account: dict):
+        Account(**mock_account)
 
-    if error:
+    def test_invalid_email(self, mock_account: dict):
         with pytest.raises(ValidationError) as err:
             mock_account.update({"email": "devvirtool.ca"})
             Account(**mock_account)
