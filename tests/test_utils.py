@@ -6,6 +6,8 @@ from pathlib import Path
 
 import arrow
 import pytest
+from pytest_mock import MockerFixture
+
 import virtool_core.utils
 
 sys.path.append(str(Path(__file__).parent.parent))
@@ -57,7 +59,7 @@ def test_rm(recursive, expected, tmpdir):
 
 @pytest.mark.parametrize("processes", [1, 4])
 @pytest.mark.parametrize("which", [None, "/usr/local/bin/pigz"])
-def test_should_use_pigz(processes, which, mocker):
+def test_should_use_pigz(processes: int, which: str | None, mocker: MockerFixture):
     mocker.patch("shutil.which", return_value=which)
 
     result = virtool_core.utils.should_use_pigz(processes)
@@ -68,7 +70,7 @@ def test_should_use_pigz(processes, which, mocker):
         assert result is False
 
 
-def test_timestamp(mocker):
+def test_timestamp(mocker: MockerFixture):
     """Test that the timestamp util returns a datetime object with the last 3 digits of the microsecond frame set to
     zero.
 

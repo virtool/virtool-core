@@ -4,8 +4,8 @@ import json
 from typing import AsyncGenerator, TypeAlias
 
 import arrow
+import orjson
 import redis.asyncio
-from orjson import orjson
 from redis.exceptions import ConnectionError as RedisConnectionError
 from structlog import get_logger
 
