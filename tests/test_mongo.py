@@ -1,9 +1,11 @@
 import pytest
+from syrupy import SnapshotAssertion
+
 from virtool_core.mongo import buffered_bulk_writer
 
 
 @pytest.mark.parametrize("batch_size", (60, 100))
-async def test_buffered_bulk_writer(batch_size, snapshot, mocker):
+async def test_buffered_bulk_writer(batch_size:int, snapshot:SnapshotAssertion, mocker):
     collection = mocker.Mock()
     collection.bulk_write = mocker.AsyncMock()
 

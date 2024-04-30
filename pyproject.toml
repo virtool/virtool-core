@@ -46,6 +46,7 @@ pytest = "^7.4.4"
 pytest-asyncio = "^0.23.6"
 pytest-mock = "^3.6.1"
 sphinx-autobuild = "^2024.4.16"
+ruff = "^0.4.2"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
