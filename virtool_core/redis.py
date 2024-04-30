@@ -5,9 +5,7 @@ from typing import AsyncGenerator, TypeAlias
 
 import arrow
 import redis.asyncio
-import redis.exceptions
 from orjson import orjson
-from redis import ConnectionError
 from structlog import get_logger
 
 logger = get_logger("redis")
@@ -94,8 +92,8 @@ class Redis:
 
         self.last_pong: datetime.datetime | None = None
         """The time of the last successful ping.
-        
-        `None` if no pings have been acknowledged.        
+
+        `None` if no pings have been acknowledged.
         """
 
     async def __aenter__(self):
