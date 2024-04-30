@@ -106,6 +106,20 @@ async def test_rpush_and_blpop(redis: Redis):
     assert await redis.blpop("key") == {"a": 1}
 
 
+class TestLpop:
+    async def test_ok(self, redis: Redis):
+        """Test that we can pop a value from a list."""
+        await redis.rpush("key", "buffer")
+        await redis.rpush("key", 1)
+
+        assert await redis.lpop("key") == "buffer"
+        assert await redis.lpop("key") == 1
+
+    async def test_empty(self, redis: Redis):
+        """Test that popping from an empty list returns None."""
+        assert await redis.lpop("key") is None
+
+
 async def test_llen(redis: Redis):
     """Test that get the correct value for a list's length."""
     assert await redis.llen("key") == 0

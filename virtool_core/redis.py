@@ -34,10 +34,7 @@ def _coerce_redis_request(value: RedisElement | None) -> bytes | int | float:
     return str(value).encode("utf-8")
 
 
-def _coerce_redis_response(value: bytes | str | int | None) -> RedisElement | None:
-    if value is None:
-        return None
-
+def _coerce_redis_response(value: bytes | str | int) -> RedisElement:
     if isinstance(value, (float, int, str)):
         return value
 
@@ -140,12 +137,12 @@ class Redis:
     @property
     def server_version(self) -> str:
         """The version of the connected Redis server."""
-        try:
-            return self._client_info["redis_version"]
-        except TypeError:
+        if self._client_info is None:
             raise RedisError(
                 "Could not get server version because server info is not available.",
             )
+
+        return self._client_info["redis_version"]
 
     async def get(self, key: str) -> RedisElement | None:
         """Get the value at ``key``.
@@ -153,7 +150,12 @@ class Redis:
         :param key: the key to get
         :return: the value at ``key``
         """
-        return _coerce_redis_response(await self._client.get(key))
+        value = await self._client.get(key)
+
+        if value is None:
+            return None
+
+        return _coerce_redis_response(value)
 
     async def set(self, key: str, value: RedisElement, expire: int = 0):
         """Set the value at ``key`` to value with an optional expiration time in
@@ -180,7 +182,7 @@ class Redis:
     async def subscribe(
         self,
         channel_name: str,
-    ) -> AsyncGenerator[RedisElement | None, None]:
+    ) -> AsyncGenerator[RedisElement, None]:
         """Subscribe to a channel with ``channel_name`` and yield messages.
 
         Example:
@@ -220,6 +222,7 @@ class Redis:
 
         """
         _, value = await self._client.blpop([key])
+
         return _coerce_redis_response(value)
 
     async def llen(self, key: str) -> int:
@@ -246,7 +249,12 @@ class Redis:
 
     async def lpop(self, key: str):
         """Remove and return the first element of the list at ``key``."""
-        return _coerce_redis_response(await self._client.lpop(key))
+        value = await self._client.lpop(key)
+
+        if value is None:
+            return None
+
+        return _coerce_redis_response(value)
 
     async def lrem(self, key: str, count: int, element: str):
         """Remove the first ``count`` elements from the list at ``key``.
@@ -262,9 +270,9 @@ class Redis:
         :param element: the element to remove
 
         """
-        return await self._client.lrem(key, count, element)
+        await self._client.lrem(key, count, element)
 
-    async def rpush(self, key: str, *values):
+    async def rpush(self, key: str, *values: RedisElement):
         """Push ``values`` onto the tail of the list ``key``.
 
         :param key: the key of the list to push to
