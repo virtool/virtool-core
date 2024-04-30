@@ -16,6 +16,7 @@ jobs:
     services:
       redis:
         image: redis:6.0
+        command: redis-server --requirepass virtool
         ports:
           - 6379:6379
     steps:
@@ -41,7 +42,7 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
       - name: Test
-        run: poetry run pytest --redis-connection-string redis://localhost:6379
+        run: poetry run pytest --redis-connection-string redis://:virtool@localhost:6379
   mypy:
       runs-on: ubuntu-22.04
       strategy:

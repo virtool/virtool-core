@@ -6,6 +6,7 @@ from typing import AsyncGenerator, TypeAlias
 import arrow
 import redis.asyncio
 from orjson import orjson
+from redis.exceptions import ConnectionError as RedisConnectionError
 from structlog import get_logger
 
 logger = get_logger("redis")
@@ -101,7 +102,7 @@ class Redis:
 
         try:
             self._client_info = await self._client.info()
-        except ConnectionError as e:
+        except RedisConnectionError as e:
             if "Connect call failed" in str(e):
                 raise RedisError("Could not connect")
 
