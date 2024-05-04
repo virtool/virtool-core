@@ -48,7 +48,7 @@ class Redis:
     """A Redis client based on ``redis``.
 
     Example:
-    -------
+    --------
     .. code-block:: python
 
         async with Redis("redis://localhost:6379") as redis:
@@ -186,7 +186,7 @@ class Redis:
         """Subscribe to a channel with ``channel_name`` and yield messages.
 
         Example:
-        -------
+        --------
         .. code-block:: python
 
                 async for message in redis.subscribe("channel:cancel"):
