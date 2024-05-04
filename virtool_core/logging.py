@@ -9,6 +9,7 @@ def configure_logs(debug: bool):
 
     * Use structlog.
     * Set logging level based on ``dev`` configuration option.
+
     :param debug: log debug messages
 
     """
