@@ -37,12 +37,6 @@ extensions = [
     "sphinx.ext.intersphinx",
 ]
 
-
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.9", None),
-    "redis": ("https://redis-py.readthedocs.io/en/stable", None),
-}
-
 html_theme_options = {"page_width": "1200px", "sidebar_width": "20%"}
 
 html_sidebars = {
@@ -72,5 +66,22 @@ html_theme = "piccolo_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# -- Options for intersphinx extension ---------------------------------------
+
+intersphinx_mapping = {
+    "virtool": (
+        "https://virtool-test.readthedocs.io/en/latest/",
+        None,
+    ),
+    "workflow": (
+        "https://virtool-test.readthedocs.io/projects/workflow/en/latest/",
+        None,
+    ),
+    "core": ("https://virtool-test.readthedocs.io/projects/core/en/latest/", None),
+}
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
+# intersphinx_disabled_reftypes = ["*"]
+
 
 source_suffix = {".rst": "restructuredtext", ".txt": "markdown", ".md": "markdown"}
