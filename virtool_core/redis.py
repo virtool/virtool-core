@@ -263,7 +263,7 @@ class Redis:
 
         return _coerce_redis_response(value)
 
-    async def lrem(self, key: str, count: int, element: str):
+    async def lrem(self, key: str, count: int, element: str) -> int:
         """Remove the first ``count`` elements from the list at ``key``.
 
         The ``count`` argument influences the following behaviours:
@@ -277,7 +277,7 @@ class Redis:
         :param element: the element to remove
 
         """
-        await self._client.lrem(key, count, element)
+        return await self._client.lrem(key, count, element)
 
     async def rpush(self, key: str, *values: RedisElement):
         """Push ``values`` onto the tail of the list ``key``.
