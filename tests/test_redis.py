@@ -25,6 +25,20 @@ class TestConnect:
 
         assert str(e.value) == "Could not authenticate: invalid username or password"
 
+    async def test_connect_close(self, redis_connection_string: str):
+        """Test that we can connect to a Redis server and close the connection without
+        using the context manager.
+        """
+        redis = Redis(redis_connection_string)
+        await redis.connect()
+
+        assert redis.server_version.startswith("6.")
+
+        # Sleep so that ping gets into the try-except block and CancelledError can be
+        # handled.
+        await asyncio.sleep(0.3)
+        await redis.close()
+
 
 class TestGet:
     async def test_str(self, redis: Redis):

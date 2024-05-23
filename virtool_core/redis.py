@@ -48,7 +48,7 @@ class Redis:
     """A Redis client based on ``redis``.
 
     Example:
-    --------
+    -------
     .. code-block:: python
 
         async with Redis("redis://localhost:6379") as redis:
@@ -91,31 +91,11 @@ class Redis:
         """
 
     async def __aenter__(self):
-        logger.info("Connecting to Redis")
-
-        try:
-            self._client_info = await self._client.info()
-        except RedisConnectionError as e:
-            if "Connect call failed" in str(e):
-                raise RedisError("Could not connect")
-
-            if "invalid username-password" in str(e):
-                raise RedisError("Could not authenticate: invalid username or password")
-
-            raise RedisError(f"Unhandled client error: {e}")
-
-        self._ping_task = asyncio.create_task(self._ping())
-
+        await self.connect()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self._ping_task:
-            logger.info("Disconnecting from Redis")
-            self._ping_task.cancel()
-            await self._ping_task
-
-        if self._client:
-            await self._client.aclose()
+        await self.close()
 
     async def _ping(self):
         """Ping the Redis server every two minutes.
@@ -143,6 +123,33 @@ class Redis:
             )
 
         return self._client_info["redis_version"]
+
+    async def connect(self):
+        """Connect to the Redis server and retrieve the server info."""
+        logger.info("Connecting to Redis")
+
+        try:
+            self._client_info = await self._client.info()
+        except RedisConnectionError as e:
+            if "Connect call failed" in str(e):
+                raise RedisError("Could not connect")
+
+            if "invalid username-password" in str(e):
+                raise RedisError("Could not authenticate: invalid username or password")
+
+            raise RedisError(f"Unhandled client error: {e}")
+
+        self._ping_task = asyncio.create_task(self._ping())
+
+    async def close(self):
+        """Close the connection to the Redis server."""
+        if self._ping_task:
+            logger.info("Disconnecting from Redis")
+            self._ping_task.cancel()
+            await self._ping_task
+
+        if self._client:
+            await self._client.aclose()
 
     async def get(self, key: str) -> RedisElement | None:
         """Get the value at ``key``.
@@ -186,7 +193,7 @@ class Redis:
         """Subscribe to a channel with ``channel_name`` and yield messages.
 
         Example:
-        --------
+        -------
         .. code-block:: python
 
                 async for message in redis.subscribe("channel:cancel"):
