@@ -1,6 +1,6 @@
 import typing
 from pathlib import Path
-from typing import List, AsyncGenerator
+from typing import AsyncGenerator
 
 import aiofiles
 
@@ -83,7 +83,7 @@ TRANSLATION_TABLE = {
 }
 
 
-def read_fasta(path: Path) -> List[tuple[str, str]]:
+def read_fasta(path: Path) -> list[tuple[str, str]]:
     """Parse the FASTA file at `path` and return its content as a
     `list` of tuples containing the header and sequence.
 
@@ -91,15 +91,14 @@ def read_fasta(path: Path) -> List[tuple[str, str]]:
     :return: the FASTA content
 
     """
-
     if str(path)[-3:] != ".fa":
-        raise IOError("Invalid FASTA file")
+        raise OSError("Invalid FASTA file")
 
-    data = list()
+    data = []
 
-    with open(path, "r") as f:
+    with open(path) as f:
         header = None
-        seq: List[str] = []
+        seq: list[str] = []
 
         for line in f:
             if line[0] == ">":
@@ -114,7 +113,7 @@ def read_fasta(path: Path) -> List[tuple[str, str]]:
                 seq.append(line.rstrip())
                 continue
 
-            raise IOError(f"Illegal FASTA line: {line}")
+            raise OSError(f"Illegal FASTA line: {line}")
 
         if header:
             data.append((header, "".join(seq)))
@@ -123,8 +122,7 @@ def read_fasta(path: Path) -> List[tuple[str, str]]:
 
 
 async def read_fastq(f) -> AsyncGenerator[tuple, None]:
-    """
-    Read the FASTQ content in the file object `f`.
+    """Read the FASTQ content in the file object `f`.
     Yields tuples containing the header, sequence, and quality.
 
     :param f: a file handle
@@ -158,8 +156,7 @@ async def read_fastq(f) -> AsyncGenerator[tuple, None]:
 
 
 async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
-    """
-    Read the FASTQ file at `path` and yields its content as tuples.
+    """Read the FASTQ file at `path` and yields its content as tuples.
     Accepts both uncompressed and GZIP-compressed FASTQ
     files.
 
@@ -173,15 +170,14 @@ async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
 
 
 async def read_fastq_headers(path: Path) -> list:
-    """
-    Return a list of FASTQ headers for the FASTQ file located at `path`.
+    """Return a list of FASTQ headers for the FASTQ file located at `path`.
     Only accepts uncompressed FASTQ files.
 
     :param path: the path to the FASTQ file
     :return: a list of FASTQ headers
 
     """
-    headers = list()
+    headers = []
 
     had_plus = False
 
@@ -202,8 +198,7 @@ async def read_fastq_headers(path: Path) -> list:
 
 
 def reverse_complement(sequence: str) -> str:
-    """
-    Calculate the reverse complement of the passed `sequence`.
+    """Calculate the reverse complement of the passed `sequence`.
 
     :param sequence: the sequence to transform
     :return: the reverse complement
@@ -215,8 +210,7 @@ def reverse_complement(sequence: str) -> str:
 
 
 def translate(sequence: str) -> str:
-    """
-    Translate the passed nucleotide sequence to protein.
+    """Translate the passed nucleotide sequence to protein.
     Substitutes _X_ for invalid codons.
 
     :param sequence: the nucleotide sequence
@@ -225,9 +219,9 @@ def translate(sequence: str) -> str:
     """
     sequence = sequence.upper()
 
-    protein = list()
+    protein = []
 
-    for i in range(0, len(sequence) // 3):
+    for i in range(len(sequence) // 3):
         codon = sequence[i * 3 : (i + 1) * 3]
 
         # Translate to X if the codon matches no amino acid
@@ -237,16 +231,15 @@ def translate(sequence: str) -> str:
     return "".join(protein)
 
 
-def find_orfs(sequence: str) -> List[dict]:
-    """
-    Return all ORFs for the nucelotide sequence.
+def find_orfs(sequence: str) -> list[dict]:
+    """Return all ORFs for the nucelotide sequence.
     No ORFs will be returned for sequences shorter than 300 bp
     Only ORFs 100 residues long or greater will be returned.
 
     :param sequence:
     :return: a list of ORFs and metadata
     """
-    orfs = list()
+    orfs = []
 
     sequence_length = len(sequence)
 
@@ -282,7 +275,7 @@ def find_orfs(sequence: str) -> List[dict]:
                                 "frame": frame,
                                 "strand": strand,
                                 "pos": (start, end),
-                            }
+                            },
                         )
 
                     aa_start = aa_end + 1

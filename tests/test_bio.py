@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import pytest
+
 import virtool_core.bio
 
 TEST_FILES_PATH = Path(sys.path[0]) / "tests" / "test_files"
@@ -49,17 +50,14 @@ async def test_read_fastq_from_path(tmpdir):
     tmpfile = tmpdir.join("test.fa")
 
     with open(os.path.join(TEST_FILES_PATH, "test.fq")) as f:
-        lines = list()
+        lines = []
 
         while len(lines) < 16:
             lines.append(f.readline())
 
     tmpfile.write("".join(lines))
 
-    result = list()
-
-    async for record in virtool_core.bio.read_fastq_from_path(tmpfile):
-        result.append(record)
+    result = [record async for record in virtool_core.bio.read_fastq_from_path(tmpfile)]
 
     assert result == [
         (
@@ -89,7 +87,7 @@ async def test_read_fastq_headers(tmpdir):
     tmpfile = tmpdir.join("test.fa")
 
     with open(os.path.join(TEST_FILES_PATH, "test.fq")) as f:
-        lines = list()
+        lines = []
 
         while len(lines) < 16:
             lines.append(f.readline())
