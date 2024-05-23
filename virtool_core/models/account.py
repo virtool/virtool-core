@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from email_validator import validate_email, EmailSyntaxError
-from pydantic import validator, ConstrainedStr
+from email_validator import EmailSyntaxError, validate_email
+from pydantic import ConstrainedStr, validator
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import AnalysisWorkflow
@@ -10,9 +10,7 @@ from virtool_core.models.user import User
 
 
 def check_email(email: str | None) -> str | None:
-    """
-    Checks if the given email is valid.
-    """
+    """Checks if the given email is valid."""
     if email is None:
         return None
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List, Optional, Union
+from typing import Any
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import HistoryMethod
@@ -10,13 +10,13 @@ from virtool_core.models.user import UserNested
 
 class HistoryIndex(BaseModel):
     id: str
-    version: Union[int, str]
+    version: int | str
 
 
 class HistoryOTU(BaseModel):
     id: str
     name: str
-    version: Union[int, str]
+    version: int | str
 
 
 class HistoryNested(BaseModel):
@@ -47,7 +47,7 @@ class HistoryNested(BaseModel):
 
 
 class HistoryMinimal(HistoryNested):
-    index: Optional[HistoryIndex]
+    index: HistoryIndex | None
     """
     The index the change is included in.
     
@@ -76,4 +76,4 @@ class History(HistoryMinimal):
 
 
 class HistorySearchResult(SearchResult):
-    documents: List[HistoryMinimal]
+    documents: list[HistoryMinimal]

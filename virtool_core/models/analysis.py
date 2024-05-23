@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List
+from typing import Any
 
 from pydantic import root_validator
 
@@ -26,7 +26,7 @@ class AnalysisMinimal(BaseModel):
     ready: bool
     reference: ReferenceNested
     sample: AnalysisSample
-    subtractions: List[SubtractionNested]
+    subtractions: list[SubtractionNested]
     updated_at: datetime
     user: UserNested
     workflow: str
@@ -50,9 +50,9 @@ class AnalysisFile(BaseModel):
 
 
 class Analysis(AnalysisMinimal):
-    files: List[AnalysisFile]
+    files: list[AnalysisFile]
     results: dict[str, Any] | None
 
 
 class AnalysisSearchResult(SearchResult):
-    documents: List[AnalysisMinimal]
+    documents: list[AnalysisMinimal]

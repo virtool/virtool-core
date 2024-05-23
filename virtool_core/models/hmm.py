@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Any
+from typing import Any
 
 from pydantic import validator
 
@@ -39,7 +39,7 @@ class HMMRelease(BaseModel):
 
 
 class HMMStatus(BaseModel):
-    errors: List[str]
+    errors: list[str]
     installed: HMMInstalled | None
     release: HMMRelease | None
     task: Task | None
@@ -51,10 +51,10 @@ class HMMMinimal(BaseModel):
     cluster: int
     count: int
     families: dict[str, int]
-    names: List[str]
+    names: list[str]
 
     @validator("names")
-    def is_name_valid(cls, names: List[str]) -> List[str]:
+    def is_name_valid(cls, names: list[str]) -> list[str]:
         if len(names) > 3:
             raise ValueError("The length of name should be a maximum of 3")
 
@@ -69,7 +69,7 @@ class HMMSequenceEntry(BaseModel):
 
 
 class HMM(HMMMinimal):
-    entries: List[HMMSequenceEntry]
+    entries: list[HMMSequenceEntry]
     genera: dict[str, int]
     length: int
     mean_entropy: float
@@ -77,5 +77,5 @@ class HMM(HMMMinimal):
 
 
 class HMMSearchResult(SearchResult):
-    documents: List[HMMMinimal]
+    documents: list[HMMMinimal]
     status: dict[str, Any]

@@ -1,5 +1,3 @@
-from typing import List
-
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.roles import AdministratorRole
 from virtool_core.models.user import UserNested
@@ -10,9 +8,9 @@ class AdministratorMinimal(UserNested):
 
 
 class Administrator(AdministratorMinimal):
-    available_roles: List[dict]
+    available_roles: list[dict]
 
 
 class AdministratorSearch(BaseModel):
-    items: List[AdministratorMinimal]
-    available_roles: List[dict]
+    items: list[AdministratorMinimal]
+    available_roles: list[dict]

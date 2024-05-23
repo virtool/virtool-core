@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobMinimal
@@ -44,14 +43,14 @@ class IndexFile(BaseModel):
 
 
 class Index(IndexMinimal):
-    contributors: List[IndexContributor]
-    files: List[IndexFile]
+    contributors: list[IndexContributor]
+    files: list[IndexFile]
     manifest: dict[str, int]
-    otus: List[IndexOTU]
+    otus: list[IndexOTU]
 
 
 class IndexSearchResult(SearchResult):
-    documents: List[IndexMinimal]
+    documents: list[IndexMinimal]
     modified_otu_count: int
     total_otu_count: int
     change_count: int

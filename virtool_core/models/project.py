@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from pydantic import validator
 
 from virtool_core.models.basemodel import BaseModel
@@ -8,8 +6,7 @@ from virtool_core.models.validators import normalize_hex_color
 
 
 class ProjectMinimal(BaseModel):
-    """
-    A provisional minimal project model.
+    """A provisional minimal project model.
 
     Do not use this model. Projects are not yet implemented in Virtool.
 
@@ -31,14 +28,13 @@ class ProjectMinimal(BaseModel):
 
 
 class Project(ProjectMinimal):
-    """
-    A provisional project model.
+    """A provisional project model.
 
     Do not use this model. Projects are not yet implemented in Virtool.
 
     """
 
     #: The samples organized under the project.
-    samples: Optional[List[str]] = None
+    samples: list[str] | None = None
     #: The users that have access to the project.
-    users: Optional[List[UserNested]] = None
+    users: list[UserNested] | None = None

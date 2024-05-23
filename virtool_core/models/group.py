@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
@@ -10,9 +10,7 @@ if TYPE_CHECKING:
 
 
 class Permissions(BaseModel):
-    """
-    The permissions possessed by a user and group.
-    """
+    """The permissions possessed by a user and group."""
 
     cancel_job: bool = False
     create_ref: bool = False
@@ -36,4 +34,4 @@ class Group(GroupMinimal):
 
 
 class GroupSearchResult(SearchResult):
-    items: List[GroupMinimal]
+    items: list[GroupMinimal]

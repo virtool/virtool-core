@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobMinimal
@@ -30,7 +30,7 @@ class SubtractionFile(BaseModel):
 
 
 class SubtractionUpload(BaseModel):
-    id: Union[int, str]
+    id: int | str
     name: str
 
 
@@ -40,29 +40,25 @@ class SubtractionNested(BaseModel):
 
 
 class SubtractionMinimal(SubtractionNested):
-    """
-    Minimal Subtraction model used for websocket messages and resource listings.
-    """
+    """Minimal Subtraction model used for websocket messages and resource listings."""
 
-    count: Optional[int]
+    count: int | None
     created_at: datetime
     file: SubtractionUpload
-    job: Optional[JobMinimal]
+    job: JobMinimal | None
     nickname: str
     ready: bool
-    user: Optional[UserNested]
+    user: UserNested | None
 
 
 class Subtraction(SubtractionMinimal):
-    """
-    Complete Subtraction model.
-    """
+    """Complete Subtraction model."""
 
-    files: List[SubtractionFile]
-    gc: Optional[NucleotideComposition]
-    linked_samples: List[SampleNested]
+    files: list[SubtractionFile]
+    gc: NucleotideComposition | None
+    linked_samples: list[SampleNested]
 
 
 class SubtractionSearchResult(SearchResult):
     ready_count: int
-    documents: List[SubtractionMinimal]
+    documents: list[SubtractionMinimal]

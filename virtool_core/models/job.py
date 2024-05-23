@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Any
+from typing import Any
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
@@ -8,8 +8,8 @@ from virtool_core.models.user import UserNested
 
 
 class JobError(BaseModel):
-    details: List[str]
-    traceback: List[str]
+    details: list[str]
+    traceback: list[str]
     type: str
 
 
@@ -56,7 +56,7 @@ class Job(JobMinimal):
     acquired: bool = False
     args: dict[str, Any]
     rights: dict
-    status: List[JobStatus]
+    status: list[JobStatus]
     ping: JobPing | None
 
 
@@ -66,4 +66,4 @@ class JobAcquired(Job):
 
 class JobSearchResult(SearchResult):
     counts: dict
-    documents: List[JobMinimal]
+    documents: list[JobMinimal]

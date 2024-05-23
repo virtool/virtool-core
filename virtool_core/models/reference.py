@@ -1,5 +1,5 @@
-import enum
 from datetime import datetime
+from enum import Enum
 from typing import Any
 
 from virtool_core.models.basemodel import BaseModel
@@ -14,7 +14,7 @@ class ReferenceClonedFrom(BaseModel):
     name: str
 
 
-class ReferenceDataType(str, enum.Enum):
+class ReferenceDataType(str, Enum):
     barcode = "barcode"
     genome = "genome"
 
