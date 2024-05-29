@@ -126,7 +126,7 @@ class Redis:
 
     async def connect(self):
         """Connect to the Redis server and retrieve the server info."""
-        logger.info("Connecting to Redis")
+        logger.info("connecting to redis")
 
         try:
             self._client_info = await self._client.info()
@@ -144,7 +144,7 @@ class Redis:
     async def close(self):
         """Close the connection to the Redis server."""
         if self._ping_task:
-            logger.info("Disconnecting from Redis")
+            logger.info("disconnecting from redis")
             self._ping_task.cancel()
             await self._ping_task
 
