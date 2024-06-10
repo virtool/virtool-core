@@ -38,6 +38,17 @@ class OTUSequence(BaseModel):
     sequence: str
     target: Optional[str]
 
+    @root_validator(pre=True)
+    def make_host_nullable(cls, values):
+        """
+        Convert unset host fields from ``None`` to empty strings.
+
+        """
+        if values["host"] is None:
+            values["host"] = ""
+
+        return values
+
 
 class Sequence(OTUSequence):
     """
