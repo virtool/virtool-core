@@ -84,7 +84,7 @@ class Job(JobMinimal):
 
     ping: JobPing | None
     """The ping status of a job.
-    
+
     This is ``None`` until the job is acquired by a worker.
     """
 
