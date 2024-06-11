@@ -8,6 +8,53 @@ on:
     branches:
       - "main"
 jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Setup Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: 3.12
+        - name: Install Poetry
+          uses: snok/install-poetry@v1
+          with:
+            virtualenvs-create: true
+            virtualenvs-in-project: true
+            installer-parallel: true
+        - name: Bump Version
+          run: poetry version ${{ github.event.release.tag_name }} && poetry lock --no-update
+        - name: Build
+          run: poetry build
+  mypy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: Load Cached Packages
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install Packages
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
+      - name: Install Stubs
+        run: poetry run mypy --install-types . --non-interactive
+      - name: Run
+        run: poetry run mypy .
   test:
     runs-on: ubuntu-22.04
     services:
@@ -42,38 +89,13 @@ jobs:
         run: poetry install --no-interaction
       - name: Test
         run: poetry run pytest --redis-connection-string redis://:virtool@localhost:6379
-  mypy:
-      runs-on: ubuntu-22.04
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
-        - name: Setup Python
-          uses: actions/setup-python@v5
-          with:
-            python-version: 3.12
-        - name: Install Poetry
-          uses: snok/install-poetry@v1
-          with:
-            virtualenvs-create: true
-            virtualenvs-in-project: true
-            installer-parallel: true
-        - name: Load Cached Packages
-          id: cached-poetry-dependencies
-          uses: actions/cache@v4
-          with:
-            path: .venv
-            key: venv-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-        - name: Install Packages
-          if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-          run: poetry install --no-interaction
-        - name: Install Stubs
-          run: poetry run mypy --install-types . --non-interactive
-        - name: Run
-          run: poetry run mypy .
   release:
     runs-on: ubuntu-22.04
     if: github.event_name == 'push'
-    needs: test
+    needs:
+      - test
+      - build
+      - mypy
     steps:
       - name: Checkout
         uses: actions/checkout@v4
