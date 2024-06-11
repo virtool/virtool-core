@@ -1,6 +1,6 @@
-from typing import List, Union, Optional
+from typing import List, Optional, Union
 
-from pydantic import root_validator, Field
+from pydantic import Field, root_validator
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import Molecule
@@ -23,37 +23,23 @@ class OTURemote(BaseModel):
 
 
 class OTUSequence(BaseModel):
-    """
-    A sequence nested in an OTU.
+    """A sequence nested in an OTU.
 
     It does not include a nested reference field as this is included in the parent OTU.
     """
 
     accession: str
     definition: str
-    host: str
+    host: str | None = Field(default="")
     id: str
     remote: Optional[OTURemote]
     segment: Optional[str]
     sequence: str
     target: Optional[str]
 
-    @root_validator(pre=True)
-    def make_host_nullable(cls, values):
-        """
-        Convert unset host fields from ``None`` to empty strings.
-
-        """
-        if values["host"] is None:
-            values["host"] = ""
-
-        return values
-
 
 class Sequence(OTUSequence):
-    """
-    A complete sequence resource as returned for sequence API requests.
-    """
+    """A complete sequence resource as returned for sequence API requests."""
 
     otu_id: str
     reference: ReferenceNested
@@ -74,10 +60,7 @@ class OTUSegment(BaseModel):
 
     @root_validator(pre=True)
     def make_molecule_nullable(cls, values):
-        """
-        Convert unset molecule fields from empty strings to ``None``.
-
-        """
+        """Convert unset molecule fields from empty strings to ``None``."""
         if values["molecule"] == "":
             values["molecule"] = None
 
