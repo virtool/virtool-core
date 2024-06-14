@@ -70,9 +70,6 @@ class Redis:
     """
 
     def __init__(self, connection_string: str):
-        if not connection_string.startswith("redis://"):
-            raise RedisError("Invalid Redis connection string")
-
         self._client = redis.asyncio.from_url(connection_string)
         """The underlying Redis client object."""
 
