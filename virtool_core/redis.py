@@ -203,13 +203,9 @@ class Redis:
         async with self._client.pubsub() as pubsub:
             await pubsub.subscribe(channel_name)
 
-            while True:
-                message = await pubsub.get_message(ignore_subscribe_messages=True)
-
-                if message is None:
-                    continue
-
-                yield _coerce_redis_response(message["data"])
+            async for message in pubsub.listen():
+                if message["type"] == "message":
+                    yield _coerce_redis_response(message["data"])
 
     async def publish(self, channel_name: str, message: RedisElement):
         """Publish a message to a channel.
