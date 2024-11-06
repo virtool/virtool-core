@@ -6,7 +6,7 @@ from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.task import TaskDetailedNested
 from virtool_core.models.upload import Upload
-from virtool_core.models.user import UserNested
+from virtool_core.models.user_base import UserNested
 
 
 class ReferenceClonedFrom(BaseModel):

@@ -1,4 +1,4 @@
-from __future__ import annotations
+"""Pydantic models for ML resources."""
 
 import datetime
 

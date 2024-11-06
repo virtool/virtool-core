@@ -1,11 +1,11 @@
 import logging
-from logging import INFO, DEBUG
+from logging import DEBUG, INFO
+
 import structlog
 
 
 def configure_logs(debug: bool):
-    """
-    Configure logging for Virtool.
+    """Configure logging for Virtool.
 
     * Use structlog.
     * Set logging level based on ``dev`` configuration option.
@@ -13,7 +13,6 @@ def configure_logs(debug: bool):
     :param debug: log debug messages
 
     """
-
     logging.basicConfig(level=DEBUG if debug else INFO, format="%(message)s")
 
     structlog.configure(

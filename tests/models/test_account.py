@@ -1,5 +1,6 @@
 import pytest
 from pydantic import ValidationError
+
 from virtool_core.models.account import Account
 
 
@@ -7,7 +8,9 @@ from virtool_core.models.account import Account
 def mock_account():
     return {
         "administrator": False,
+        "administrator_role": None,
         "active": True,
+        "email": "dev@virtool.ca",
         "groups": [],
         "handle": "bob",
         "force_reset": False,
@@ -23,13 +26,13 @@ def mock_account():
             "remove_job": False,
             "upload_file": False,
         },
+        "primary_group": None,
         "settings": {
             "quick_analyze_workflow": "pathoscope_bowtie",
             "show_ids": True,
             "show_versions": True,
             "skip_quick_analyze_dialog": True,
         },
-        "email": "dev@virtool.ca",
     }
 
 
@@ -38,7 +41,11 @@ class TestEmail:
         Account(**mock_account)
 
     def test_invalid_email(self, mock_account: dict):
+        """Test that an invalid email fails validation."""
         with pytest.raises(ValidationError) as err:
             mock_account.update({"email": "devvirtool.ca"})
             Account(**mock_account)
-            assert "The format of the email is invalid" in str(err)
+
+        print(err)
+
+        assert "The format of the email is invalid" in str(err)

@@ -1,20 +1,16 @@
 from datetime import datetime
 
+import pytest
 from pydantic import ValidationError
 
-from virtool_core.models.history import HistoryMinimal, HistoryIndex, HistoryOTU
-from virtool_core.models.reference import ReferenceMinimal, ReferenceBuild
-from virtool_core.models.user import UserMinimal
+from virtool_core.models.history import HistoryIndex, HistoryMinimal, HistoryOTU
+from virtool_core.models.reference import ReferenceBuild, ReferenceMinimal
 from virtool_core.models.task import Task
-import pytest
+from virtool_core.models.user import UserMinimal
 
 
 def test_history_model():
-    """
-    Tests the 'method_name' field for the 'HistoryMinimal' model
-
-    """
-
+    """Tests the 'method_name' field for the 'HistoryMinimal' model"""
     HistoryMinimal(
         created_at=datetime.now(),
         description="test_model",
@@ -33,7 +29,10 @@ def test_history_model():
                 id="zoo",
                 version=90,
                 user=UserMinimal(
-                    administrator=True, active=True, id="ian", handle="ian"
+                    administrator=True,
+                    active=True,
+                    id="ian",
+                    handle="ian",
                 ),
                 has_json=True,
             ),
@@ -76,7 +75,10 @@ def test_history_model():
                     id="zoo",
                     version=90,
                     user=UserMinimal(
-                        administrator=True, active=True, id="ian", handle="ian"
+                        administrator=True,
+                        active=True,
+                        id="ian",
+                        handle="ian",
                     ),
                     has_json=True,
                 ),
@@ -95,7 +97,10 @@ def test_history_model():
                 ),
                 unbuilt_change_count=34,
                 user=UserMinimal(
-                    administrator=True, active=True, id="ian", handle="ian"
+                    administrator=True,
+                    active=True,
+                    id="ian",
+                    handle="ian",
                 ),
                 users=[],
             ),

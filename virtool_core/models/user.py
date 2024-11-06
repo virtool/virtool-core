@@ -1,30 +1,19 @@
 from datetime import datetime
 
-from virtool_core.models.basemodel import BaseModel
-from virtool_core.models.group import Permissions, GroupMinimal
+from virtool_core.models.group import Permissions
+from virtool_core.models.group_minimal import GroupMinimal
 from virtool_core.models.roles import AdministratorRole
 from virtool_core.models.searchresult import SearchResult
-
-
-class UserB2C(BaseModel):
-    display_name: str | None
-    family_name: str | None
-    given_name: str | None
-    oid: str
-
-
-class UserNested(BaseModel):
-    id: str
-    handle: str
+from virtool_core.models.user_base import UserB2C, UserNested
 
 
 class UserMinimal(UserNested):
     active: bool
-    b2c: UserB2C | None
-    b2c_display_name: str | None
-    b2c_family_name: str | None
-    b2c_given_name: str | None
-    b2c_oid: str | None
+    b2c: UserB2C | None = None
+    b2c_display_name: str | None = None
+    b2c_family_name: str | None = None
+    b2c_given_name: str | None = None
+    b2c_oid: str | None = None
 
 
 class User(UserMinimal):

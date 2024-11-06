@@ -1,19 +1,15 @@
-from __future__ import annotations
-
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import LibraryType
 from virtool_core.models.job import JobMinimal
 from virtool_core.models.label import LabelNested
+from virtool_core.models.sample_base import SampleNested
 from virtool_core.models.searchresult import SearchResult
+from virtool_core.models.subtraction import SubtractionNested
 from virtool_core.models.upload import Upload
-from virtool_core.models.user import UserNested
-
-if TYPE_CHECKING:
-    from virtool_core.models.subtraction import SubtractionNested
+from virtool_core.models.user_base import UserNested
 
 
 class SampleArtifact(BaseModel):
@@ -23,19 +19,20 @@ class SampleArtifact(BaseModel):
     size: int
 
 
-class SampleID(BaseModel):
-    id: str
-
-
-class SampleNested(SampleID):
-    name: str
-
-
 class WorkflowState(Enum):
+    """The state of a workflow for a sample."""
+
     COMPLETE = "complete"
+    """The workflow has completed successfully for a sample."""
+
     INCOMPATIBLE = "incompatible"
+    """The workflow is incompatible with a sample."""
+
     NONE = "none"
+    """The workflow is compatible with the sample, but has not been started."""
+
     PENDING = "pending"
+    """The workflow is currently running, but not complete."""
 
 
 class SampleWorkflows(BaseModel):
@@ -48,7 +45,7 @@ class SampleMinimal(SampleNested):
     created_at: datetime
     host: str
     isolate: str
-    job: JobMinimal | None
+    job: JobMinimal | None = None
     labels: list[LabelNested]
     library_type: LibraryType
     notes: str

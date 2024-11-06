@@ -2,7 +2,7 @@ from datetime import datetime
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import MessageColor
-from virtool_core.models.user import UserNested
+from virtool_core.models.user_base import UserNested
 
 
 class InstanceMessage(BaseModel):

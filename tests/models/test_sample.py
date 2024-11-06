@@ -1,9 +1,10 @@
-from virtool_core.models.samples import Sample
 import pytest
 
+from virtool_core.models.samples import Sample
 
-@pytest.fixture
-def mock_sample():
+
+@pytest.fixture()
+def mock_sample() -> dict:
     return {
         "all_read": True,
         "all_write": False,
@@ -44,11 +45,8 @@ def mock_sample():
     }
 
 
-def test_sample(mock_sample):
-    """
-    Tests that no errors are thrown when using the Sample model.
-    """
-
+def test_sample(mock_sample: dict):
+    """Tests that no errors are thrown when using the Sample model."""
     Sample(**mock_sample)
 
 

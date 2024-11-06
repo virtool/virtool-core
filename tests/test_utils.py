@@ -1,4 +1,3 @@
-import datetime
 import os
 import shutil
 import sys
@@ -9,6 +8,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 import virtool_core.utils
+from virtool_core.utils import should_use_pigz
 
 sys.path.append(str(Path(__file__).parent.parent))
 
@@ -38,7 +38,7 @@ def test_decompress_tgz(tmpdir):
     "recursive,expected",
     [(True, {"foo.txt"}), (False, {"foo.txt", "baz"})],
 )
-def test_rm(recursive, expected, tmpdir):
+def test_rm(recursive: bool, expected: set[str], tmpdir):
     """Test that a file can be removed and that a folder can be removed when `recursive` is set to `True`."""
     tmpdir.join("foo.txt").write("hello world")
     tmpdir.join("bar.txt").write("hello world")
@@ -62,12 +62,7 @@ def test_rm(recursive, expected, tmpdir):
 def test_should_use_pigz(processes: int, which: str | None, mocker: MockerFixture):
     mocker.patch("shutil.which", return_value=which)
 
-    result = virtool_core.utils.should_use_pigz(processes)
-
-    if processes == 4 and which is not None:
-        assert result is True
-    else:
-        assert result is False
+    assert should_use_pigz(processes) == (processes == 4 and which is not None)
 
 
 def test_timestamp(mocker: MockerFixture):
@@ -79,8 +74,7 @@ def test_timestamp(mocker: MockerFixture):
 
     mocker.patch("arrow.utcnow", new=m)
 
-    timestamp = virtool_core.utils.timestamp()
-
-    assert isinstance(timestamp, datetime.datetime)
-
-    assert timestamp == arrow.arrow.Arrow(2017, 10, 6, 20, 0, 0, 612000).naive
+    assert (
+        virtool_core.utils.timestamp()
+        == arrow.arrow.Arrow(2017, 10, 6, 20, 0, 0, 612000).naive
+    )

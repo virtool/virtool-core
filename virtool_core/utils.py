@@ -8,52 +8,37 @@ import subprocess
 import tarfile
 import warnings
 from _ast import (
-    FunctionDef,
-    Name,
-    AsyncFunctionDef,
-    ClassDef,
-    While,
-    If,
-    With,
-    AsyncWith,
-    Try,
-    For,
-    AsyncFor,
-    Assign,
     AnnAssign,
+    Assign,
+    AsyncFor,
+    AsyncFunctionDef,
+    AsyncWith,
+    ClassDef,
+    For,
+    FunctionDef,
+    If,
+    Name,
+    Try,
+    While,
+    With,
 )
 from pathlib import Path
 from tarfile import TarFile
 from textwrap import dedent
 
-import aiofiles
 import arrow
-
 from enum_tools.documentation import (
-    EnumType,
     EnumMeta,
-    _docstring_from_expr,
-    _docstring_from_eol_comment,
-    _docstring_from_sphinx_comment,
+    EnumType,
     MultipleDocstringsWarning,
+    _docstring_from_eol_comment,
+    _docstring_from_expr,
+    _docstring_from_sphinx_comment,
 )
 
 
-def should_use_pigz(processes: int) -> bool:
-    """
-    Decides whether pigz should be used for gzip decompression.
-
-    :param processes: the number of processes to use for decompression
-    :return: True if pigz is available and multiple processes
-             should be used, and False otherwise
-
-    """
-    return bool(processes > 1 and shutil.which("pigz"))
-
-
 def compress_file(path: Path, target: Path, processes: int = 1) -> None:
-    """
-    Compress the file at `path` to a gzipped file at `target`.
+    """Compress the file at `path` to a gzipped file at `target`.
 
     :param path: the path of the file to be compressed
     :param target: path where the compressed file should be saved
@@ -66,8 +51,7 @@ def compress_file(path: Path, target: Path, processes: int = 1) -> None:
 
 
 def compress_file_with_gzip(path: Path, target: Path) -> None:
-    """
-    compresses a file using gzip
+    """Compresses a file using gzip
     :param path: path to the file to be compressed
     :param target: path where the compressed file should be stored
     """
@@ -77,8 +61,7 @@ def compress_file_with_gzip(path: Path, target: Path) -> None:
 
 
 def compress_file_with_pigz(path: Path, target: Path, processes: int):
-    """
-    use pigz to compress a file
+    """Use pigz to compress a file
     :param path: path to the file to be compressed
     :param target: path where the compressed file should be stored
     :param processes: number of processes allowable for pigz (-p argument)
@@ -90,8 +73,7 @@ def compress_file_with_pigz(path: Path, target: Path, processes: int):
 
 
 def decompress_file(path: Path, target: Path, processes: int = 1) -> None:
-    """
-    Decompress the gzip-compressed file at `path` to a `target` file.
+    """Decompress the gzip-compressed file at `path` to a `target` file.
 
     pigz will be used when multiple processes are allowed, otherwise gzip is used
 
@@ -107,8 +89,7 @@ def decompress_file(path: Path, target: Path, processes: int = 1) -> None:
 
 
 def decompress_file_with_gzip(path: Path, target: Path):
-    """
-    decompress a file using gzip
+    """Decompress a file using gzip
 
     :param path: path to the compressed file to be decompressed
     :param target: path for the newly decompressed file to be stored
@@ -119,8 +100,7 @@ def decompress_file_with_gzip(path: Path, target: Path):
 
 
 def decompress_file_with_pigz(path: Path, target: Path, processes: int):
-    """
-    decompress a file using pigz
+    """Decompress a file using pigz
 
     :param path: path to the compressed file to be decompressed
     :param target: path for the newly decompressed file to be stored
@@ -141,8 +121,7 @@ def decompress_file_with_pigz(path: Path, target: Path, processes: int):
 
 
 def is_within_directory(directory: Path, target: Path) -> bool:
-    """
-    Check whether a file is within a directory.
+    """Check whether a file is within a directory.
 
     :param directory: the path to the directory
     :param target: the path to the file
@@ -157,8 +136,7 @@ def is_within_directory(directory: Path, target: Path) -> bool:
 
 
 def safely_extract_tgz(tar: TarFile, path: Path):
-    """
-    Safely extract a tar.gz file, ensuring that all member files are within the tarball.
+    """Safely extract a tar.gz file, ensuring that all member files are within the tarball.
 
     This prevents directory traversal attacks described in CVE-2007-4559.
 
@@ -172,9 +150,19 @@ def safely_extract_tgz(tar: TarFile, path: Path):
     tar.extractall(path)
 
 
-def decompress_tgz(path: Path, target: Path):
+def should_use_pigz(processes: int) -> bool:
+    """Decides whether pigz should be used for gzip decompression.
+
+    :param processes: the number of processes to use for decompression
+    :return: True if pigz is available and multiple processes
+             should be used, and False otherwise
+
     """
-    Decompress the tar.gz file at ``path`` to the directory ``target``.
+    return bool(processes > 1 and shutil.which("pigz"))
+
+
+def decompress_tgz(path: Path, target: Path):
+    """Decompress the tar.gz file at ``path`` to the directory ``target``.
 
     :param path: the path to the tar.gz file.
     :param target: the path to directory into which to decompress the tar.gz file.
@@ -185,8 +173,7 @@ def decompress_tgz(path: Path, target: Path):
 
 
 def file_stats(path: Path) -> dict:
-    """
-    Return the size and last modification date for the file at `path`.
+    """Return the size and last modification date for the file at `path`.
     Wraps :func:`os.stat`
     :param path: the file path
     :return: the file size and modification datetime
@@ -196,25 +183,8 @@ def file_stats(path: Path) -> dict:
     return {"size": stats.st_size, "modify": arrow.get(stats.st_mtime).datetime}
 
 
-async def file_length(path: Path) -> int:
-    """
-    Asynchronously determine length of a file
-
-    :param path: path to file of which to compute the length
-    :return: the length of the file in bytes
-    """
-    length = 0
-
-    async with aiofiles.open(path) as f:
-        async for _ in f:
-            length += 1
-
-    return length
-
-
 def rm(path: Path, recursive: bool = False) -> bool:
-    """
-    Remove files. Wraps :func:`os.remove` and func:`shutil.rmtree`.
+    """Remove files. Wraps :func:`os.remove` and func:`shutil.rmtree`.
     :param path: the path to remove
     :param recursive: the operation should recursively descend into dirs
     :return: a `bool` indicating if the operation was successful.
@@ -230,9 +200,7 @@ def rm(path: Path, recursive: bool = False) -> bool:
 
 
 def is_gzipped(path: Path) -> bool:
-    """
-
-    :param path: path of the file to check
+    """:param path: path of the file to check
     :return: True if the file is gzipped, else False
     """
     try:
@@ -246,8 +214,7 @@ def is_gzipped(path: Path) -> bool:
 
 
 def timestamp() -> datetime.datetime:
-    """
-    Returns a datetime object representing the current UTC time.
+    """Returns a datetime object representing the current UTC time.
     The last 3 digits of the microsecond frame are set to zero.
 
     :return: a UTC timestamp
@@ -262,8 +229,7 @@ def timestamp() -> datetime.datetime:
 
 
 def document_enum(an_enum: EnumType) -> EnumType:
-    """
-    Document all members of an enum by parsing a docstring from the Python source.
+    """Document all members of an enum by parsing a docstring from the Python source.
 
     The docstring can be added in several ways:
 
@@ -302,7 +268,6 @@ def document_enum(an_enum: EnumType) -> EnumType:
     This allows this function to be used as a decorator.
     :rtype: :class:`enum.Enum`
     """
-
     if not isinstance(an_enum, EnumMeta):
         raise TypeError(f"'an_enum' must be an 'Enum', not {type(an_enum)}!")
 
@@ -353,12 +318,12 @@ def document_enum(an_enum: EnumType) -> EnumType:
             if isinstance(node, Assign | AnnAssign):
                 # maybe no luck with """ docstring? look for EOL comment.
                 docstring_candidates.append(
-                    _docstring_from_eol_comment(func_source, node)
+                    _docstring_from_eol_comment(func_source, node),
                 )
 
                 # check non-whitespace lines above for Sphinx-style comment.
                 docstring_candidates.append(
-                    _docstring_from_sphinx_comment(func_source, node)
+                    _docstring_from_sphinx_comment(func_source, node),
                 )
 
             docstring_candidates_nn = list(filter(None, docstring_candidates))
@@ -366,8 +331,9 @@ def document_enum(an_enum: EnumType) -> EnumType:
                 # Multiple docstrings found, warn
                 warnings.warn(
                     MultipleDocstringsWarning(
-                        getattr(an_enum, targets[0]), docstring_candidates_nn
-                    )
+                        getattr(an_enum, targets[0]),
+                        docstring_candidates_nn,
+                    ),
                 )
 
             if docstring_candidates_nn:

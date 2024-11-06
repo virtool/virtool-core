@@ -1,11 +1,10 @@
 from datetime import datetime
-from typing import List
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.job import JobMinimal
 from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.user import UserNested
+from virtool_core.models.user_base import UserNested
 
 
 class IndexNested(BaseModel):
@@ -44,14 +43,14 @@ class IndexFile(BaseModel):
 
 
 class Index(IndexMinimal):
-    contributors: List[IndexContributor]
-    files: List[IndexFile]
+    contributors: list[IndexContributor]
+    files: list[IndexFile]
     manifest: dict[str, int]
-    otus: List[IndexOTU]
+    otus: list[IndexOTU]
 
 
 class IndexSearchResult(SearchResult):
-    documents: List[IndexMinimal]
+    documents: list[IndexMinimal]
     modified_otu_count: int
     total_otu_count: int
     change_count: int

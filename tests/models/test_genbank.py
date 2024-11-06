@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from virtool_core.models.genbank import Genbank
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_genbank():
     return {
         "accession": "KJ406323.1",
@@ -16,9 +16,7 @@ def mock_genbank():
 
 @pytest.mark.parametrize("error", [None, "sequence"])
 def test_sequence(mock_genbank, error):
-    """
-    Tests if the `name` field is set to the `id` as default.
-    """
+    """Tests if the `name` field is set to the `id` as default."""
     Genbank(**mock_genbank)
     if error:
         with pytest.raises(ValidationError) as err:

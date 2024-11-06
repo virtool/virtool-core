@@ -1,17 +1,21 @@
 from datetime import datetime
+from typing import Annotated
 
-from email_validator import validate_email, EmailSyntaxError
-from pydantic import validator, ConstrainedStr
+from email_validator import EmailSyntaxError, validate_email
+from pydantic import StringConstraints, field_validator
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import AnalysisWorkflow
-from virtool_core.models.group import GroupMinimal, Permissions
+from virtool_core.models.group import Permissions
+from virtool_core.models.group_minimal import GroupMinimal
 from virtool_core.models.user import User
 
 
 def check_email(email: str | None) -> str | None:
-    """
-    Checks if the given email is valid.
+    """Checks if the given email is valid.
+
+    :param email: The email to check.
+    :type email: str | None
     """
     if email is None:
         return None
@@ -31,15 +35,13 @@ class AccountSettings(BaseModel):
     skip_quick_analyze_dialog: bool
 
 
-class ConstrainedEmail(ConstrainedStr):
-    strip_whitespace = True
-
-
 class Account(User):
     settings: AccountSettings
-    email: ConstrainedEmail | None
+    email: Annotated[str, StringConstraints(strip_whitespace=True)]
 
-    _email_validation = validator("email", allow_reuse=True)(check_email)
+    @field_validator("email")
+    def check_email(cls, v: str | None) -> str | None:
+        return check_email(v)
 
 
 class APIKey(BaseModel):
