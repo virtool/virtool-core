@@ -130,13 +130,12 @@ def is_within_directory(directory: Path, target: Path) -> bool:
     abs_directory = os.path.abspath(directory)
     abs_target = os.path.abspath(target)
 
-    prefix = os.path.commonprefix([abs_directory, abs_target])
-
-    return prefix == abs_directory
+    return os.path.commonprefix([abs_directory, abs_target]) == abs_directory
 
 
 def safely_extract_tgz(tar: TarFile, path: Path):
-    """Safely extract a tar.gz file, ensuring that all member files are within the tarball.
+    """Safely extract a tar.gz file, ensuring that all member files are within the
+    tarball.
 
     This prevents directory traversal attacks described in CVE-2007-4559.
 

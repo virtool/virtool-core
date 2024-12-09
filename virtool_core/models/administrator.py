@@ -6,8 +6,8 @@ from virtool_core.models.user_base import UserNested
 class AdministratorMinimal(UserNested):
     role: AdministratorRole | None
     """The administrator role for a user.
-    
-    When `None`, the user is not an administrator.    
+
+    When `None`, the user is not an administrator.
     """
 
 
