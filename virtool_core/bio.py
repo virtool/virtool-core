@@ -1,8 +1,6 @@
-import typing
+import asyncio
 from pathlib import Path
-from typing import AsyncGenerator
-
-import aiofiles
+from typing import AsyncIterable
 
 COMPLEMENT_TABLE = {"A": "T", "T": "A", "G": "C", "C": "G", "N": "N"}
 
@@ -121,42 +119,9 @@ def read_fasta(path: Path) -> list[tuple[str, str]]:
     return data
 
 
-async def read_fastq(f) -> AsyncGenerator[tuple, None]:
-    """Read the FASTQ content in the file object `f`.
-    Yields tuples containing the header, sequence, and quality.
-
-    :param f: a file handle
-    :return: the FASTQ content as tuples
-
-    """
-    had_plus = False
-
-    header = None
-    seq = None
-
-    async for line in f:
-        if line == "+\n":
-            had_plus = True
-            continue
-
-        if not had_plus:
-            if line[0] == "@":
-                header = line.rstrip()
-                continue
-
-            seq = line.rstrip()
-            continue
-
-        if had_plus:
-            yield header, seq, line.rstrip()
-
-            header = None
-            seq = None
-            had_plus = False
-
-
-async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
+async def read_fastq_from_path(path: Path) -> AsyncIterable:
     """Read the FASTQ file at `path` and yields its content as tuples.
+
     Accepts both uncompressed and GZIP-compressed FASTQ
     files.
 
@@ -164,12 +129,53 @@ async def read_fastq_from_path(path: Path) -> typing.AsyncIterable:
     :return: tuples containing the header, sequence, and quality
 
     """
-    async with aiofiles.open(path, "r") as f:
-        async for record in read_fastq(f):
-            yield record
+    q: asyncio.Queue[tuple[str, str, str] | None] = asyncio.Queue()
+
+    def func(path_: Path, q_: asyncio.Queue):
+        had_plus = False
+        header = None
+        seq = None
+
+        with open(path_) as f:
+            for line in f:
+                if line == "+\n":
+                    had_plus = True
+                    continue
+
+                if not had_plus:
+                    if line[0] == "@":
+                        header = line.rstrip()
+                        continue
+
+                    seq = line.rstrip()
+                    continue
+
+                if had_plus:
+                    q_.put_nowait((header, seq, line.rstrip()))
+
+                    header = None
+                    seq = None
+                    had_plus = False
+
+            q_.put_nowait(None)
+
+    task = asyncio.create_task(asyncio.to_thread(func, path, q))
+
+    while True:
+        item = await q.get()
+
+        if item is None:
+            q.task_done()
+            break
+
+        yield item
+        q.task_done()
+
+    await task
+    await q.join()
 
 
-async def read_fastq_headers(path: Path) -> list:
+async def read_fastq_headers(path: Path) -> list[str]:
     """Return a list of FASTQ headers for the FASTQ file located at `path`.
     Only accepts uncompressed FASTQ files.
 
@@ -177,24 +183,27 @@ async def read_fastq_headers(path: Path) -> list:
     :return: a list of FASTQ headers
 
     """
-    headers = []
 
-    had_plus = False
+    def func(path_: Path) -> list[str]:
+        had_plus = False
+        headers = []
 
-    async with aiofiles.open(path, "r") as f:
-        async for line in f:
-            if line == "+\n":
-                had_plus = True
-                continue
+        with open(path_) as f:
+            for line in f:
+                if line == "+\n":
+                    had_plus = True
+                    continue
 
-            if not had_plus and line[0] == "@":
-                headers.append(line.rstrip())
-                continue
+                if not had_plus and line[0] == "@":
+                    headers.append(line.rstrip())
+                    continue
 
-            if had_plus:
-                had_plus = False
+                if had_plus:
+                    had_plus = False
 
-    return headers
+        return headers
+
+    return await asyncio.to_thread(func, path)
 
 
 def reverse_complement(sequence: str) -> str:

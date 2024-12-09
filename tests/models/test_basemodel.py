@@ -10,8 +10,7 @@ class DummyModel(BaseModel):
 
 @pytest.mark.parametrize("has_underscore_prefix", [True, False])
 def test_id(has_underscore_prefix):
-    """
-    Tests if _id is converted to id and _id is no longer in the model.
+    """Tests if _id is converted to id and _id is no longer in the model.
     If id is already provided, nothing should occur.
     """
     data = {"_id": "magicians", "name": "Magicians"}

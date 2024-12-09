@@ -1,15 +1,12 @@
 from datetime import datetime
-from typing import Optional, List
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.searchresult import SearchResult
-from virtool_core.models.user import UserNested
+from virtool_core.models.user_base import UserNested
 
 
 class UploadMinimal(BaseModel):
-    """
-    Model for user uploads.
-    """
+    """Model for user uploads."""
 
     id: int
     created_at: datetime
@@ -17,11 +14,11 @@ class UploadMinimal(BaseModel):
     name_on_disk: str
     ready: bool
     removed: bool
-    removed_at: Optional[datetime]
+    removed_at: datetime | None
     reserved: bool
-    size: Optional[int]
+    size: int | None
     type: str
-    uploaded_at: Optional[datetime]
+    uploaded_at: datetime | None
     user: UserNested
 
 
@@ -29,4 +26,4 @@ Upload = UploadMinimal
 
 
 class UploadSearchResult(SearchResult):
-    items: List[UploadMinimal]
+    items: list[UploadMinimal]

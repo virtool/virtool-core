@@ -1,6 +1,7 @@
 import pytest
 from structlog import get_logger
 from structlog.testing import capture_logs
+
 from virtool_core.logging import configure_logs
 
 

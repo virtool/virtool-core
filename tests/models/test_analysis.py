@@ -5,7 +5,7 @@ import pytest
 from virtool_core.models.analysis import AnalysisMinimal
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_analysis():
     return {
         "created_at": datetime(2022, 8, 16),
@@ -21,6 +21,7 @@ def mock_analysis():
             "user": {"administrator": False, "handle": "jonathan", "id": "88yksx67"},
             "workflow": "nuvs",
         },
+        "ml": None,
         "ready": False,
         "reference": {
             "id": "d19exr83",
@@ -39,22 +40,17 @@ def mock_analysis():
     }
 
 
-def test_default_updated_at(mock_analysis):
-    """
-    Tests if the 'updated_at' field is set to 'created_at' as default if not given.
-    """
-
+def test_default_updated_at(mock_analysis: dict):
+    """Tests if the 'updated_at' field is set to 'created_at' as default if not given."""
     analysis = AnalysisMinimal(**mock_analysis)
 
     assert analysis.updated_at == analysis.created_at
 
 
-def test_preset_updated_at(mock_analysis):
-    """
-    Tests that the 'updated_field' is not set automatically to 'created_at'
+def test_preset_updated_at(mock_analysis: dict):
+    """Tests that the 'updated_field' is not set automatically to 'created_at'
     despite being provided.
     """
-
     mock_analysis.update({"updated_at": datetime(2022, 7, 15)})
 
     analysis = AnalysisMinimal(**mock_analysis)

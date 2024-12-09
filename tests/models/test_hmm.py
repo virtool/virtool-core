@@ -1,14 +1,12 @@
-from virtool_core.models.hmm import HMMMinimal
 import pytest
+
+from virtool_core.models.hmm import HMMMinimal
 
 
 def test_hmm_model():
-    """
-    Tests the 'name' field validator for the
+    """Tests the 'name' field validator for the
     `HMMMinimal` model
-
     """
-
     HMMMinimal(
         id="foo",
         cluster=899,

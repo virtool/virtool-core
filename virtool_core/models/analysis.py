@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Any, List
+from typing import Any
 
-from pydantic import root_validator
+from pydantic import model_validator
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.index import IndexNested
@@ -10,7 +10,7 @@ from virtool_core.models.ml import MLModelRelease
 from virtool_core.models.reference import ReferenceNested
 from virtool_core.models.searchresult import SearchResult
 from virtool_core.models.subtraction import SubtractionNested
-from virtool_core.models.user import UserNested
+from virtool_core.models.user_base import UserNested
 
 
 class AnalysisSample(BaseModel):
@@ -26,15 +26,16 @@ class AnalysisMinimal(BaseModel):
     ready: bool
     reference: ReferenceNested
     sample: AnalysisSample
-    subtractions: List[SubtractionNested]
+    subtractions: list[SubtractionNested]
     updated_at: datetime
     user: UserNested
     workflow: str
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
     def check_updated_at(cls, values):
         if "updated_at" not in values:
             values["updated_at"] = values["created_at"]
+
         return values
 
 
@@ -50,9 +51,9 @@ class AnalysisFile(BaseModel):
 
 
 class Analysis(AnalysisMinimal):
-    files: List[AnalysisFile]
+    files: list[AnalysisFile]
     results: dict[str, Any] | None
 
 
 class AnalysisSearchResult(SearchResult):
-    documents: List[AnalysisMinimal]
+    documents: list[AnalysisMinimal]

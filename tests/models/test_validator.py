@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pytest
 from pydantic import ValidationError
 
@@ -8,16 +6,18 @@ from virtool_core.models.validators import prevent_none
 
 
 class DummyModel(BaseModel):
+    count: int | None = None
+    id: int | None = None
     name: str
-    id: Optional[int]
-    count: Optional[int]
 
     _prevent_none = prevent_none("count", "id")
 
 
 def test_prevent_null_validator():
+    """Tests the `prevent_none` validator for the `DummyModel` model prevents the
+    provided fields from being `None`.
+    """
     DummyModel(name="baz")
-
     DummyModel(name="bar", id=1, count=2)
 
     with pytest.raises(ValidationError) as count_err:

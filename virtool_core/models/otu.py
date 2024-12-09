@@ -1,6 +1,6 @@
-from typing import List, Optional, Union
+from typing import Any, Optional, Union
 
-from pydantic import Field, root_validator
+from pydantic import Field, model_validator
 
 from virtool_core.models.basemodel import BaseModel
 from virtool_core.models.enums import Molecule
@@ -30,12 +30,12 @@ class OTUSequence(BaseModel):
 
     accession: str
     definition: str
-    host: str | None = Field(default="")
+    host: str | None = ""
     id: str
-    remote: Optional[OTURemote]
-    segment: Optional[str]
+    remote: OTURemote | None = None
+    segment: str | None = None
     sequence: str
-    target: Optional[str]
+    target: str | None = None
 
 
 class Sequence(OTUSequence):
@@ -48,18 +48,17 @@ class Sequence(OTUSequence):
 class OTUIsolate(BaseModel):
     default: bool
     id: str
-    sequences: List[OTUSequence]
+    sequences: list[OTUSequence]
     source_name: str
     source_type: str
 
 
 class OTUSegment(BaseModel):
-    molecule: Optional[Molecule]
+    molecule: Molecule | None = None
     name: str
-    required: bool
 
-    @root_validator(pre=True)
-    def make_molecule_nullable(cls, values):
+    @model_validator(mode="before")
+    def make_molecule_nullable(cls, values: dict[str, Any]):
         """Convert unset molecule fields from empty strings to ``None``."""
         if values["molecule"] == "":
             values["molecule"] = None
@@ -68,14 +67,14 @@ class OTUSegment(BaseModel):
 
 
 class OTU(OTUMinimal):
-    isolates: List[OTUIsolate]
+    isolates: list[OTUIsolate]
     issues: Optional[Union[dict, bool]]
     last_indexed_version: Optional[int]
     most_recent_change: HistoryNested
-    otu_schema: List[OTUSegment] = Field(alias="schema")
+    otu_schema: list[OTUSegment] = Field(alias="schema")
     remote: Optional[OTURemote]
 
 
 class OTUSearchResult(SearchResult):
-    documents: List[OTUMinimal]
+    documents: list[OTUMinimal]
     modified_count: int
