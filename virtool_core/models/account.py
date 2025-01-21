@@ -40,8 +40,11 @@ class Account(User):
     email: Annotated[str, StringConstraints(strip_whitespace=True)]
 
     @field_validator("email")
-    def check_email(cls, v: str | None) -> str | None:
-        return check_email(v)
+    def check_email(cls, email: str) -> str | None:
+        if email == "":
+            return email
+
+        return check_email(email)
 
 
 class APIKey(BaseModel):
