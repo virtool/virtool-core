@@ -107,6 +107,5 @@ jobs:
         run: npm i semantic-release@^v24.0.0 conventional-changelog-conventionalcommits@^8.0.0
       - name: Release
         env:
-          GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
