@@ -19,7 +19,7 @@ jobs:
             virtualenvs-in-project: true
             installer-parallel: true
         - name: Bump Version
-          run: poetry version ${{ github.event.release.tag_name }} && poetry lock --no-update
+          run: poetry version ${{ github.event.release.tag_name }} && poetry lock
         - name: Build
           run: poetry build
         - name: Publish
