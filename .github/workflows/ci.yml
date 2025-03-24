@@ -96,6 +96,8 @@ jobs:
       - test
       - build
       - mypy
+    outputs:
+      git-tag: ${{ steps.semantic.outputs.git-tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -105,9 +107,10 @@ jobs:
           node-version: 20
       - name: Install semantic-release
         run: npm i semantic-release@^v24.0.0 conventional-changelog-conventionalcommits@^8.0.0
-      - name: Release
+      - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: semantic
         run: npx semantic-release
   pypi:
     runs-on: ubuntu-22.04
